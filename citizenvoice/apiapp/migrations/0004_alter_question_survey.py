@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('apiapp', '0003_question_survey'),
+        ("apiapp", "0003_question_survey"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='survey',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='apiapp.survey'),
+            model_name="question",
+            name="survey",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="apiapp.survey",
+            ),
         ),
     ]

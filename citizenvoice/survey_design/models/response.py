@@ -30,8 +30,19 @@ class Response(models.Model):
 
     created = models.DateTimeField(_("Creation date"), auto_now_add=True)
     updated = models.DateTimeField(_("Update date"), auto_now=True)
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, verbose_name=_("Survey"), related_name="responses")
-    user = models.ForeignKey(user_model, on_delete=models.SET_NULL, verbose_name=_("User"), null=True, blank=True)
+    survey = models.ForeignKey(
+        Survey,
+        on_delete=models.CASCADE,
+        verbose_name=_("Survey"),
+        related_name="responses",
+    )
+    user = models.ForeignKey(
+        user_model,
+        on_delete=models.SET_NULL,
+        verbose_name=_("User"),
+        null=True,
+        blank=True,
+    )
     interview_uuid = models.CharField(_("Interview unique identifier"), max_length=36)
 
     class Meta:

@@ -15,54 +15,165 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Question',
+            name="Question",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(verbose_name='Text of the Question')),
-                ('order', models.IntegerField(verbose_name='Order of where question is placed')),
-                ('required', models.BooleanField(default=False, verbose_name='Question must be filled out')),
-                ('question_type', models.CharField(max_length=150, verbose_name='Type of question')),
-                ('choices', models.TextField(verbose_name='Choices for answers')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField(verbose_name="Text of the Question")),
+                (
+                    "order",
+                    models.IntegerField(
+                        verbose_name="Order of where question is placed"
+                    ),
+                ),
+                (
+                    "required",
+                    models.BooleanField(
+                        default=False, verbose_name="Question must be filled out"
+                    ),
+                ),
+                (
+                    "question_type",
+                    models.CharField(max_length=150, verbose_name="Type of question"),
+                ),
+                ("choices", models.TextField(verbose_name="Choices for answers")),
             ],
         ),
         migrations.CreateModel(
-            name='Survey',
+            name="Survey",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, verbose_name='Name of the survey')),
-                ('description', models.TextField(verbose_name='Description')),
-                ('is_published', models.BooleanField(default=False, verbose_name='Survey is visible and accessible to users')),
-                ('need_logged_user', models.BooleanField(default=True, verbose_name='Only authenticated users have access to this survey')),
-                ('editable_answers', models.BooleanField(default=False, verbose_name='Answers can be edited after submission')),
-                ('display_method', models.SmallIntegerField(verbose_name='Display method')),
-                ('template', models.CharField(max_length=150)),
-                ('publish_date', models.DateTimeField(verbose_name='Date that survey was made available')),
-                ('expire_date', models.DateTimeField(verbose_name='Expiry date of survey')),
-                ('redirect_URL', models.CharField(max_length=150, verbose_name='Redirect URL')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=150, verbose_name="Name of the survey"),
+                ),
+                ("description", models.TextField(verbose_name="Description")),
+                (
+                    "is_published",
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Survey is visible and accessible to users",
+                    ),
+                ),
+                (
+                    "need_logged_user",
+                    models.BooleanField(
+                        default=True,
+                        verbose_name="Only authenticated users have access to this survey",
+                    ),
+                ),
+                (
+                    "editable_answers",
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Answers can be edited after submission",
+                    ),
+                ),
+                (
+                    "display_method",
+                    models.SmallIntegerField(verbose_name="Display method"),
+                ),
+                ("template", models.CharField(max_length=150)),
+                (
+                    "publish_date",
+                    models.DateTimeField(
+                        verbose_name="Date that survey was made available"
+                    ),
+                ),
+                (
+                    "expire_date",
+                    models.DateTimeField(verbose_name="Expiry date of survey"),
+                ),
+                (
+                    "redirect_URL",
+                    models.CharField(max_length=150, verbose_name="Redirect URL"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Response',
+            name="Response",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(verbose_name='Date response was submitted')),
-                ('updated', models.DateTimeField(verbose_name='Last edit')),
-                ('interview_uuid', models.CharField(max_length=150, verbose_name='Unique ID of interview')),
-                ('survey', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='apiapp.survey')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(verbose_name="Date response was submitted"),
+                ),
+                ("updated", models.DateTimeField(verbose_name="Last edit")),
+                (
+                    "interview_uuid",
+                    models.CharField(
+                        max_length=150, verbose_name="Unique ID of interview"
+                    ),
+                ),
+                (
+                    "survey",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="apiapp.survey"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Answer',
+            name="Answer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(verbose_name='Creation date')),
-                ('updated', models.DateTimeField(verbose_name='Last edited')),
-                ('body', models.TextField(verbose_name='Answer Body')),
-                ('lon', models.FloatField()),
-                ('lat', models.FloatField()),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='apiapp.question')),
-                ('response', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='apiapp.response')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(verbose_name="Creation date")),
+                ("updated", models.DateTimeField(verbose_name="Last edited")),
+                ("body", models.TextField(verbose_name="Answer Body")),
+                ("lon", models.FloatField()),
+                ("lat", models.FloatField()),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="apiapp.question",
+                    ),
+                ),
+                (
+                    "response",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="apiapp.response",
+                    ),
+                ),
             ],
         ),
     ]

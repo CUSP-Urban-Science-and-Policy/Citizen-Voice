@@ -11,15 +11,15 @@ from . import views
 
 # Create a router object and point it to the model viewsets, allowing the API to be called through the given URL addresses
 router = routers.DefaultRouter()
-router.register(r'answers', views.AnswerViewSet, basename='answer')
-router.register(r'questions', views.QuestionViewSet, basename='question')
-router.register(r'surveys', views.SurveyViewSet, basename='survey')
-router.register(r'responses', views.ResponseViewSet, basename='response')
-router.register(r'users', views.UserViewSet, basename='user')
+router.register(r"answers", views.AnswerViewSet, basename="answer")
+router.register(r"questions", views.QuestionViewSet, basename="question")
+router.register(r"surveys", views.SurveyViewSet, basename="survey")
+router.register(r"responses", views.ResponseViewSet, basename="response")
+router.register(r"users", views.UserViewSet, basename="user")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path("", include(router.urls)),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

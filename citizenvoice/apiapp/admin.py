@@ -12,4 +12,3 @@ admin.site.register(Response)
 # Unregister User and Group fields
 admin.site.unregister(auth.models.User)
 admin.site.unregister(auth.models.Group)
-

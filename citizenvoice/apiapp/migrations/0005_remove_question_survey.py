@@ -6,12 +6,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('apiapp', '0004_alter_question_survey'),
+        ("apiapp", "0004_alter_question_survey"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='question',
-            name='survey',
-        ),
+        migrations.RemoveField(model_name="question", name="survey",),
     ]

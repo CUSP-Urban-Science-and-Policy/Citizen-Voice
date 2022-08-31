@@ -84,11 +84,17 @@ class Question(models.Model):
         verbose_name=_("Category"),
         blank=True,
         null=True,
-        related_name="categories"
+        related_name="categories",
     )
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)  # verbose_name=_("Survey"), related_name="questions"
-    type = models.CharField(_("Type"), max_length=200, choices=QUESTION_TYPES, default=TEXT)
-    choices = models.TextField(_("Choices"), blank=True, null=True, help_text=CHOICES_HELP_TEXT)
+    survey = models.ForeignKey(
+        Survey, on_delete=models.CASCADE
+    )  # verbose_name=_("Survey"), related_name="questions"
+    type = models.CharField(
+        _("Type"), max_length=200, choices=QUESTION_TYPES, default=TEXT
+    )
+    choices = models.TextField(
+        _("Choices"), blank=True, null=True, help_text=CHOICES_HELP_TEXT
+    )
 
     class Meta:
         verbose_name = _("question")
@@ -123,4 +129,3 @@ class Question(models.Model):
 
     def __str__(self):
         return self.text
-
