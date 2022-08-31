@@ -15,9 +15,17 @@ class Category(models.Model):
     """
         A Category object is used to group questions.
     """
+
     name = models.CharField(_("Name"), max_length=400)
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, verbose_name=_("Survey"), related_name="categories")
-    description = models.CharField(_("Description"), max_length=2000, blank=True, null=True)
+    survey = models.ForeignKey(
+        Survey,
+        on_delete=models.CASCADE,
+        verbose_name=_("Survey"),
+        related_name="categories",
+    )
+    description = models.CharField(
+        _("Description"), max_length=2000, blank=True, null=True
+    )
 
     class Meta:
         # pylint: disable=too-few-public-methods

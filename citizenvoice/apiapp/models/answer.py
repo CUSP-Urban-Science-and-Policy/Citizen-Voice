@@ -17,6 +17,7 @@ class Answer(models.Model):
     field sizes to accommodate for different Question types. It also contains latitude
     and longitude fields to capture spatial answers.
     """
+
     response = models.ForeignKey(Response, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     created = models.DateTimeField(_("Creation date"))

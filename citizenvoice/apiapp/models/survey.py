@@ -14,11 +14,17 @@ class Survey(models.Model):
     It also represents all the responses made by respondents (users) for this specific Survey. 
     """
 
-    name = models.CharField(_("Name of the survey"),max_length=150)
+    name = models.CharField(_("Name of the survey"), max_length=150)
     description = models.TextField(_("Description"))
-    is_published = models.BooleanField(_("Survey is visible and accessible to users"), default=False)
-    need_logged_user = models.BooleanField(_("Only authenticated users have access to this survey"), default=True)
-    editable_answers = models.BooleanField(_("Answers can be edited after submission"), default=False)
+    is_published = models.BooleanField(
+        _("Survey is visible and accessible to users"), default=False
+    )
+    need_logged_user = models.BooleanField(
+        _("Only authenticated users have access to this survey"), default=True
+    )
+    editable_answers = models.BooleanField(
+        _("Answers can be edited after submission"), default=False
+    )
     display_method = models.SmallIntegerField(_("Display method"))
     template = models.CharField(max_length=150)
     publish_date = models.DateTimeField(_("Date that survey was made available"))
@@ -30,4 +36,3 @@ class Survey(models.Model):
 
     def question_count(self):
         return len(self.question_set.all())
-
