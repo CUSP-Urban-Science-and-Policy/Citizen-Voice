@@ -7,18 +7,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("apiapp", "0002_rename_redirect_url_survey_redirect_url"),
+        ('apiapp', '0002_rename_redirect_url_survey_redirect_url'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="question",
-            name="survey",
-            field=models.ForeignKey(
-                default=0,
-                on_delete=django.db.models.deletion.CASCADE,
-                to="apiapp.survey",
-            ),
+            model_name='question',
+            name='survey',
+            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='apiapp.survey'),
             preserve_default=False,
         ),
     ]

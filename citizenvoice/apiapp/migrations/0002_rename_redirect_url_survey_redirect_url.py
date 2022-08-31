@@ -6,11 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("apiapp", "0001_initial"),
+        ('apiapp', '0001_initial'),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name="survey", old_name="redirect_URL", new_name="redirect_url",
+            model_name='survey',
+            old_name='redirect_URL',
+            new_name='redirect_url',
         ),
     ]
