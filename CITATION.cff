@@ -7,7 +7,7 @@ message: Please cite this software using these metadata.
 type: software
 authors:
   - given-names: John
-    family-names: Doe
+    family-names: Stone
     email: user@email.com
     affiliation: Affiliation
     orcid: 'https://orcid.org/0000-0000-0000-0000'
