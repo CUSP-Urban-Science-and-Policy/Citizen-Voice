@@ -6,13 +6,13 @@ title: Citizen Voice
 message: Please cite this software using these metadata.
 type: software
 authors:
-  - given-names: Name1
-    family-names: Surname1
+  - given-names: John
+    family-names: Doe
     email: user@email.com
     affiliation: Affiliation
     orcid: 'https://orcid.org/0000-0000-0000-0000'
-  - given-names: Name2
-    family-names: Surname2
+  - given-names: Mary
+    family-names: Smith
     email: user@email.com
     affiliation: Affiliation
     orcid: 'https://orcid.org/0000-0000-0000-0000'
