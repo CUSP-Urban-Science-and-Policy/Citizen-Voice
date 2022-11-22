@@ -47,10 +47,9 @@ jobs:
           python-version: "3.x"
       - name: Install GDAL library
         run: |
-          sudo apt-get install python-software-properties
-          sudo add-apt-repository ppa:ubuntugis/ppa -y
+          deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main
           sudo apt-get update -y
-          sudo apt-get install gdal-bin libgdal-dev -y  
+          sudo apt-get install gdal-bin libgdal-dev -y
           export CPLUS_INCLUDE_PATH=/usr/include/gdal
           export C_INCLUDE_PATH=/usr/include/gdal
           pip install GDAL==3.3.2
