@@ -47,7 +47,6 @@ jobs:
           python-version: "3.x"
       - name: Install GDAL library
         run: |
-#          sudo add-apt-repository ppa:ubuntugis/ppa -y
           sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
           ppa:ubuntugis/ubuntugis-unstable
           sudo apt-get update -y
