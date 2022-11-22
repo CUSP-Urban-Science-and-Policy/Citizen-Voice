@@ -6,7 +6,7 @@ on:
     branches:
       - devel
       - main
-  
+
   push:
     branches:
       - devel
@@ -19,14 +19,14 @@ jobs:
     services:
       postgres:
         image: postgis/postgis:14-master
-        env:  # environmental variables required for the job
+        env: # environmental variables required for the job
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: github_actions
-        ports: 
+        ports:
           - 5432:5432
 
-        options: >- 
+        options: >-
           --health-cmd pg_isready 
           --health-interval 10s 
           --health-timeout 5s 
@@ -40,14 +40,15 @@ jobs:
           path: ~/.cache/zip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
-           ${{ runner.os }}-pip-
+            ${{ runner.os }}-pip-
       - name: Setup python environment
         uses: actions/setup-python@v3
         with:
-          python-version: '3.x'
+          python-version: "3.x"
       - name: Install GDAL library
         run: |
           sudo add-apt-repository ppa:ubuntugis/ppa -y
+          sudo add-apt-repository --remove ppa:webupd8team/java
           sudo apt-get update -y
           sudo apt-get install gdal-bin libgdal-dev -y
           export CPLUS_INCLUDE_PATH=/usr/include/gdal
@@ -63,6 +64,5 @@ jobs:
         run: |
           nohup python citizenvoice/manage.py runserver &
           sleep 5
-      - name: Stop Development Server 
+      - name: Stop Development Server
         run: pkill -f runserver
-        
