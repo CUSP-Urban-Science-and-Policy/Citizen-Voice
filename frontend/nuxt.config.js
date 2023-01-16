@@ -64,7 +64,7 @@ export default defineNuxtConfig({
 
     },
     modules: [
-        '@vueuse/nuxt', '@nuxtjs-alt/proxy', '@pinia/nuxt',
+        '@vueuse/nuxt', '@pinia/nuxt',
     ],
     runtimeConfig: {
         cookieName: process.env.COOKIE_NAME || '__session',

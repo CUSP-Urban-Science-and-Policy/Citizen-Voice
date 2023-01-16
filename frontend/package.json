@@ -21,7 +21,6 @@
   "dependencies": {
     "@nuxt-alt/auth": "^2.1.9",
     "@nuxt-alt/http": "^1.5.5",
-    "@nuxtjs-alt/proxy": "^2.1.0",
     "@pinia/nuxt": "^0.4.6",
     "@quasar/extras": "^1.15.8",
     "@vueuse/nuxt": "^9.6.0",
