@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            await $fetch('/api/auth/me/', config)
+            await $backendApi('/api/auth/me/', config)
                 .then(response => {
                     this.userData = {
                         ...this.userData,
@@ -76,7 +76,7 @@ export const useUserStore = defineStore('user', {
                 body
             }
 
-            const { data: register, pending, error } = await useAsyncData('register', () => $fetch('/api/auth/register/', config))
+            const { data: register, pending, error } = await useAsyncData('register', () => $backendApi('/api/auth/register/', config))
 
             if (error.value) {
                 let warnMessage = null
@@ -118,7 +118,7 @@ export const useUserStore = defineStore('user', {
                 },
             }
 
-            const { data: login, pending, error } = await useAsyncData('login', () => $fetch('/api/auth/login/', config))
+            const { data: login, pending, error } = await useAsyncData('login', () => $backendApi('/api/auth/login/', config))
 
             if (error.value) {
                 console.log('error: ', error.value)
@@ -184,7 +184,7 @@ export const useUserStore = defineStore('user', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            await $fetch('/api/auth/logout/', config).then(async () => {
+            await $backendApi('/api/auth/logout/', config).then(async () => {
                 localStorage.removeItem('token')
                 this.$reset()
                 // Notification

@@ -64,8 +64,11 @@ export default defineNuxtConfig({
 
     },
     modules: [
-        '@vueuse/nuxt', '@pinia/nuxt',
+        '@vueuse/nuxt', '@pinia/nuxt', 'nuxt-api-party',
     ],
+    apiParty: {    // Needed for the names of the composables    
+        name: 'backend-api'
+    },
     runtimeConfig: {
         cookieName: process.env.COOKIE_NAME || '__session',
         cookieSecret: process.env.COOKIE_SECRET || 'secret',
@@ -77,18 +80,18 @@ export default defineNuxtConfig({
         },
         paymentSecretKey: '',
     },
-    proxy: {
-        enableProxy: true,
-        proxies: {
-            // string shorthand
-            '/foo': 'http://localhost:4567',
-            // with options
-            '^/api/*/.*': {
-                target: 'http://127.0.0.1:8000/',
-                changeOrigin: true,
-            },
-        },
-        fetch: true
-    }
+    // proxy: {
+    //     enableProxy: true,
+    //     proxies: {
+    //         // string shorthand
+    //         '/foo': 'http://localhost:4567',
+    //         // with options
+    //         '^/api/*/.*': {
+    //             target: 'http://127.0.0.1:8000/',
+    //             changeOrigin: true,
+    //         },
+    //     },
+    //     fetch: true
+    // }
 })
 
