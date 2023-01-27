@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
+from rest_framework.settings import api_settings
+
 
 if os.name == 'nt':
     import platform
@@ -59,11 +62,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'django.contrib.sites',
     'apiapp',
     'rest_framework',
     'users.apps.UsersConfig',
     'survey_design.apps.SurveyDesignConfig',
-    'respondent.apps.RespondentConfig'
+    'respondent.apps.RespondentConfig',
+    'knox',
+    'knox_allauth',
+    'allauth',
+    'allauth.account'
+
 ]
 
 MIDDLEWARE = [
@@ -125,8 +134,8 @@ else:
                 'TEST': {
                     'NAME': os.getenv('TEST_DBASE'),
                 },
-                }
             }
+        }
     elif DATABASE_ENGINE == "spatialite":
         DATABASES = {
             'default': {
@@ -182,3 +191,52 @@ if os.name == 'nt':
 
 LOGIN_REDIRECT_URL = 'survey-home'
 LOGIN_URL = 'survey-design-index'
+
+# Knox & AllAuth Authentication
+
+# django-allauth settings
+# In order to make allauth suitable for API user our patched account adapter
+ACCOUNT_ADAPTER = "knox_allauth.adapters.AccountAdapter"
+# SOCIALACCOUNT_ADAPTER = "apps.users.adapters.SocialAccountAdapter"
+# ACCOUNT_ALLOW_REGISTRATION = os.environ['DJANGO_ACCOUNT_ALLOW_REGISTRATION'] = True # fIXME
+ACCOUNT_ALLOW_REGISTRATION = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USER_MODEL_EMAIL_FIELD = "email"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "none"  # TODO: set to "mandatory"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_MIN_LENGTH = 2
+
+SITE_ID = 1
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+}
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# django-rest-knox
+#
+REST_KNOX = {
+    "AUTH_HEADER_PREFIX": "Token",
+    "TOKEN_TTL": timedelta(hours=24),
+    "SECURE_HASH_ALGORITHM": "cryptography.hazmat.primitives.hashes.SHA512",
+    "AUTH_TOKEN_CHARACTER_LENGTH": 64,
+    "TOKEN_LIMIT_PER_USER": None,
+    "AUTO_REFRESH": False,
+}
+
+# drf-spectacular
+#
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Address API",
+    "DESCRIPTION": "Documentation of API endpoints of Address",
+    "VERSION": "1.0.0",
+    "SCHEMA_PATH_PREFIX": "/api",
+}

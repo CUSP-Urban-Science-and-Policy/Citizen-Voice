@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from .serializers import AnswerSerializer, PointLocationSerializer, PolygonLocationSerializer, \
     LineStringLocationSerializer, QuestionSerializer, SurveySerializer, ResponseSerializer, UserSerializer, \
     MapViewSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.models import User
 from datetime import datetime
 
@@ -24,7 +25,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
         """
 
         queryset = Answer.objects.all()
-        return queryset 
+        return queryset
 
     @staticmethod
     def GetAnswerByQuestion(question_id):
@@ -39,7 +40,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
         """
         queryset = Answer.objects.filter(question=question_id)
         return queryset
-     
+
     @staticmethod
     def GetAnswerByResponse(response_id):
         """
@@ -52,7 +53,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
             queryset: containing all Answer instances with this response_id
         """
         queryset = Answer.objects.filter(response=response_id)
-        return queryset       
+        return queryset
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -70,7 +71,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         Return:
             queryset: containing all Question instances
         """
-        
+
         queryset = Question.objects.all()
         return queryset
 
@@ -90,7 +91,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return queryset
 
     @staticmethod
-    def GetQuestionBySurvey(survey_id): 
+    def GetQuestionBySurvey(survey_id):
         """
         Get specific Questions based on its survey_id.
 
@@ -102,7 +103,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         """
 
         queryset = Question.objects.filter(survey=survey_id)
-        return queryset  
+        return queryset
 
     @staticmethod
     def GetOrderedQuestionBySurvey(survey_id, question_order):
@@ -116,7 +117,8 @@ class QuestionViewSet(viewsets.ModelViewSet):
         Return: 
             queryset: containing the Question instance related to this survey, of a given order
         """
-        queryset = Question.objects.filter(survey=survey_id, order=question_order)
+        queryset = Question.objects.filter(
+            survey=survey_id, order=question_order)
         return queryset
 
 
@@ -125,7 +127,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
     Survey ViewSet used internally to query data from database.
 
     """
-
+    # permission_classes = [IsAuthenticated]
     serializer_class = SurveySerializer
 
     def get_queryset(response):
@@ -169,10 +171,11 @@ class SurveyViewSet(viewsets.ModelViewSet):
         """
         if unexpired_only:
             now = datetime.now()
-            queryset = Survey.objects.filter(designer=designer, expire_date__gte=now)
+            queryset = Survey.objects.filter(
+                designer=designer, expire_date__gte=now)
         else:
             queryset = Survey.objects.filter(designer=designer)
-        return queryset   
+        return queryset
 
     @staticmethod
     def GetSurveyByAvailable():
@@ -182,16 +185,16 @@ class SurveyViewSet(viewsets.ModelViewSet):
         Return: 
             queryset: containing the Survey instances that have not expired yet
         """
-        
+
         now = datetime.now()
         queryset = Survey.objects.filter(expire_date__gte=now)
-        return queryset   
+        return queryset
 
 
 class ResponseViewSet(viewsets.ModelViewSet):
     """
     Response ViewSet used internally to query data from database.
-    """   
+    """
 
     serializer_class = ResponseSerializer
 
@@ -204,7 +207,7 @@ class ResponseViewSet(viewsets.ModelViewSet):
         """
 
         queryset = Response.objects.all().order_by('created')
-        return queryset 
+        return queryset
 
     @staticmethod
     def GetResponseByID(id):
@@ -233,7 +236,7 @@ class ResponseViewSet(viewsets.ModelViewSet):
         """
 
         queryset = Response.objects.filter(response=survey_id)
-        return queryset      
+        return queryset
 
     @staticmethod
     def GetResponseByRespondent(respondent):
@@ -267,12 +270,13 @@ class UserViewSet(viewsets.ModelViewSet):
         """
 
         queryset = User.objects.all().order_by('username')
-        return queryset 
+        return queryset
+
 
 class PointLocationViewSet(viewsets.ModelViewSet):
     """
     PointLocation ViewSet used internally to query data from database for all users.
-    """    
+    """
 
     serializer_class = PointLocationSerializer
 
@@ -321,7 +325,7 @@ class PointLocationViewSet(viewsets.ModelViewSet):
 class PolygonLocationViewSet(viewsets.ModelViewSet):
     """
     PolygonLocation ViewSet used internally to query data from database for all users.
-    """    
+    """
 
     serializer_class = PolygonLocationSerializer
 
@@ -366,10 +370,11 @@ class PolygonLocationViewSet(viewsets.ModelViewSet):
         queryset = PolygonLocation.objects.filter(answer=answer)
         return queryset
 
+
 class LineStringLocationViewSet(viewsets.ModelViewSet):
     """
     LineStringLocation ViewSet used internally to query data from database for all users.
-    """    
+    """
 
     serializer_class = LineStringLocationSerializer
 
@@ -413,6 +418,7 @@ class LineStringLocationViewSet(viewsets.ModelViewSet):
 
         queryset = LineStringLocation.objects.filter(answer=answer)
         return queryset
+
 
 class MapViewViewSet(viewsets.ModelViewSet):
     """

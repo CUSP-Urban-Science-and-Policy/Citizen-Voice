@@ -19,17 +19,34 @@
                     </q-tabs>
 
                     <q-tabs align="right">
-                        <q-route-tab to="/login" label="Login" /> |
-                        <q-route-tab to="/auth/register" label="Register" />
+                        <q-btn-dropdown auto-close flat round stretch icon="person" size="18px">
+                            <q-list>
+                                <q-item v-if="isAuthenticated" tag="a" to="/user">
+                                    <q-item-section>Profile</q-item-section>
+                                </q-item>
+                                <q-item v-if="!isAuthenticated" tag="a" to="/login">
+                                    <q-item-section>Login</q-item-section>
+                                </q-item>
+                                <q-item v-if="!isAuthenticated" tag="a" to="/register">
+                                    <q-item-section>Register</q-item-section>
+                                </q-item>
+                                <q-item v-if="isAuthenticated" clickable @click="logoutHandler($q)">
+                                    <q-item-section>Logout</q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-btn-dropdown>
+
+                        <!-- <q-route-tab to="/login" label="Login" /> |
+                        <q-route-tab to="/register" label="Register" /> -->
                     </q-tabs>
                 </div>
             </q-header>
 
 
             <q-page-container>
-<!--                <q-page padding>-->
-                    <slot />
-<!--                </q-page>-->
+                <!--                <q-page padding>-->
+                <slot />
+                <!--                </q-page>-->
             </q-page-container>
 
             <q-footer elevated class="bg-grey-8 text-white">
@@ -46,13 +63,25 @@
 
 <script>
 import { ref } from 'vue'
+import { useUserStore } from "~/stores/user"
 
 export default {
     setup() {
+        const userStore = useUserStore()
         const leftDrawerOpen = ref(false)
         const rightDrawerOpen = ref(false)
 
+
+        const logoutHandler = async ($q) => {
+            await userStore.logout($q)
+            if (!userStore.isAuthenticated) {
+                await navigateTo('/')
+            }
+        }
+
         return {
+            isAuthenticated: userStore.isAuthenticated,
+            logoutHandler,
             leftDrawerOpen,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value
@@ -69,7 +98,7 @@ export default {
 
 <style lang="scss" scoped>
 .custom-zero-padding {
-  padding: 0;
-  padding-left: 0;
+    padding: 0;
+    padding-left: 0;
 }
 </style>

@@ -2,6 +2,10 @@ asgiref==3.5.2
 attrs==21.4.0
 Django==4.1.1
 djangorestframework==3.13.1
+django-rest-knox==4.2.0
+django-allauth==0.52.0
+drf-spectacular==0.21.2
+pywatchman==1.4.1
 GDAL>=3.3.2
 gunicorn==20.1.0
 iniconfig==1.1.1

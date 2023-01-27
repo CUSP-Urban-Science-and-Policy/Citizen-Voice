@@ -74,3 +74,41 @@ python manage.py test
 
 1. Make sure that the GitHub-Zenodo integration is enabled for https://github.com/NLeSC/python-template
 1. Go to https://github.com/NLeSC/python-template/releases and click `Draft a new release`
+
+### The REST API and authentication
+
+We are using Django rest knox for authentication. Knox authentication is token based, similar to the TokenAuthentication.
+This means some API's are protected and can only be called with a authentication token. 
+To get an valid authentication token you need to have an account and then login with that account.
+
+Example using postman:
+Create a new POST request to `http://127.0.0.1:8000/api/auth/login/` in the body add the next key value pairs in `from-data`:
+
+| key      | value         |
+| -------- | ------------- |
+| email    | `<you email>` |
+| password | `<your pass>` |
+
+As a response you will receive:
+```json
+{
+    "expiry": "2023-01-24T11:00:24.545608Z",
+    "token": "<token>",
+    "user": {
+        "id": <id>,
+        "username": "<name>",
+        "email": "<email></email>"
+    }
+}
+```
+
+Use the token string to fetch authenticated API's:
+Create a new GET request in postman to `http://127.0.0.1:8000/api/auth/me`. In the `Headers` add the key value pair:
+
+| key           | value           |
+| ------------- | --------------- |
+| Authorization | Token `<token>` |
+
+Make sure your using the same capitals and have a space between `Token` and `<token>`.
+
+Now you should get the authenticated user data.

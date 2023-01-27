@@ -55,3 +55,11 @@ For the linting to work, install these plugins in your editor:
 ## Libraries
 
 - [Quasar](https://quasar.dev/) a an component library. (Think of Bootstrap css but then with Vue component)
+
+## Authentication
+
+We are using `middleware/authorization.js` to check if the user is logged-in or not.
+When a page needs authentication, make sure you this method to the page:
+```
+definePageMeta({ middleware: 'authorization' })
+```
