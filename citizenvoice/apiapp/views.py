@@ -219,13 +219,13 @@ class SurveyViewSet(viewsets.ModelViewSet):
         user = self.request.user
         survey = Survey.objects.get(id=pk)
         if (survey.is_published):
-#             if type(user) is User:
-#                 survey = Survey.objects.get(id=pk)
-#                 if (survey.designer != user.id):
-#                     print("uses is not the designer")
-#                     print(
-#                         f"User id: {user.id} \nDesigner id: {survey.designer_id}")
-#                     rf_response([])
+            #             if type(user) is User:
+            #                 survey = Survey.objects.get(id=pk)
+            #                 if (survey.designer != user.id):
+            #                     print("uses is not the designer")
+            #                     print(
+            #                         f"User id: {user.id} \nDesigner id: {survey.designer_id}")
+            #                     rf_response([])
             questions = Question.objects.all().filter(survey_id=pk).order_by('order')
             question_serializer = QuestionSerializer(
                 questions, many=True, context={'request': request})
@@ -304,7 +304,6 @@ class ResponseViewSet(viewsets.ModelViewSet):
 
     serializer_class = ResponseSerializer
 
-
     def get_queryset(response):
         """
         Returns a set of all Response instances in the database.
@@ -316,19 +315,16 @@ class ResponseViewSet(viewsets.ModelViewSet):
         queryset = Response.objects.all().order_by('created')
         return queryset
 
-
-    @action(detail=False, methods=['Post'], url_path='submit-response')
+    @action(detail=False, methods=['POST'], url_path='submit-response')
     def submitResponse(self, request, *args, **kwargs):
         print("submitting Response")
 
         user = self.request.user
         answers = self.request.data["answers"]
         responseId = self.request.data['responseId']
-        questionId = 1 # TODO: get id of question
+        questionId = 1  # TODO: get id of question
         print(answers)
         print(responseId)
-
-
 
         if type(user) is User:
             print("User:")
@@ -337,8 +333,8 @@ class ResponseViewSet(viewsets.ModelViewSet):
             print("User was anonymous")
 
         time = datetime.now()
-#         resp = Response(id=1, created=time, updated=time, survey=Survey.objects.get(pk=20), interview_uuid='123', respondent=User.objects.get(pk=1))
-#         resp.save()
+        # resp = Response(id=1, created=time, updated=time, survey=Survey.objects.get(pk=20), interview_uuid='123', respondent=User.objects.get(pk=1))
+        #         resp.save()
 
         for answer in answers:
             text = answer['_text']
@@ -346,41 +342,54 @@ class ResponseViewSet(viewsets.ModelViewSet):
             resp = Response.objects.get(pk=int(responseId))
             quest = Question.objects.get(pk=1)
             storedAnswer = Answer(response=resp, question=quest,
-             created=time, updated=time, body=text)
+                                  created=time, updated=time, body=text)
             print(str(answer))
-            #answer.save()
+            # answer.save()
         return rf_response(None)
 
 #    @action(detail=True, methods=['GET'], url_path='questions')
 #     def get_questions_of_survey(self, request, pk=None):
 
-    @action(detail=False, methods=['GET'], url_path='create-response')
-    def createResponse(self, request, *args, **kwargs):
-        print("creating Response")
-        time = datetime.now()
-        survey = Survey.objects.get(pk=1)
-        print(survey)
+    @action(detail=False, methods=['GET', 'POST'], url_path='create-response')
+    def createResponse(self, request, pk=None):
+        survey_id = request.data.get('survey')
+        print(survey_id)
+        survey = get_object_or_404(Survey, pk=survey_id)
+        response_data = request.data.copy()
+        response_data['survey'] = survey.id
+        serializer = ResponseSerializer(data=response_data)
+        serializer.is_valid(raise_exception=True)
+        response = serializer.save()
+        response_id = response.id
+        return rf_response({'response_id': response_id})
 
-        user = self.request.user
-        resp = None
-        if type(user) is User:
-            resp = Response(created=time, updated=time, survey=survey)
-            print(resp)
-        else:
-            print("User was anonymous")
-            resp = Response(created=time, updated=time, survey=survey)
-            print(resp)
-#             resp.save()
+#     @action(detail=False, methods=['GET'], url_path='create-response')
+#     def createResponse(self, request, *args, **kwargs):
+#         print("creating Response")
+#         time = datetime.now()
+#         survey = Survey.objects.get(pk=19)
+#         print(survey)
 
-        response_serializer = ResponseSerializer(resp, context={'request': request})
-        print(response_serializer.data)
-#             return rf_response(question_serializer.data)
-#         created = models.DateTimeField(_("Date response was submitted"), auto_now_add=True)
-#         updated = models.DateTimeField(_("Last edit"), auto_now=True)
-#         survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-#         interview_uuid = models.CharField(_("Unique ID of interview"), max_length=150)
-#         respondent = models.ForeignKey(User, on_delete=models.CASCADE)
-        return rf_response(response_serializer.data)
+#         user = self.request.user
+#         resp = None
+#         if type(user) is User:
+#             resp = Response(created=time, updated=time, survey=survey)
+#             print(resp)
+#         else:
+#             print("User was anonymous")
+#             resp = Response(created=time, updated=time, survey=survey)
+#             print(resp)
+# #             resp.save()
+
+#         response_serializer = ResponseSerializer(resp, context={'request': request})
+#         print(response_serializer.data)
+# #             return rf_response(question_serializer.data)
+# #         created = models.DateTimeField(_("Date response was submitted"), auto_now_add=True)
+# #         updated = models.DateTimeField(_("Last edit"), auto_now=True)
+# #         survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+# #         interview_uuid = models.CharField(_("Unique ID of interview"), max_length=150)
+# #         respondent = models.ForeignKey(User, on_delete=models.CASCADE)
+#         return rf_response(response_serializer.data)
 
     @staticmethod
     def GetResponseByID(id):

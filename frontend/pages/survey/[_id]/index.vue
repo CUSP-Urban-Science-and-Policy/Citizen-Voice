@@ -35,10 +35,12 @@ const survey = await storeResponse.getResponse({ id: route.params._id })
 
 const createResponse = async () => {
     // Make a POST request to your Django API endpoint to create a new Response object
-    await storeResponse.createResponse({ id: route.params._id })
-
-    // Navigate to the /survey/${survey.id}/1 page after the response is created
-    return navigateTo('/survey/' + route.params._id + '/1')
+    const respondentId = await storeResponse.createResponse({ id: route.params._id })
+    console.log('respondentId //> ', respondentId)
+    if (respondentId) {
+        // Navigate to the /survey/${survey.id}/1 page after the response is created
+        return navigateTo('/survey/' + route.params._id + '/1')
+    }
 }
 
 </script>
