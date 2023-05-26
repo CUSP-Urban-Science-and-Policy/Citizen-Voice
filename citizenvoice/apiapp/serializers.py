@@ -46,17 +46,16 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class ResponseSerializer(serializers.ModelSerializer):
     """
-    Serializes 'created', 'updated', 'survey', 'interview_uuid', 'respondent'
+    Serializes 'created', 'updated', 'survey', 'respondent'
     fields of the Response model for the API.
     """
     survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
 
     class Meta:
         model = Response
-        fields = ('created', 'updated', 'survey',
-                  'interview_uuid')
+        fields = ('created', 'updated', 'survey')
+    # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
-# TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
 class SurveySerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -83,6 +82,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
+
 class PointLocationSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serialises 'location', 'name', 'question', 'answer' fields of the PointLocation model for the API.
@@ -93,6 +93,7 @@ class PointLocationSerializer(serializers.HyperlinkedModelSerializer):
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
+
 class PolygonLocationSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serialises 'location', 'name', 'question', 'answer' fields of the PolygonLocation model for the API.
@@ -102,6 +103,7 @@ class PolygonLocationSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('location', 'name', 'question', 'answer')
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
+
 
 class LineStringLocationSerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -121,4 +123,3 @@ class MapViewSerializer(serializers.HyperlinkedModelSerializer):
         model = MapView
 #         fields = ('name', 'map_service_url', 'options')
         fields = ('id', 'name', 'map_service_url', 'options', 'geojson')
-
