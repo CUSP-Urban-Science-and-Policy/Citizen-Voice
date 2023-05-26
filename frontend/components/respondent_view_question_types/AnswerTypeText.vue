@@ -1,13 +1,12 @@
 <template>
-  <h2>Question {{question_index + 1}}</h2>
-  <v-textarea label="Your answer" variant="outlined" :value="answer.text"
+  <v-textarea style="padding-top: 16px" label="Your answer" variant="outlined" :value="answer.text"
               @input="event => updateAnswer(event)"></v-textarea>
 <!--  @input="onInput"-->
 </template>
 
 <script>
 export default {
-  name: "answer_qt_text",
+  name: "AnswerTypeText",
 }
 </script>
 

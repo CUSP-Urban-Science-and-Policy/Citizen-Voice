@@ -1,6 +1,4 @@
 <template>
-  <h2>Question {{question_index + 1}}</h2>
-  <h2>{{question.text}}</h2>
   <v-container fluid @input="event => updateAnswer(event)">
 <!--    <p>{{ selected }}</p>-->
     <v-checkbox
@@ -14,22 +12,19 @@
       value="Option 2"
     ></v-checkbox>
   </v-container>
+<!--  <h2>{{selected}}</h2>-->
 </template>
 
 <script>
 export default {
-  name: "answer_qt_select_multiple",
-  data () {
-    return {
-      selected: [],
-    }
-  },
+  name: "AnswerTypeSelectMultiple",
 }
 </script>
 
 <script setup>
 const emit = defineEmits(['updateAnswer'])
 const answers = ref([])
+const selected = ref([])
 
 const props = defineProps({
   question_index: Number,
@@ -38,7 +33,7 @@ const props = defineProps({
 })
 
 function updateAnswer(event) {
-  props.answer.text = event.target.value
+  props.answer.text = selected.value
   emit('updateAnswer', props.answer, props.question_index)
 }
 </script>
