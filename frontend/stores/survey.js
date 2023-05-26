@@ -234,25 +234,8 @@ export const useSurveyStore = defineStore('survey', {
         },
 
         async getQuestionsOfSurvey(id) {
-            const user = useUserStore()
-            const global = useGlobalStore()
-            const csrftoken = user.getCookie('csrftoken');
-            const token = user.getAuthToken
-
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                method: 'GET'
-            }
-
-
-            if (token) {
-                config.headers['Authorization'] = `Token ${token}`
-            }
-
-            const res = await useAsyncData('getSurveys', () => $cmsApi('/api/surveys/' + id + '/questions', config))
+            const config = setRequestConfig({ method: 'GET', survey_id: id })
+            const res = await useAsyncData(() => $cmsApi(`/api/questions/${id}/ordered_questions`, config));
             return res
         },
     }

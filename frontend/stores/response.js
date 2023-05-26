@@ -14,6 +14,12 @@ export const useStoreResponse = defineStore('response', {
         getAnswersToCurrentSurvey: (state) => state.answersToCurrentSurvey
     },
     actions: {
+        getRespondentId() {
+            if (localStorage?.getItem("respondent-id") !== null) {
+                return localStorage.getItem("respondent-id")
+            }
+            return null
+        },
         setResponse(response) {
             this.response = response
         },
