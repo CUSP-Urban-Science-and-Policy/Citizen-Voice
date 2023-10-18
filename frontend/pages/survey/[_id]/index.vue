@@ -1,17 +1,40 @@
 <template>
     <NuxtLayout name="default">
         <div class="padding-16">
-            <!-- <p>Counter: {{this.$store.state.counter}}</p>-->
-            <h2>{{ survey.name }}</h2>
-
-            <p>{{ survey.description }} </p>
-            <p>Publish date: {{ formatDate(survey.publish_date) }}</p>
-            <p>Expire date: {{ formatDate(survey.expire_date) }}</p>
-
-            <v-btn @click="createResponse" color="primary">
+          <v-sheet
+            class="d-flex align-center flex-column"
+            height="200"
+          >
+            <v-card-actions class="justify-center">
+              <h2>{{ survey.name }}</h2>
+            </v-card-actions>
+            <v-card-actions class="justify-center">
+              <p>{{ survey.description }} </p>
+            </v-card-actions>
+            <v-card-actions class="justify-center">
+              <p>Publish date: {{ formatDate(survey.publish_date) }}</p>
+            </v-card-actions>
+            <v-card-actions class="justify-center">
+              <p>Expire date: {{ formatDate(survey.expire_date) }}</p>
+            </v-card-actions>
+            <v-card-actions class="justify-center" >
+              <v-btn @click="createResponse" color="primary">
                 <i class="fa-solid fa-play"></i>
                 <span class="q-pa-sm">Start survey</span>
-            </v-btn>
+              </v-btn>
+            </v-card-actions>
+          </v-sheet>
+            <!-- <p>Counter: {{this.$store.state.counter}}</p>-->
+<!--            <h2>{{ survey.name }}</h2>-->
+
+<!--            <p>{{ survey.description }} </p>-->
+<!--            <p>Publish date: {{ formatDate(survey.publish_date) }}</p>-->
+<!--            <p>Expire date: {{ formatDate(survey.expire_date) }}</p>-->
+
+<!--            <v-btn @click="createResponse" color="primary">-->
+<!--                <i class="fa-solid fa-play"></i>-->
+<!--                <span class="q-pa-sm">Start survey</span>-->
+<!--            </v-btn>-->
 
             <!--{{ $route.params.id }}
                 <pre>{{ survey }}</pre> -->
@@ -35,10 +58,12 @@ const survey = await storeResponse.getResponse({ id: route.params._id })
 
 const createResponse = async () => {
     // Make a POST request to your Django API endpoint to create a new Response object
-    await storeResponse.createResponse({ id: route.params._id })
+    const respondentId = await storeResponse.createResponse({ id: route.params._id })
 
-    // Navigate to the /survey/${survey.id}/1 page after the response is created
-    return navigateTo('/survey/' + route.params._id + '/1')
+    if (respondentId) {
+        // Navigate to the /survey/${survey.id}/1 page after the response is created
+        return navigateTo('/survey/' + route.params._id + '/1')
+    }
 }
 
 </script>

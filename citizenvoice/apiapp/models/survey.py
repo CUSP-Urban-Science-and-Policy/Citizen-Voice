@@ -27,6 +27,7 @@ class Survey(models.Model):
     public_url = models.CharField(_("Public URL"), max_length=255, default='')
     designer = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
+
     def __str__(self):
         return str(self.name)
 

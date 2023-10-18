@@ -64,7 +64,7 @@ export const useUserStore = defineStore('user', {
         },
         /**
          * Register user
-         * @param {username, email, password} body 
+         * @param {username, email, password} body
          */
         async registerUser(body) {
             const global = useGlobalStore()
@@ -109,8 +109,8 @@ export const useUserStore = defineStore('user', {
         },
         /**
          * Login user
-         * @param {*} email 
-         * @param {*} password 
+         * @param {*} email
+         * @param {*} password
          * TODO: add pending functionality
          */
         async loginUser(

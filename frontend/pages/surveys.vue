@@ -29,11 +29,13 @@
 </template>
 <script setup>
 import { formatDate } from "~/utils/formatData"
+import {useSurveyStore} from "~/stores/survey.js";
 /**
  * All `/api/**` are proxies pointing to the local or production server of the backend.
  */
-const url = "/api/surveys/"
-const { data: surveys } = await useAsyncData(() => $cmsApi(url));
+const surveyStore = useSurveyStore()
+const { data: surveys } = await surveyStore.getSurveys()
+
 </script>
 <style lang="scss">
 .my-card {

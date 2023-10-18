@@ -19,7 +19,7 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     """
-    Serializes 'text', 'order', 'required', 'question_type', 'choices', 'is_geospatial', 'map_view'
+    Serialises 'text', 'order', 'required', 'question_type', 'choices', 'is_geospatial', 'map_view'
     fields of the Question model for the API.
     """
     survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
@@ -46,17 +46,15 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class ResponseSerializer(serializers.ModelSerializer):
     """
-    Serializes 'created', 'updated', 'survey', 'interview_uuid', 'respondent'
+    Serializes 'created', 'updated', 'survey', 'respondent'
     fields of the Response model for the API.
     """
     survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
 
     class Meta:
         model = Response
-        fields = ('created', 'updated', 'survey',
-                  'interview_uuid', 'respondent')
-
-# TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
+        fields = ('created', 'updated', 'survey')
+    # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
 
 class SurveySerializer(serializers.HyperlinkedModelSerializer):
@@ -70,8 +68,8 @@ class SurveySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name', 'description', 'is_published', 'need_logged_user', 'editable_answers',
                   'publish_date', 'expire_date', 'public_url', 'designer')
 
-# TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
+# TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -123,4 +121,5 @@ class MapViewSerializer(serializers.HyperlinkedModelSerializer):
     """
     class Meta:
         model = MapView
+#         fields = ('name', 'map_service_url', 'options')
         fields = ('id', 'name', 'map_service_url', 'options', 'geojson')

@@ -12,7 +12,7 @@ def index(request):
     context = {
         'surveys': SurveyViewSet.GetSurveyByAvailable()
     }
-    #TODO: Get all available surveys, do not filter by designer
+    # TODO: Get all available surveys, do not filter by designer
     return render(request, 'respondent/index.html', context)
 
 
@@ -22,6 +22,7 @@ def survey(request):
         'surveys': SurveyViewSet.GetSurveyByDesigner(request.user.id, unexpired_only=True)
     }
     return render(request, 'respondent/index.html', context)
+
 
 def survey_detail(request, survey_id):
     form = ResponseCreationForm()
@@ -33,8 +34,6 @@ def survey_detail(request, survey_id):
             obj.created = timezone.now()
             obj.updated = timezone.now()
             obj.survey = SurveyViewSet.GetSurveyByID(survey_id)[0]
-            #TODO: Discuss whether following fields are optional or not
-            obj.interview_uuid = "123"
             obj.respondent = request.user
             obj.save()
         return redirect(question_detail, survey_id, 1, obj.id)
@@ -73,7 +72,6 @@ def question_detail(request, survey_id, question_order, response_id):
         request_data = request.GET
         print(request_data)
 
-
     context = {
         'answer_form': answer_form,
         'title': 'Survey Design',
@@ -91,11 +89,9 @@ def question_detail(request, survey_id, question_order, response_id):
             context['next_question_order'] = question_order + 1
             context['button_value'] = "Next Question"
 
-
     except Exception as e:
         # Survey.DoesNotExist
         # pass for now, we might add some warning in the future
         raise e
 
     return render(request, 'respondent/index.html', context)
-

@@ -5,9 +5,9 @@ const questionStore = useQuestionDesignStore()
 
 /**
  * This set a proxy for the q
- * @param {*} props 
+ * @param {*} props
  * @returns Question
- * 
+ *
  */
 const questionProxy = (props) => {
     return computed({
