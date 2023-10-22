@@ -135,7 +135,6 @@ const questionTypes = {
  * Survey
  */
 
-
 const { data: survey, refresh } = await surveyStore.getSurvey(route.params._id)
 
 var expire_date = new Date();

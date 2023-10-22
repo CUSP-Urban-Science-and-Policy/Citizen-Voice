@@ -28,7 +28,6 @@
                 </v-list-item>
             </v-list>
         </v-card>
-
     </NuxtLayout>
 </template>
 

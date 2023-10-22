@@ -19,7 +19,7 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     """
-    Serializes 'text', 'order', 'required', 'question_type', 'choices', 'is_geospatial', 'map_view'
+    Serialises 'text', 'order', 'required', 'question_type', 'choices', 'is_geospatial', 'map_view'
     fields of the Question model for the API.
     """
     survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
@@ -54,10 +54,9 @@ class ResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Response
         fields = ('created', 'updated', 'survey',
-                  'interview_uuid', 'respondent')
+                  'interview_uuid')
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
-
 
 class SurveySerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -70,8 +69,8 @@ class SurveySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name', 'description', 'is_published', 'need_logged_user', 'editable_answers',
                   'publish_date', 'expire_date', 'public_url', 'designer')
 
-# TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
+# TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -84,7 +83,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
-
 class PointLocationSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serialises 'location', 'name', 'question', 'answer' fields of the PointLocation model for the API.
@@ -95,7 +93,6 @@ class PointLocationSerializer(serializers.HyperlinkedModelSerializer):
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
 
-
 class PolygonLocationSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serialises 'location', 'name', 'question', 'answer' fields of the PolygonLocation model for the API.
@@ -105,7 +102,6 @@ class PolygonLocationSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('location', 'name', 'question', 'answer')
 
 # TODO: change this to use serializers.ModelSerializer (PrimaryKeyRelatedField)
-
 
 class LineStringLocationSerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -123,4 +119,6 @@ class MapViewSerializer(serializers.HyperlinkedModelSerializer):
     """
     class Meta:
         model = MapView
+#         fields = ('name', 'map_service_url', 'options')
         fields = ('id', 'name', 'map_service_url', 'options', 'geojson')
+
