@@ -29,16 +29,20 @@ if os.name == 'nt':
 DEFAULT_SURVEY_PUBLISHING_DURATION = 7
 
 # read environment variable form .env file
-load_dotenv()
+load_dotenv("../.env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# read environment variable form .env file
+load_dotenv("../.env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -60,17 +64,39 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'django.contrib.sites',
+    'apiapp',
+    'rest_framework',
+    'rest_framework.permissions',
+    'users.apps.UsersConfig',
+    'survey_design.apps.SurveyDesignConfig',
+    'respondent.apps.RespondentConfig',
+    'corsheaders',
+    'knox',
+    'knox_allauth',
+    'allauth',
+    'allauth.account',
+    'bulk_update_or_create',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # CORS
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+]
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 ROOT_URLCONF = 'citizenvoice.urls'
 
@@ -91,6 +117,28 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'citizenvoice.wsgi.application'
+
+# Configure CORS allowed ports
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://145.94.193.168:3000'
+]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://145.94.193.168:3000'
+)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://145.94.193.168:3000",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -155,14 +203,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = 'var/static_root/'
-STATICFILES_DIRS = ['static_vue']
+# STATICFILES_DIRS = ['static_vue']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if os.name == 'nt':
-    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal305.dll'
+    GDAL_LIBRARY_VERSION = os.getenv("GDAL_LIBRARY_VERSION", "gdal305.dll")
+    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin' + "\\" + GDAL_LIBRARY_VERSION
 
 LOGIN_REDIRECT_URL = 'survey-home'
 LOGIN_URL = 'survey-design-index'

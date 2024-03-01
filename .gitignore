@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+# NOTES
+dev-notes.md
+
 # Django #
 *.log
 *.pot
@@ -11,6 +15,8 @@ __pycache__
 db.sqlite3
 media
 
+# SECRETS
+Secrets
 
 # C extensions
 *.so
@@ -153,3 +159,9 @@ dmypy.json
  .idea/misc.xml
  *.ipr
  *.iws
+
+# OS
+.DS_Store
+
+# devel
+dev-notes.md
