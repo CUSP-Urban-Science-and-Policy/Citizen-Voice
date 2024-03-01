@@ -1,5 +1,0 @@
-{% for survey in surveys %}
-    <div class="limit">
-        <a class="survey-link-select list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'survey-edit' survey_id=survey.pk %}">{{ survey.name }}</a>
-    </div>
-{% endfor %}
