@@ -1,0 +1,1 @@
+See nuxt.config.js hooks router
