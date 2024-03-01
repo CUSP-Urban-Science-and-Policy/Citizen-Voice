@@ -153,3 +153,6 @@ dmypy.json
  .idea/misc.xml
  *.ipr
  *.iws
+
+ # develop
+ dev-notes.md
