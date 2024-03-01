@@ -155,4 +155,4 @@ dmypy.json
  *.iws
 
  # develop
- dev-notes.md
+ ./dev-notes.md
