@@ -1,0 +1,19 @@
+{% load static %}
+        <header class="masthead" style="background-image: url({% static 'respondent/assets/img/header.svg' %});">
+            <section class="page-section" id="survey-details">
+                <div class="container">
+                    <div class="text-center">
+                        <h2 class="section-heading text">{{ survey.name }}</h2>
+                        <h3 class="section-subheading text-muted">By {{ survey.designer }}</h3>
+                        <h3 class="section-subheading text">{{ survey.description }}</h3>
+
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {{form}}
+                            <input type ="submit" value="Start Answering!" class="btn btn-primary btn-xl text-uppercase">
+                        </form>
+
+                    </div>
+                </div>
+            </section>
+        </header>

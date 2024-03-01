@@ -1,0 +1,45 @@
+{% load static %}
+        <!-- Portfolio Modals. These are the windows that open when user clicks on a survey on homepage-->
+        {% for survey in surveys %}
+            <!-- Portfolio item modal popup-->
+            <div class="portfolio-modal modal fade" id="survey{{ survey.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="close-modal" data-bs-dismiss="modal"><img src="{% static 'survey_design/assets/img/close-icon.svg' %}" alt="Close modal" /></div>
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <div class="modal-body">
+                                        <!-- Project details-->
+                                        <h2 class="text-uppercase">{{ survey.name }}</h2>
+                                        <p class="item-intro text-muted">By {{ survey.designer }}</p>
+                                        <img class="img-fluid d-block mx-auto" src="{% static 'survey_design/assets/img/default-survey.jpg' %}" alt="..." />
+                                        <p>{{ survey.description }}</p>
+                                        <ul class="list-inline">
+                                            <li>
+                                                <strong>Publish Date:</strong>
+                                                {{ survey.publish_date }}
+                                            </li>
+                                            <li>
+                                                <strong>Expiry Date:</strong>
+                                                {{ survey.expire_date }}
+                                            </li>
+                                        </ul>
+
+                                        <a class="btn btn-primary btn-xl text-uppercase"
+                                           href="{% url 'respondent-home' %}/{{ survey.pk }}"
+                                        >
+                                            <i class="fas fa-location-arrow me-1"></i>
+                                            Go to Survey
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        {% endfor %}

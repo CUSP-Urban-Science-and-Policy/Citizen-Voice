@@ -1,0 +1,13 @@
+<div id="sidebar-map-container-id" class="sidebar-map-container" onClick="closeSidebar()">
+    <div id="sidebar-map-content" class="sidebar-map-content" onClick="event.stopPropagation()">
+        <form id="form-survey-update" method="post" action="{% url 'survey_update' survey_id=survey.id %}">
+            {% csrf_token %}
+            <label for="fname">Survey name:</label><br>
+            <input type="text" id="fname" name="name" value="{{  survey.name }}"><br>
+            <label for="lname">Survey description:</label><br>
+            <input type="text" id="lname" name="description" value="{{ survey.description }}"><br><br>
+            <input id="form-survey-update-submit" type="submit" value="Update"><br>
+        </form>
+        <input id="form-survey-delete" type="submit" value="Delete" method="post"  onclick="return confirm('Are you sure you want to delete this Survey?')" action="{% url 'survey_delete' survey_id=survey.id %}">
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<!--{% load static %}-->
+
+<!--<h1 class="mt-4">-->
+<!--    {{ survey_to_display.name }}-->
+<!--</h1>-->
+<!--<p> {{ survey_to_display.description }} <p>-->
+
+<!--{% if question_to_display%}-->
+<!--    <p class="list-group-item list-group-item-action list-group-item-light p-3">-->
+<!--        {{ question_to_display.text }}-->
+<!--    </p>-->
+
+<!--    <form method="post">-->
+<!--        {% csrf_token %}-->
+<!--        {% if question_to_display.type == "text" %}-->
+<!--                <textarea class="form-control" id="input-text" placeholder="Your answer" rows="3"></textarea>-->
+<!--                &lt;!&ndash;<input type="submit" value="Answer">&ndash;&gt;-->
+<!--        {% endif %}-->
+
+<!--        {% if question_to_display.type == "short-text" %}-->
+<!--                <input type="text" class="form-control" id="input-short-text" placeholder="Your answer">-->
+<!--        {% endif %}-->
+
+<!--        {% if next_question_order%}-->
+<!--            <a class="btn btn-primary" id="next-question"-->
+<!--                    href="{% url 'question-detail' survey_id=survey_id question_order=next_question_order %}">-->
+<!--            Next Question-->
+<!--            </a>-->
+<!--        {% else %}-->
+<!--            <a class="btn btn-primary" id="end-survey" href="{% url 'survey-home' %}"> End Survey </a>-->
+<!--        {% endif %}-->
+<!--    </form>-->
+<!--{% endif %}-->
