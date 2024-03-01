@@ -53,10 +53,6 @@ ALLOWED_HOSTS = []
 
 # note: add your custom apps after django apps
 INSTALLED_APPS = [
-    'apiapp',
-    'rest_framework',
-    'users.apps.UsersConfig',
-    'survey_design.apps.SurveyDesignConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
