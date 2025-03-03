@@ -173,7 +173,7 @@ pip install -r requirements.txt
 2. Uncomment the line to load `local.env` in `citizenvoice/citizenvoice/settings.py`:
 
 ```python
-# load_dotenv("../local.env")
+# load_dotenv("../local.env", override=True)
 ```
     
 3. Run the development server from `citizenvoice/` directory. Saved changes will be automatically reloaded:
