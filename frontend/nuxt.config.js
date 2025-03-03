@@ -154,5 +154,5 @@ export default defineNuxtConfig({
       '/survey/**': { ssr: false },
   },
 
-  compatibilityDate: '2025-28-02',
+  compatibilityDate: '2025-03-03',
 })
