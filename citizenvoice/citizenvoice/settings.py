@@ -18,7 +18,7 @@ from datetime import timedelta
 from rest_framework.settings import api_settings
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../local.env")
+load_dotenv("../local.env", override=True) # 
 
 if os.name == 'nt':
     import platform
@@ -50,7 +50,11 @@ DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 # Choice of database engine will be retrieved from .env file
 DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
+print("ENV VALUE",  os.environ.get("DJANGO_ALLOWED_HOSTS"))
+
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
+print("ALLOWED_HOSTS: ", type(ALLOWED_HOSTS), ALLOWED_HOSTS)
 
 # Application definition
 
