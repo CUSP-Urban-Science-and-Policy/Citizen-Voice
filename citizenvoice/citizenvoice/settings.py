@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django.contrib.sites',
-    'apiapp',
+    'voice',
     'civilian',
     'rest_framework',
     'rest_framework_gis',
