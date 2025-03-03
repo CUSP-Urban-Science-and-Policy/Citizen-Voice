@@ -285,5 +285,5 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "CitizenVoice APIs",
     "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
     "VERSION": "3.0.0",
-    "SCHEMA_PATH_PREFIX": "/api",
+    "SCHEMA_PATH_PREFIX": None,
 }
