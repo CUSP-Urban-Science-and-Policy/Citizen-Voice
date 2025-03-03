@@ -38,12 +38,13 @@ import { formatDate } from "~/utils/formatData"
 const surveyStore = useSurveyStore();
 surveyStore.$reset(); // reset SelectedSurvey to null
 
+// const surveys = {};
 const {data: surveys} = await surveyStore.getSurveys();
 
 // sets id on surveyStore and redirects to survey/id page
 function selectSurvey (id) {
     surveyStore.selectSurvey(id);
-    navigateTo(`/survey/${id}`);
+    navigateTo(`survey/${id}`);
 };
 
 </script>
