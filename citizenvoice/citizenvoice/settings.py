@@ -50,11 +50,7 @@ DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 # Choice of database engine will be retrieved from .env file
 DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
-print("ENV VALUE",  os.environ.get("DJANGO_ALLOWED_HOSTS"))
-
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-
-print("ALLOWED_HOSTS: ", type(ALLOWED_HOSTS), ALLOWED_HOSTS)
 
 # Application definition
 
@@ -261,7 +257,7 @@ ACCOUNT_USERNAME_MIN_LENGTH = 2
 SITE_ID = 1
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
@@ -286,8 +282,8 @@ REST_KNOX = {
 # drf-spectacular
 #
 SPECTACULAR_SETTINGS = {
-    "TITLE": "CitizenVoice API",
-    "DESCRIPTION": "Documentation of API endpoints for CitizenVoice",
-    "VERSION": "2.0.6",
+    "TITLE": "CitizenVoice APIs",
+    "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
+    "VERSION": "3.0.0",
     "SCHEMA_PATH_PREFIX": "/api",
 }

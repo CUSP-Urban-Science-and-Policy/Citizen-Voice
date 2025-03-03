@@ -29,12 +29,12 @@ urlpatterns = [
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
     path('respondent/', include('respondent.urls')),
     path('auth/', include('users.urls')),
-    path('api/v2/', include('voice.urls')),
+    path('voice/v3/', include('voice.urls')),
     path('civilian/v1/', include('civilian.urls')),
     path('login/', auth_view.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path(r'api/auth/', include('knox_allauth.urls')),
-    path('api/v2/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/v2/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path(r'voice/auth/', include('knox_allauth.urls')),
+    path('voice/v3/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('voice/v3/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('health/', health_check, name="health_check"),
 ]
