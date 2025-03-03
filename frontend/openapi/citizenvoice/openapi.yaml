@@ -1,268 +1,43 @@
 openapi: 3.0.3
 info:
-  title: CitizenVoice API
-  version: 2.0.6
-  description: Documentation of API endpoints for CitizenVoice
+  title: CitizenVoice APIs
+  version: 3.0.0
+  description: Documentation of API endpoints in CitizenVoice
 paths:
-  /api/auth/email/resend/:
-    post:
-      operationId: auth_email_resend_create
-      description: Resend email verification to the passed email (if it exists and
-        is not verified already).
-      tags:
-      - email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          multipart/form-data:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailResendVerificationView'
-          description: ''
-  /api/auth/email/verify/:
-    post:
-      operationId: auth_email_verify_create
-      description: Verify email address using random key sent in confirmation email.
-      tags:
-      - email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          multipart/form-data:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailIsVerified'
-          description: ''
-        '404':
-          description: Invalid confrimation key.
-  /api/auth/login/:
-    post:
-      operationId: auth_login_create
-      description: |-
-        Check the credentials from the request data and return a session token.
-
-        Similar to knox's `LoginView` but uses allauth authentication backend instead of
-        another API authentication method (basic/session auth).
-      tags:
-      - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-        required: true
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthToken'
-          description: ''
-  /api/auth/logout/:
-    post:
-      operationId: auth_logout_create
-      description: Delete the session token associated with the incoming authenticated
-        request.
-      tags:
-      - auth
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/auth/logout/all/:
-    post:
-      operationId: auth_logout_all_create
-      description: Delete all session tokens associated with the authenticated user.
-      tags:
-      - auth
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/auth/me/:
+  /civilian/v1/answers/:
     get:
-      operationId: auth_me_retrieve
-      description: ViewSet for retrieving and updating current user instance.
+      operationId: civilian_v1_answers_list
+      description: A ViewSet that returns GeoJSON data for the answers.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
-      - auth
+      - civilian
       security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    put:
-      operationId: auth_me_update
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/User'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    patch:
-      operationId: auth_me_partial_update
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-  /api/auth/register/:
-    post:
-      operationId: auth_register_create
-      description: Register a new user using provided credentials via allauth.
-      tags:
-      - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-        required: true
-      security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
-        '201':
-          description: No response body
-  /api/v2/answers/:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardAnswerList'
+          description: ''
+  /civilian/v1/answers/{id}/:
     get:
-      operationId: v2_answers_list
-      description: Answer ViewSet used internally to query data from database.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Answer'
-          description: ''
-    post:
-      operationId: v2_answers_create
-      description: Answer ViewSet used internally to query data from database.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Answer'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Answer'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Answer'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Answer'
-          description: ''
-  /api/v2/answers/{id}/:
-    get:
-      operationId: v2_answers_retrieve
-      description: Answer ViewSet used internally to query data from database.
+      operationId: civilian_v1_answers_retrieve
+      description: A ViewSet that returns GeoJSON data for the answers.
       parameters:
       - in: path
         name: id
@@ -271,1323 +46,21 @@ paths:
         description: A unique integer value identifying this answer.
         required: true
       tags:
-      - v2
+      - civilian
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Answer'
+                $ref: '#/components/schemas/DashboardAnswer'
           description: ''
-    put:
-      operationId: v2_answers_update
-      description: Answer ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Answer'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Answer'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Answer'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Answer'
-          description: ''
-    patch:
-      operationId: v2_answers_partial_update
-      description: Answer ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAnswer'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedAnswer'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedAnswer'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Answer'
-          description: ''
-    delete:
-      operationId: v2_answers_destroy
-      description: Answer ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/answers/csv/:
+  /civilian/v1/schema/:
     get:
-      operationId: v2_answers_csv_retrieve
-      description: Answer ViewSet used internally to query data from database.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Answer'
-          description: ''
-  /api/v2/csrf/:
-    get:
-      operationId: v2_csrf_retrieve
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
-  /api/v2/linefeatures/:
-    get:
-      operationId: v2_linefeatures_list
-      description: LineStringLocation ViewSet used internally to query data from database
-        for all users.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LineFeature'
-          description: ''
-    post:
-      operationId: v2_linefeatures_create
-      description: LineStringLocation ViewSet used internally to query data from database
-        for all users.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LineFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LineFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LineFeature'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LineFeature'
-          description: ''
-  /api/v2/linefeatures/{id}/:
-    get:
-      operationId: v2_linefeatures_retrieve
-      description: LineStringLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this line feature.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LineFeature'
-          description: ''
-    put:
-      operationId: v2_linefeatures_update
-      description: LineStringLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this line feature.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LineFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LineFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LineFeature'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LineFeature'
-          description: ''
-    patch:
-      operationId: v2_linefeatures_partial_update
-      description: LineStringLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this line feature.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLineFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedLineFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedLineFeature'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LineFeature'
-          description: ''
-    delete:
-      operationId: v2_linefeatures_destroy
-      description: LineStringLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this line feature.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/locations/:
-    get:
-      operationId: v2_locations_list
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LocationCollection'
-          description: ''
-    post:
-      operationId: v2_locations_create
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LocationCollection'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LocationCollection'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LocationCollection'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LocationCollection'
-          description: ''
-  /api/v2/locations/{id}/:
-    get:
-      operationId: v2_locations_retrieve
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this location collection.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LocationCollection'
-          description: ''
-    put:
-      operationId: v2_locations_update
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this location collection.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LocationCollection'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/LocationCollection'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/LocationCollection'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LocationCollection'
-          description: ''
-    patch:
-      operationId: v2_locations_partial_update
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this location collection.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLocationCollection'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedLocationCollection'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedLocationCollection'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LocationCollection'
-          description: ''
-    delete:
-      operationId: v2_locations_destroy
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this location collection.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/locations/{id}/features/:
-    get:
-      operationId: v2_locations_features_retrieve
-      description: Location ViewSet used internally to query data from database for
-        all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this location collection.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LocationCollection'
-          description: ''
-  /api/v2/map-views/:
-    get:
-      operationId: v2_map_views_list
-      description: Question ViewSet used internally to query data from database.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MapView'
-          description: ''
-    post:
-      operationId: v2_map_views_create
-      description: Question ViewSet used internally to query data from database.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MapView'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MapView'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MapView'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MapView'
-          description: ''
-  /api/v2/map-views/{id}/:
-    get:
-      operationId: v2_map_views_retrieve
-      description: Question ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this map view.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MapView'
-          description: ''
-    put:
-      operationId: v2_map_views_update
-      description: Question ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this map view.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MapView'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MapView'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MapView'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MapView'
-          description: ''
-    patch:
-      operationId: v2_map_views_partial_update
-      description: Question ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this map view.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedMapView'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedMapView'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedMapView'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MapView'
-          description: ''
-    delete:
-      operationId: v2_map_views_destroy
-      description: Question ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this map view.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/map-views/id_names/:
-    get:
-      operationId: v2_map_views_id_names_retrieve
-      description: Question ViewSet used internally to query data from database.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MapView'
-          description: ''
-  /api/v2/pointfeatures/:
-    get:
-      operationId: v2_pointfeatures_list
-      description: PointLocation ViewSet used internally to query data from database
-        for all users.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PointFeature'
-          description: ''
-    post:
-      operationId: v2_pointfeatures_create
-      description: PointLocation ViewSet used internally to query data from database
-        for all users.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PointFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PointFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PointFeature'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PointFeature'
-          description: ''
-  /api/v2/pointfeatures/{id}/:
-    get:
-      operationId: v2_pointfeatures_retrieve
-      description: PointLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this point feature.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PointFeature'
-          description: ''
-    put:
-      operationId: v2_pointfeatures_update
-      description: PointLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this point feature.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PointFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PointFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PointFeature'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PointFeature'
-          description: ''
-    patch:
-      operationId: v2_pointfeatures_partial_update
-      description: PointLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this point feature.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPointFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPointFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedPointFeature'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PointFeature'
-          description: ''
-    delete:
-      operationId: v2_pointfeatures_destroy
-      description: PointLocation ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this point feature.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/polygonfeatures/:
-    get:
-      operationId: v2_polygonfeatures_list
-      description: PolygonFeature ViewSet used internally to query data from database
-        for all users.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PolygonFeature'
-          description: ''
-    post:
-      operationId: v2_polygonfeatures_create
-      description: PolygonFeature ViewSet used internally to query data from database
-        for all users.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PolygonFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PolygonFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PolygonFeature'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PolygonFeature'
-          description: ''
-  /api/v2/polygonfeatures/{id}/:
-    get:
-      operationId: v2_polygonfeatures_retrieve
-      description: PolygonFeature ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this polygon feature.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PolygonFeature'
-          description: ''
-    put:
-      operationId: v2_polygonfeatures_update
-      description: PolygonFeature ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this polygon feature.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PolygonFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PolygonFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PolygonFeature'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PolygonFeature'
-          description: ''
-    patch:
-      operationId: v2_polygonfeatures_partial_update
-      description: PolygonFeature ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this polygon feature.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPolygonFeature'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPolygonFeature'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedPolygonFeature'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PolygonFeature'
-          description: ''
-    delete:
-      operationId: v2_polygonfeatures_destroy
-      description: PolygonFeature ViewSet used internally to query data from database
-        for all users.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this polygon feature.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/questions/:
-    get:
-      operationId: v2_questions_list
-      description: |-
-        Question ViewSet used to query data from database.
-        The `create` method is overwritten to accept one data object or an array of objects.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Question'
-          description: ''
-    post:
-      operationId: v2_questions_create
-      description: Here we are overwriting the default create method from the Django
-        REST framework to update or create Questions by list or by single instances
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Question'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Question'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Question'
-        required: true
-      security:
-      - tokenAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-          description: ''
-  /api/v2/questions/{id}/:
-    get:
-      operationId: v2_questions_retrieve
-      description: |-
-        Question ViewSet used to query data from database.
-        The `create` method is overwritten to accept one data object or an array of objects.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-          description: ''
-    put:
-      operationId: v2_questions_update
-      description: |-
-        Question ViewSet used to query data from database.
-        The `create` method is overwritten to accept one data object or an array of objects.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Question'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Question'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Question'
-        required: true
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-          description: ''
-    patch:
-      operationId: v2_questions_partial_update
-      description: |-
-        Question ViewSet used to query data from database.
-        The `create` method is overwritten to accept one data object or an array of objects.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedQuestion'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedQuestion'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedQuestion'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-          description: ''
-    delete:
-      operationId: v2_questions_destroy
-      description: |-
-        Question ViewSet used to query data from database.
-        The `create` method is overwritten to accept one data object or an array of objects.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v2/questions/{id}/ordered_questions/:
-    get:
-      operationId: v2_questions_ordered_questions_retrieve
-      description: |-
-        Retrieve a list of questions for a given survey, ordered by the 'order' field.
-        API url: `/api/questions/{survey_id}/ordered_questions`
-
-        Parameters:
-            request (Request): The request object used to make the API call.
-            pk = survey_id (int): The primary key of the Survey instance to retrieve questions for.
-
-        Returns:
-            Response: A JSON response containing a list of serialized Question instances.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-          description: ''
-  /api/v2/responses/:
-    get:
-      operationId: v2_responses_list
-      description: Response ViewSet used internally to query data from database.
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Response'
-          description: ''
-    post:
-      operationId: v2_responses_create
-      description: Response ViewSet used internally to query data from database.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Response'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Response'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Response'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: ''
-  /api/v2/responses/{id}/:
-    get:
-      operationId: v2_responses_retrieve
-      description: Response ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: ''
-    put:
-      operationId: v2_responses_update
-      description: Response ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Response'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Response'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Response'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: ''
-    patch:
-      operationId: v2_responses_partial_update
-      description: Response ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedResponse'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedResponse'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedResponse'
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: ''
-    delete:
-      operationId: v2_responses_destroy
-      description: Response ViewSet used internally to query data from database.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - v2
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/v2/responses/submit-response/:
-    post:
-      operationId: v2_responses_submit_response_create
-      description: Response ViewSet used internally to query data from database.
-      tags:
-      - v2
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Response'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Response'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Response'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: ''
-  /api/v2/schema/:
-    get:
-      operationId: v2_schema_retrieve
+      operationId: civilian_v1_schema_retrieve
       description: |-
         OpenApi3 schema for this API. Format can be selected via content negotiation.
 
@@ -1706,9 +179,10 @@ paths:
           - zh-hans
           - zh-hant
       tags:
-      - v2
+      - civilian
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1730,14 +204,1784 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/v2/surveys/:
-    get:
-      operationId: v2_surveys_list
-      description: Survey ViewSet used internally to query data from database.
+  /voice/auth/email/resend/:
+    post:
+      operationId: voice_auth_email_resend_create
+      description: Resend email verification to the passed email (if it exists and
+        is not verified already).
       tags:
-      - v2
+      - email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResendVerificationView'
+          description: ''
+  /voice/auth/email/verify/:
+    post:
+      operationId: voice_auth_email_verify_create
+      description: Verify email address using random key sent in confirmation email.
+      tags:
+      - email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailIsVerified'
+          description: ''
+        '404':
+          description: Invalid confrimation key.
+  /voice/auth/login/:
+    post:
+      operationId: voice_auth_login_create
+      description: |-
+        Check the credentials from the request data and return a session token.
+
+        Similar to knox's `LoginView` but uses allauth authentication backend instead of
+        another API authentication method (basic/session auth).
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AllauthLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AllauthLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AllauthLogin'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /voice/auth/logout/:
+    post:
+      operationId: voice_auth_logout_create
+      description: Delete the session token associated with the incoming authenticated
+        request.
+      tags:
+      - voice
       security:
       - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /voice/auth/logout/all/:
+    post:
+      operationId: voice_auth_logout_all_create
+      description: Delete all session tokens associated with the authenticated user.
+      tags:
+      - voice
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /voice/auth/me/:
+    get:
+      operationId: voice_auth_me_retrieve
+      description: ViewSet for retrieving and updating current user instance.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: voice_auth_me_update
+      description: ViewSet for retrieving and updating current user instance.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: voice_auth_me_partial_update
+      description: ViewSet for retrieving and updating current user instance.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /voice/auth/register/:
+    post:
+      operationId: voice_auth_register_create
+      description: Register a new user using provided credentials via allauth.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AllauthRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AllauthRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AllauthRegister'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /voice/v3/answers/:
+    get:
+      operationId: voice_v3_answers_list
+      description: Answer ViewSet used internally to query data from database.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Answer'
+          description: ''
+    post:
+      operationId: voice_v3_answers_create
+      description: Answer ViewSet used internally to query data from database.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+  /voice/v3/answers/{id}/:
+    get:
+      operationId: voice_v3_answers_retrieve
+      description: Answer ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    put:
+      operationId: voice_v3_answers_update
+      description: Answer ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    patch:
+      operationId: voice_v3_answers_partial_update
+      description: Answer ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAnswer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAnswer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAnswer'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    delete:
+      operationId: voice_v3_answers_destroy
+      description: Answer ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/answers/csv/:
+    get:
+      operationId: voice_v3_answers_csv_retrieve
+      description: Answer ViewSet used internally to query data from database.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+  /voice/v3/csrf/:
+    get:
+      operationId: voice_v3_csrf_retrieve
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /voice/v3/linefeatures/:
+    get:
+      operationId: voice_v3_linefeatures_list
+      description: LineStringLocation ViewSet used internally to query data from database
+        for all users.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineFeatureList'
+          description: ''
+    post:
+      operationId: voice_v3_linefeatures_create
+      description: LineStringLocation ViewSet used internally to query data from database
+        for all users.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LineFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LineFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineFeature'
+          description: ''
+  /voice/v3/linefeatures/{id}/:
+    get:
+      operationId: voice_v3_linefeatures_retrieve
+      description: LineStringLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this line feature.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineFeature'
+          description: ''
+    put:
+      operationId: voice_v3_linefeatures_update
+      description: LineStringLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this line feature.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LineFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LineFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineFeature'
+          description: ''
+    patch:
+      operationId: voice_v3_linefeatures_partial_update
+      description: LineStringLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this line feature.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLineFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLineFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLineFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineFeature'
+          description: ''
+    delete:
+      operationId: voice_v3_linefeatures_destroy
+      description: LineStringLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this line feature.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/locations/:
+    get:
+      operationId: voice_v3_locations_list
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationCollection'
+          description: ''
+    post:
+      operationId: voice_v3_locations_create
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCollection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LocationCollection'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LocationCollection'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCollection'
+          description: ''
+  /voice/v3/locations/{id}/:
+    get:
+      operationId: voice_v3_locations_retrieve
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location collection.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCollection'
+          description: ''
+    put:
+      operationId: voice_v3_locations_update
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location collection.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCollection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LocationCollection'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LocationCollection'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCollection'
+          description: ''
+    patch:
+      operationId: voice_v3_locations_partial_update
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location collection.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLocationCollection'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLocationCollection'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLocationCollection'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCollection'
+          description: ''
+    delete:
+      operationId: voice_v3_locations_destroy
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location collection.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/locations/{id}/features/:
+    get:
+      operationId: voice_v3_locations_features_retrieve
+      description: Location ViewSet used internally to query data from database for
+        all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location collection.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCollection'
+          description: ''
+  /voice/v3/map-views/:
+    get:
+      operationId: voice_v3_map_views_list
+      description: Question ViewSet used internally to query data from database.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MapView'
+          description: ''
+    post:
+      operationId: voice_v3_map_views_create
+      description: Question ViewSet used internally to query data from database.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MapView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MapView'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapView'
+          description: ''
+  /voice/v3/map-views/{id}/:
+    get:
+      operationId: voice_v3_map_views_retrieve
+      description: Question ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this map view.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapView'
+          description: ''
+    put:
+      operationId: voice_v3_map_views_update
+      description: Question ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this map view.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MapView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MapView'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapView'
+          description: ''
+    patch:
+      operationId: voice_v3_map_views_partial_update
+      description: Question ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this map view.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMapView'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMapView'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMapView'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapView'
+          description: ''
+    delete:
+      operationId: voice_v3_map_views_destroy
+      description: Question ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this map view.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/map-views/id_names/:
+    get:
+      operationId: voice_v3_map_views_id_names_retrieve
+      description: Question ViewSet used internally to query data from database.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapView'
+          description: ''
+  /voice/v3/pointfeatures/:
+    get:
+      operationId: voice_v3_pointfeatures_list
+      description: PointLocation ViewSet used internally to query data from database
+        for all users.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointFeatureList'
+          description: ''
+    post:
+      operationId: voice_v3_pointfeatures_create
+      description: PointLocation ViewSet used internally to query data from database
+        for all users.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PointFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PointFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointFeature'
+          description: ''
+  /voice/v3/pointfeatures/{id}/:
+    get:
+      operationId: voice_v3_pointfeatures_retrieve
+      description: PointLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this point feature.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointFeature'
+          description: ''
+    put:
+      operationId: voice_v3_pointfeatures_update
+      description: PointLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this point feature.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PointFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PointFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointFeature'
+          description: ''
+    patch:
+      operationId: voice_v3_pointfeatures_partial_update
+      description: PointLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this point feature.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPointFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPointFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPointFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointFeature'
+          description: ''
+    delete:
+      operationId: voice_v3_pointfeatures_destroy
+      description: PointLocation ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this point feature.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/polygonfeatures/:
+    get:
+      operationId: voice_v3_polygonfeatures_list
+      description: PolygonFeature ViewSet used internally to query data from database
+        for all users.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolygonFeatureList'
+          description: ''
+    post:
+      operationId: voice_v3_polygonfeatures_create
+      description: PolygonFeature ViewSet used internally to query data from database
+        for all users.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolygonFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PolygonFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PolygonFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolygonFeature'
+          description: ''
+  /voice/v3/polygonfeatures/{id}/:
+    get:
+      operationId: voice_v3_polygonfeatures_retrieve
+      description: PolygonFeature ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this polygon feature.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolygonFeature'
+          description: ''
+    put:
+      operationId: voice_v3_polygonfeatures_update
+      description: PolygonFeature ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this polygon feature.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolygonFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PolygonFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PolygonFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolygonFeature'
+          description: ''
+    patch:
+      operationId: voice_v3_polygonfeatures_partial_update
+      description: PolygonFeature ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this polygon feature.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPolygonFeature'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPolygonFeature'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPolygonFeature'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolygonFeature'
+          description: ''
+    delete:
+      operationId: voice_v3_polygonfeatures_destroy
+      description: PolygonFeature ViewSet used internally to query data from database
+        for all users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this polygon feature.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/questions/:
+    get:
+      operationId: voice_v3_questions_list
+      description: |-
+        Question ViewSet used to query data from database.
+        The `create` method is overwritten to accept one data object or an array of objects.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+          description: ''
+    post:
+      operationId: voice_v3_questions_create
+      description: Here we are overwriting the default create method from the Django
+        REST framework to update or create Questions by list or by single instances
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Question'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+  /voice/v3/questions/{id}/:
+    get:
+      operationId: voice_v3_questions_retrieve
+      description: |-
+        Question ViewSet used to query data from database.
+        The `create` method is overwritten to accept one data object or an array of objects.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    put:
+      operationId: voice_v3_questions_update
+      description: |-
+        Question ViewSet used to query data from database.
+        The `create` method is overwritten to accept one data object or an array of objects.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Question'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    patch:
+      operationId: voice_v3_questions_partial_update
+      description: |-
+        Question ViewSet used to query data from database.
+        The `create` method is overwritten to accept one data object or an array of objects.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestion'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    delete:
+      operationId: voice_v3_questions_destroy
+      description: |-
+        Question ViewSet used to query data from database.
+        The `create` method is overwritten to accept one data object or an array of objects.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/questions/{id}/ordered_questions/:
+    get:
+      operationId: voice_v3_questions_ordered_questions_retrieve
+      description: |-
+        Retrieve a list of questions for a given survey, ordered by the 'order' field.
+        API url: `/api/questions/{survey_id}/ordered_questions`
+
+        Parameters:
+            request (Request): The request object used to make the API call.
+            pk = survey_id (int): The primary key of the Survey instance to retrieve questions for.
+
+        Returns:
+            Response: A JSON response containing a list of serialized Question instances.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+  /voice/v3/responses/:
+    get:
+      operationId: voice_v3_responses_list
+      description: Response ViewSet used internally to query data from database.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Response'
+          description: ''
+    post:
+      operationId: voice_v3_responses_create
+      description: Response ViewSet used internally to query data from database.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Response'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Response'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Response'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: ''
+  /voice/v3/responses/{id}/:
+    get:
+      operationId: voice_v3_responses_retrieve
+      description: Response ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: ''
+    put:
+      operationId: voice_v3_responses_update
+      description: Response ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Response'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Response'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Response'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: ''
+    patch:
+      operationId: voice_v3_responses_partial_update
+      description: Response ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedResponse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedResponse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedResponse'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: ''
+    delete:
+      operationId: voice_v3_responses_destroy
+      description: Response ViewSet used internally to query data from database.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/responses/submit-response/:
+    post:
+      operationId: voice_v3_responses_submit_response_create
+      description: Response ViewSet used internally to query data from database.
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Response'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Response'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Response'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: ''
+  /voice/v3/schema/:
+    get:
+      operationId: voice_v3_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /voice/v3/surveys/:
+    get:
+      operationId: voice_v3_surveys_list
+      description: Survey ViewSet used internally to query data from database.
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1748,10 +1992,10 @@ paths:
                   $ref: '#/components/schemas/Survey'
           description: ''
     post:
-      operationId: v2_surveys_create
+      operationId: voice_v3_surveys_create
       description: Survey ViewSet used internally to query data from database.
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -1765,7 +2009,8 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '201':
           content:
@@ -1773,9 +2018,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Survey'
           description: ''
-  /api/v2/surveys/{id}/:
+  /voice/v3/surveys/{id}/:
     get:
-      operationId: v2_surveys_retrieve
+      operationId: voice_v3_surveys_retrieve
       description: Survey ViewSet used internally to query data from database.
       parameters:
       - in: path
@@ -1785,9 +2030,10 @@ paths:
         description: A unique integer value identifying this survey.
         required: true
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1796,7 +2042,7 @@ paths:
                 $ref: '#/components/schemas/Survey'
           description: ''
     put:
-      operationId: v2_surveys_update
+      operationId: voice_v3_surveys_update
       description: Survey ViewSet used internally to query data from database.
       parameters:
       - in: path
@@ -1806,7 +2052,7 @@ paths:
         description: A unique integer value identifying this survey.
         required: true
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -1820,7 +2066,8 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1829,7 +2076,7 @@ paths:
                 $ref: '#/components/schemas/Survey'
           description: ''
     patch:
-      operationId: v2_surveys_partial_update
+      operationId: voice_v3_surveys_partial_update
       description: Survey ViewSet used internally to query data from database.
       parameters:
       - in: path
@@ -1839,7 +2086,7 @@ paths:
         description: A unique integer value identifying this survey.
         required: true
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -1852,7 +2099,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSurvey'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1861,7 +2109,7 @@ paths:
                 $ref: '#/components/schemas/Survey'
           description: ''
     delete:
-      operationId: v2_surveys_destroy
+      operationId: voice_v3_surveys_destroy
       description: Survey ViewSet used internally to query data from database.
       parameters:
       - in: path
@@ -1871,15 +2119,16 @@ paths:
         description: A unique integer value identifying this survey.
         required: true
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '204':
           description: No response body
-  /api/v2/surveys/{id}/questions/:
+  /voice/v3/surveys/{id}/questions/:
     get:
-      operationId: v2_surveys_questions_retrieve
+      operationId: voice_v3_surveys_questions_retrieve
       description: Survey ViewSet used internally to query data from database.
       parameters:
       - in: path
@@ -1889,9 +2138,10 @@ paths:
         description: A unique integer value identifying this survey.
         required: true
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1899,12 +2149,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Survey'
           description: ''
-  /api/v2/surveys/create-survey/:
+  /voice/v3/surveys/create-survey/:
     post:
-      operationId: v2_surveys_create_survey_create
+      operationId: voice_v3_surveys_create_survey_create
       description: Survey ViewSet used internally to query data from database.
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -1918,7 +2168,8 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1926,14 +2177,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Survey'
           description: ''
-  /api/v2/surveys/my-surveys/:
+  /voice/v3/surveys/my-surveys/:
     get:
-      operationId: v2_surveys_my_surveys_retrieve
+      operationId: voice_v3_surveys_my_surveys_retrieve
       description: Survey ViewSet used internally to query data from database.
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1941,15 +2193,173 @@ paths:
               schema:
                 $ref: '#/components/schemas/Survey'
           description: ''
-  /api/v2/users/:
+  /voice/v3/topics/:
     get:
-      operationId: v2_users_list
+      operationId: voice_v3_topics_list
+      description: A ViewSet that returns the topics associated to a question
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+          description: ''
+    post:
+      operationId: voice_v3_topics_create
+      description: A ViewSet that returns the topics associated to a question
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Topic'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+  /voice/v3/topics/{id}/:
+    get:
+      operationId: voice_v3_topics_retrieve
+      description: A ViewSet that returns the topics associated to a question
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard topic.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+    put:
+      operationId: voice_v3_topics_update
+      description: A ViewSet that returns the topics associated to a question
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard topic.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Topic'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Topic'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+    patch:
+      operationId: voice_v3_topics_partial_update
+      description: A ViewSet that returns the topics associated to a question
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard topic.
+        required: true
+      tags:
+      - voice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTopic'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTopic'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTopic'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          description: ''
+    delete:
+      operationId: voice_v3_topics_destroy
+      description: A ViewSet that returns the topics associated to a question
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard topic.
+        required: true
+      tags:
+      - voice
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /voice/v3/users/:
+    get:
+      operationId: voice_v3_users_list
       description: User ViewSet used internally to query data from database for all
         users.
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1960,11 +2370,11 @@ paths:
                   $ref: '#/components/schemas/User'
           description: ''
     post:
-      operationId: v2_users_create
+      operationId: voice_v3_users_create
       description: User ViewSet used internally to query data from database for all
         users.
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -1977,7 +2387,8 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '201':
           content:
@@ -1985,9 +2396,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
-  /api/v2/users/{id}/:
+  /voice/v3/users/{id}/:
     get:
-      operationId: v2_users_retrieve
+      operationId: voice_v3_users_retrieve
       description: User ViewSet used internally to query data from database for all
         users.
       parameters:
@@ -1998,9 +2409,10 @@ paths:
         description: A unique integer value identifying this user.
         required: true
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2009,7 +2421,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     put:
-      operationId: v2_users_update
+      operationId: voice_v3_users_update
       description: User ViewSet used internally to query data from database for all
         users.
       parameters:
@@ -2020,7 +2432,7 @@ paths:
         description: A unique integer value identifying this user.
         required: true
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -2033,7 +2445,8 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2042,7 +2455,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     patch:
-      operationId: v2_users_partial_update
+      operationId: voice_v3_users_partial_update
       description: User ViewSet used internally to query data from database for all
         users.
       parameters:
@@ -2053,7 +2466,7 @@ paths:
         description: A unique integer value identifying this user.
         required: true
       tags:
-      - v2
+      - voice
       requestBody:
         content:
           application/json:
@@ -2066,7 +2479,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUser'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2075,7 +2489,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     delete:
-      operationId: v2_users_destroy
+      operationId: voice_v3_users_destroy
       description: User ViewSet used internally to query data from database for all
         users.
       parameters:
@@ -2086,9 +2500,10 @@ paths:
         description: A unique integer value identifying this user.
         required: true
       tags:
-      - v2
+      - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '204':
           description: No response body
@@ -2190,6 +2605,42 @@ components:
       - expiry
       - token
       - user
+    DashboardAnswer:
+      type: object
+      description: A serializer class for the Answer model that serializes the 'geom'
+        field as a GeoJSON field.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Creation date
+        body:
+          type: string
+          title: Answer Body
+        question:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        mapview:
+          $ref: '#/components/schemas/DashboardMapView'
+      required:
+      - created
+      - id
+      - mapview
+      - question
+    DashboardMapView:
+      type: object
+      description: A serializer class for the MapView model used in the dashboard
+        endpoint.
+      properties:
+        location:
+          $ref: '#/components/schemas/Locations'
+      required:
+      - location
     EmailIsVerified:
       type: object
       properties:
@@ -2202,27 +2653,26 @@ components:
         detail:
           type: string
           default: Verification e-mail sent.
+    GisFeatureCollectionEnum:
+      type: string
+      enum:
+      - FeatureCollection
+    GisFeatureEnum:
+      type: string
+      enum:
+      - Feature
     LineFeature:
       type: object
       description: |-
         Serialises 'id', 'geom', 'annotation' fields of the LineStringLocation model for the API.
         The 'geom' field is serialized as a GeoJSON field.
       properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
         id:
           type: integer
           readOnly: true
-        url:
-          type: string
-          format: uri
-          readOnly: true
-        annotation:
-          type: string
-          nullable: true
-          maxLength: 150
-        location:
-          type: string
-          format: uri
-        geom:
+        geometry:
           type: object
           properties:
             type:
@@ -2247,11 +2697,29 @@ components:
               - - 12.9721
                 - 77.5933
               minItems: 2
-      required:
-      - geom
-      - id
-      - location
-      - url
+        properties:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              readOnly: true
+            annotation:
+              type: string
+              nullable: true
+              maxLength: 150
+            location:
+              type: string
+              format: uri
+    LineFeatureList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineFeature'
     LocationCollection:
       type: object
       description: |-
@@ -2272,13 +2740,28 @@ components:
           type: string
           nullable: true
           maxLength: 300
-        features:
+        geojson:
           type: string
           readOnly: true
       required:
-      - features
+      - geojson
       - id
       - url
+    Locations:
+      type: object
+      description: |-
+        Serialises 'name', 'question', 'answer', 'points', 'lines', 'polygons'
+        fields of the Location model for the API.
+      properties:
+        geojson:
+          type: object
+          additionalProperties: {}
+          description: |-
+            Returns a list of features (points, lines, polygons)
+            associated with the location collection.
+          readOnly: true
+      required:
+      - geojson
     MapView:
       type: object
       description: |-
@@ -2316,6 +2799,29 @@ components:
       required:
       - id
       - url
+    PaginatedDashboardAnswerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardAnswer'
     PatchedAnswer:
       type: object
       description: |-
@@ -2358,21 +2864,12 @@ components:
         Serialises 'id', 'geom', 'annotation' fields of the LineStringLocation model for the API.
         The 'geom' field is serialized as a GeoJSON field.
       properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
         id:
           type: integer
           readOnly: true
-        url:
-          type: string
-          format: uri
-          readOnly: true
-        annotation:
-          type: string
-          nullable: true
-          maxLength: 150
-        location:
-          type: string
-          format: uri
-        geom:
+        geometry:
           type: object
           properties:
             type:
@@ -2397,6 +2894,20 @@ components:
               - - 12.9721
                 - 77.5933
               minItems: 2
+        properties:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              readOnly: true
+            annotation:
+              type: string
+              nullable: true
+              maxLength: 150
+            location:
+              type: string
+              format: uri
     PatchedLocationCollection:
       type: object
       description: |-
@@ -2417,7 +2928,7 @@ components:
           type: string
           nullable: true
           maxLength: 300
-        features:
+        geojson:
           type: string
           readOnly: true
     PatchedMapView:
@@ -2457,25 +2968,15 @@ components:
     PatchedPointFeature:
       type: object
       description: |-
-        Serialises 'id', 'url', 'geom', 'name', 'annotation', 'location'
+        GeoJson serializer for 'id', 'url', 'geom', 'name', 'annotation', 'location'
         fields of the PointLocation model for the API.
-        The 'geom' field is serialized as a GeoJSON field.
       properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
         id:
           type: integer
           readOnly: true
-        url:
-          type: string
-          format: uri
-          readOnly: true
-        annotation:
-          type: string
-          nullable: true
-          maxLength: 150
-        location:
-          type: string
-          format: uri
-        geom:
+        geometry:
           type: object
           properties:
             type:
@@ -2492,27 +2993,32 @@ components:
               - 77.5933
               minItems: 2
               maxItems: 3
+        properties:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              readOnly: true
+            annotation:
+              type: string
+              nullable: true
+              maxLength: 150
+            location:
+              type: string
+              format: uri
     PatchedPolygonFeature:
       type: object
       description: |-
-        Serialises 'id', 'geom', 'annotation', fields of the PolygonLocation model for the API.
+        GeoJson serializer for 'id', 'geom', 'annotation', 'location' fields of the PolygonLocation model for the API.
         The 'geom' field is serialized as a GeoJSON field.
       properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
         id:
           type: integer
           readOnly: true
-        url:
-          type: string
-          format: uri
-          readOnly: true
-        annotation:
-          type: string
-          nullable: true
-          maxLength: 150
-        location:
-          type: string
-          format: uri
-        geom:
+        geometry:
           type: object
           properties:
             type:
@@ -2550,6 +3056,20 @@ components:
                   - 0.0
                 - - 0.0
                   - 0.0
+        properties:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              readOnly: true
+            annotation:
+              type: string
+              nullable: true
+              maxLength: 150
+            location:
+              type: string
+              format: uri
     PatchedQuestion:
       type: object
       description: |-
@@ -2605,6 +3125,12 @@ components:
           type: string
           format: uri
           nullable: true
+        topics:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
     PatchedResponse:
       type: object
       description: |-
@@ -2688,6 +3214,17 @@ components:
           type: string
           format: uri
           readOnly: true
+    PatchedTopic:
+      type: object
+      description: A serializer class for the DashboardTopic model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Topic name
+          maxLength: 150
     PatchedUser:
       type: object
       description: User serializer for retrieving and update.
@@ -2708,25 +3245,15 @@ components:
     PointFeature:
       type: object
       description: |-
-        Serialises 'id', 'url', 'geom', 'name', 'annotation', 'location'
+        GeoJson serializer for 'id', 'url', 'geom', 'name', 'annotation', 'location'
         fields of the PointLocation model for the API.
-        The 'geom' field is serialized as a GeoJSON field.
       properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
         id:
           type: integer
           readOnly: true
-        url:
-          type: string
-          format: uri
-          readOnly: true
-        annotation:
-          type: string
-          nullable: true
-          maxLength: 150
-        location:
-          type: string
-          format: uri
-        geom:
+        geometry:
           type: object
           properties:
             type:
@@ -2743,32 +3270,41 @@ components:
               - 77.5933
               minItems: 2
               maxItems: 3
-      required:
-      - geom
-      - id
-      - location
-      - url
+        properties:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              readOnly: true
+            annotation:
+              type: string
+              nullable: true
+              maxLength: 150
+            location:
+              type: string
+              format: uri
+    PointFeatureList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/PointFeature'
     PolygonFeature:
       type: object
       description: |-
-        Serialises 'id', 'geom', 'annotation', fields of the PolygonLocation model for the API.
+        GeoJson serializer for 'id', 'geom', 'annotation', 'location' fields of the PolygonLocation model for the API.
         The 'geom' field is serialized as a GeoJSON field.
       properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
         id:
           type: integer
           readOnly: true
-        url:
-          type: string
-          format: uri
-          readOnly: true
-        annotation:
-          type: string
-          nullable: true
-          maxLength: 150
-        location:
-          type: string
-          format: uri
-        geom:
+        geometry:
           type: object
           properties:
             type:
@@ -2806,11 +3342,29 @@ components:
                   - 0.0
                 - - 0.0
                   - 0.0
-      required:
-      - geom
-      - id
-      - location
-      - url
+        properties:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              readOnly: true
+            annotation:
+              type: string
+              nullable: true
+              maxLength: 150
+            location:
+              type: string
+              format: uri
+    PolygonFeatureList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolygonFeature'
     Question:
       type: object
       description: |-
@@ -2866,11 +3420,18 @@ components:
           type: string
           format: uri
           nullable: true
+        topics:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
       required:
       - id
       - order
       - survey
       - text
+      - topics
       - url
     QuestionTypeEnum:
       enum:
@@ -2991,6 +3552,19 @@ components:
       - name
       - publish_date
       - url
+    Topic:
+      type: object
+      description: A serializer class for the DashboardTopic model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Topic name
+          maxLength: 150
+      required:
+      - id
     User:
       type: object
       description: User serializer for retrieving and update.
@@ -3013,6 +3587,13 @@ components:
       - id
       - username
   securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
     tokenAuth:
       type: apiKey
       in: header
