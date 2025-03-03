@@ -6,6 +6,8 @@ import pinia from '@pinia/nuxt';
 const ONE_DAY = 60 * 60 * 24 * 1000
 const ONE_WEEK = ONE_DAY * 7
 
+
+
 export default defineNuxtConfig({
   ssr: true,
 
@@ -105,33 +107,32 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-      cookieName: process.env.COOKIE_NAME || '__session',
-      cookieSecret: process.env.COOKIE_SECRET || 'secret',
-      cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day
-      cookieRememberMeExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_WEEK.toString(), 10), // 7 days
-      public: {
-         // set api for reference to the frontend
-         // usage: `${config.public.apiBaseAPI}`
-        //   apiBaseCms: "/api/v2", 
-          apiHostPayment: '',
-        //   apiBaseAuth: "/api/auth"
-      },
+    cookieName: process.env.COOKIE_NAME || '__session',
+    cookieSecret: process.env.COOKIE_SECRET || 'secret',
+    cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day
+    cookieRememberMeExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_WEEK.toString(), 10), // 7 days
+    public: {
+        // set api for reference to the frontend
+        // usage: `${config.public.apiBaseAPI}`
+    //   apiBaseCms: "/api/v2", 
+        apiHostPayment: '',
+    //   apiBaseAuth: "/api/auth"
+    },
 
-      // API party configuration
-        apiParty: {
-            endpoints: {
-                cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
-                    // url: '/api/v2',
-                    url: process.env.API_PARTY_CMS_URL,
-                    // token: '',
-                    schema: './openapi/citizenvoice/openapi.yaml'
-                },
-                authApi: { // Becomes `$authApi()` and useAuthApiData()
-                    url: process.env.AUTH_API_URL || 'localhost:8000/api/auth',
-                    schema: './openapi/citizenvoice/openapi.yaml'
-                }
+    // API party configuration
+    apiParty: {
+        endpoints: {
+            cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
+                url: process.env.API_PARTY_CMS_URL || 'localhost:8000/voice/v3',
+                // token: '',
+                schema: './openapi/voice/openapi.yml'
+            },
+            authApi: { // Becomes `$authApi()` and useAuthApiData()
+                url: process.env.AUTH_API_URL || 'localhost:8000/api/auth',
+                schema: './openapi/voice/openapi.yml'
             }
-        },
+        }
+    },
       paymentSecretKey: '',
   },
 
@@ -155,4 +156,5 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-03-03',
-})
+});
+
