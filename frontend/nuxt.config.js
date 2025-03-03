@@ -123,12 +123,12 @@ export default defineNuxtConfig({
     apiParty: {
         endpoints: {
             cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
-                url: process.env.API_PARTY_CMS_URL || 'localhost:8000/voice/v3',
+                url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3',
                 // token: '',
                 schema: './openapi/voice/openapi.yml'
             },
             authApi: { // Becomes `$authApi()` and useAuthApiData()
-                url: process.env.AUTH_API_URL || 'localhost:8000/api/auth',
+                url: process.env.AUTH_API_URL || 'http://localhost:8000/api/auth',
                 schema: './openapi/voice/openapi.yml'
             }
         }
@@ -152,7 +152,7 @@ export default defineNuxtConfig({
       '/design/**': { ssr: false },
       '/design/surveys/**': { ssr: false },
       '/user/**': { ssr: false },
-      '/survey/**': { ssr: false },
+      '/surveys/**': { ssr: false },
   },
 
   compatibilityDate: '2025-03-03',
