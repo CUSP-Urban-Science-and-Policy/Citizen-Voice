@@ -53,7 +53,6 @@ class AnswerViewSet(viewsets.ModelViewSet):
         """
 
         queryset = Answer.objects.all()
-        print(queryset[0])
         question_id = self.request.query_params.get('question', None)
         
         if question_id is not None:

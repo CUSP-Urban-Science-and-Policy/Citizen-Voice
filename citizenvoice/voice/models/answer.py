@@ -30,7 +30,5 @@ class Answer(models.Model):
     
     # TODO: [manuel] Shall we define types for answers?
  
-
-
     def __str__(self):
         return f"Response {self.response.pk}:{self.question.text}"
