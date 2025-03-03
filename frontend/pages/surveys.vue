@@ -25,10 +25,9 @@
 </template>
 <script setup>
 import { formatDate } from "~/utils/formatData"
-
+// const config = useRuntimeConfig();
 // TODO [MANUEL]: useSubmitForm is not  in survey.js
 // import { useSubmitForm } from "~/stores/survey.js";
-
 
 
 /**

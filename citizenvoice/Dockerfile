@@ -19,7 +19,8 @@ RUN apk add --no-cache \
     postgresql-dev \
     build-base \
     libjpeg-turbo-dev \
-    zlib-dev
+    zlib-dev \
+    curl
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 

@@ -18,6 +18,12 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_view
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 
+# Allows to check the health of the API
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({"status": "ok"}, status=200)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
@@ -30,4 +36,5 @@ urlpatterns = [
     path(r'api/auth/', include('knox_allauth.urls')),
     path('api/v2/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/v2/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('health/', health_check, name="health_check"),
 ]
