@@ -18,7 +18,7 @@ from datetime import timedelta
 from rest_framework.settings import api_settings
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../local.env")
+# load_dotenv("../local.env", override=True) # 
 
 if os.name == 'nt':
     import platform
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django.contrib.sites',
-    'apiapp',
+    'voice',
     'civilian',
     'rest_framework',
     'rest_framework_gis',
@@ -257,8 +257,11 @@ ACCOUNT_USERNAME_MIN_LENGTH = 2
 SITE_ID = 1
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # ✅ Forces JSON output
+    ),
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -282,8 +285,8 @@ REST_KNOX = {
 # drf-spectacular
 #
 SPECTACULAR_SETTINGS = {
-    "TITLE": "CitizenVoice API",
-    "DESCRIPTION": "Documentation of API endpoints for CitizenVoice",
-    "VERSION": "2.0.6",
-    "SCHEMA_PATH_PREFIX": "/api",
+    "TITLE": "CitizenVoice APIs",
+    "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
+    "VERSION": "3.0.0",
+    "SCHEMA_PATH_PREFIX": None,
 }

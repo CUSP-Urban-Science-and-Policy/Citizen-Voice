@@ -4,7 +4,7 @@ Serializers for the API endpoints of the dashboard app.
 
 import copy
 from rest_framework import serializers
-from apiapp.models import (Answer, Question, Survey, PointFeature, 
+from voice.models import (Answer, Question, Survey, PointFeature, 
                      PolygonFeature, LineFeature, MapView,
                     LocationCollection, DashboardTopic)
 from rest_framework_gis.serializers import GeoFeatureModelSerializer

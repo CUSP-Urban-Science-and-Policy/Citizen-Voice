@@ -53,7 +53,6 @@ class AnswerViewSet(viewsets.ModelViewSet):
         """
 
         queryset = Answer.objects.all()
-        print(queryset[0])
         question_id = self.request.query_params.get('question', None)
         
         if question_id is not None:
@@ -101,15 +100,11 @@ class AnswerViewSet(viewsets.ModelViewSet):
         
         flatten_data = [flatten_dict(answer) for answer in serializer.data]
 
-        # print ('flatten data \n', flatten_data)
-
         writer = csv.writer(response)
         headers = set()
         for item in flatten_data:
             headers.update(item.keys())
         writer.writerow(list(headers))
-
-        print ('headers \n', headers)
         
         for answer in flatten_data:
             _rows= []

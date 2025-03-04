@@ -21,7 +21,7 @@
                    </h4>
                 </v-card-text>  
                 <v-card-actions>
-                    <v-btn color="primary" @click="navigateTo('/surveys/')">Take Survey</v-btn>
+                    <v-btn color="primary" @click="navigateTo('surveys/')">Take Survey</v-btn>
                 </v-card-actions>
             </v-card>
          </v-sheet>
