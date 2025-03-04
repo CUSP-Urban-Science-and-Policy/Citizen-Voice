@@ -18,7 +18,7 @@ from datetime import timedelta
 from rest_framework.settings import api_settings
 
 # Uncomment to use local .env file wihtout Docker
-load_dotenv("../local.env", override=True) # 
+# load_dotenv("../local.env", override=True) # 
 
 if os.name == 'nt':
     import platform
@@ -259,6 +259,9 @@ SITE_ID = 1
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # ✅ Forces JSON output
+    ),
 }
 
 AUTHENTICATION_BACKENDS = [
