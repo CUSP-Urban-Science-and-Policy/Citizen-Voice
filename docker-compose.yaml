@@ -1,5 +1,4 @@
 name: civo
-
 services:
 
   postgis_db:
@@ -14,7 +13,6 @@ services:
     volumes:
       - postgis_data:/var/lib/postgresql/data
       - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
-      # TODO: there is a problem with the init-user-db.sh script, error creating superuser, citizen already exists
     environment:
       - POSTGRES_PASSWORD=/run/secrets/postgres_password
       - POSTGRES_USER=${DB_USER}
@@ -70,9 +68,9 @@ services:
       context: ./frontend
     container_name: frontend
     environment:
-      - API_PARTY_CMS_URL=http://djangoapi:8000/api/v2
-      - AUTH_API_URL=http://djangoapi:8000api/auth
-      - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
+      - API_PARTY_CMS_URL=http://djangoapi:8000/voice/v3
+      - AUTH_API_URL=http://djangoapi:8000/api/auth
+      # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
     expose: # Expose ports without publishing them to the host machine
       - "3000"
     volumes:
@@ -84,7 +82,7 @@ services:
     networks:
       - civo_network
 
-  nginx: # TODO: there is a problem with this
+  nginx:
     image: nginx:latest
     container_name: nginx-proxy
     ports:
