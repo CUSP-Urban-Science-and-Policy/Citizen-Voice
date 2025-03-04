@@ -2,9 +2,9 @@
 
 If you're looking for user documentation, go [here](README.md).
 
-## API Docker container
+## Docker Compose
 
-The api can be reproduced using docker compose as follows:
+The app can be run using docker compose.
 
 1. Clone the repository, the latest version is in the `devel` branch.
 2. Add a `.env` file to the root of the repository with the following variables.
@@ -36,11 +36,34 @@ DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
 docker compose --env-file .env up --build
 ```
 
-5. Go to the Survey API root: http://localhost/api/v2/
+5. Go to the Survey API root: http://localhost
+
+### Voice API
+
+The Voice API contains functinality to create surveys and retrieve answers. Responses are formatted as JSON.
+This API is available at http://localhost/voice/v3
+
+Voice API Root:
+
+```json
+{
+    "answers":"http://localhost/voice/v3/answers/",
+    "questions":"http://localhost/voice/v3/questions/",
+    "surveys":"http://localhost/voice/v3/surveys/",
+    "responses":"http://localhost/voice/v3/responses/",
+    "users":"http://localhost/voice/v3/users/",
+    "locations":"http://localhost/voice/v3/locations/",
+    "polygonfeatures":"http://localhost/voice/v3/polygonfeatures/",
+    "linefeatures":"http://localhost/voice/v3/linefeatures/",
+    "map-views":"http://localhost/voice/v3/map-views/",
+    "pointfeatures":"http://localhost/voice/v3/pointfeatures/",
+    "topics":"http://localhost/voice/v3/topics/"
+}
+```
 
 **Open API**
-- A schema of the API can be downloaded from: http://localhost/api/v2/schema
-- Auto generated documentation is available at: http://localhost/api/v2/schema/redoc
+- A schema of the API can be downloaded from: http://localhost/voice/v3schema
+- Auto generated documentation is available at: http://localhost/voice/v3schema/redoc
 
 ### Civilian API
 
