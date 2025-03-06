@@ -11,7 +11,7 @@ The app can be run using docker compose.
 
 ```shell
 DATABASE=civo
-JDANGO_DB_ENGINE=postgis
+DJANGO_DB_ENGINE=postgis
 DB_USER=citizen
 DB_PORT=5432
 DJANGO_DEBUG=1  
