@@ -62,8 +62,8 @@ Voice API Root:
 ```
 
 **Open API**
-- A schema of the API can be downloaded from: http://localhost/voice/v3schema
-- Auto generated documentation is available at: http://localhost/voice/v3schema/redoc
+- A schema of the API can be downloaded from: http://localhost/voice/v3/schema
+- Auto generated documentation is available at: http://localhost/voice/v3/schema/redoc
 
 ### Civilian API
 
