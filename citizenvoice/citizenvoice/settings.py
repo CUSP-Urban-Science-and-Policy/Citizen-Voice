@@ -36,6 +36,7 @@ DEFAULT_SURVEY_PUBLISHING_DURATION = 7
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print("BASE_DIR: ", BASE_DIR, file=sys.stderr)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -50,7 +51,7 @@ DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 # Choice of database engine will be retrieved from .env file
 DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 # Application definition
 
@@ -128,7 +129,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://frontend:3000",
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://145.94.193.168:3000'
 ]
 
 # CORS_ORIGIN_ALLOW_ALL = True # Set to False in production
@@ -136,14 +136,12 @@ CORS_ORIGIN_WHITELIST = (
     "http://frontend:3000",
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://145.94.193.168:3000'
 )
 CORS_ALLOWED_ORIGINS = [
     "http://frontend:3000", # allows docker frontend requests
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost",
-
 ]
 
 # Database
@@ -224,10 +222,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = 'var/static_root/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+print("STATIC ROOT: ", STATIC_ROOT, file=sys.stderr)
 # STATICFILES_DIRS = ['static_vue']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

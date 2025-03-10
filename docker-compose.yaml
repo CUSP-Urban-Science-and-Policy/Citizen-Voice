@@ -45,6 +45,7 @@ services:
       - DJANGO_DEBUG=${DJANGO_DEBUG}
     volumes:
       - ./citizenvoice:/citizenvoice
+      - ./staticfiles:/citizenvoice/staticfiles
     expose: # Expose ports without publishing them to the host machine
       - "8000"
     secrets:
@@ -89,6 +90,7 @@ services:
       - "80:80"  # Expose Nginx on port 80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Read-only mounting of config
+      - ./staticfiles:/citizenvoice/staticfiles
     depends_on:
       frontend:
         condition: service_started
