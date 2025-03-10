@@ -15,7 +15,7 @@ DJANGO_DB_ENGINE=postgis
 DB_USER=citizen
 DB_PORT=5432
 DJANGO_DEBUG=1  
-DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] djangoapi
 ```
 
 3. Create a directory in the root of the repository called `secrets/`, and create the secrets for the Django token and the database password as follows:
