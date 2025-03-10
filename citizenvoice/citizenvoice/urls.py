@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_view
@@ -25,7 +27,7 @@ def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('api/admin/', admin.site.urls),
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
     path('respondent/', include('respondent.urls')),
     path('auth/', include('users.urls')),
@@ -38,3 +40,8 @@ urlpatterns = [
     path('voice/v3/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('health/', health_check, name="health_check"),
 ]
+
+# Serve static files through Django
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
