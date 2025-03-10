@@ -9,3 +9,5 @@ An inclusive, web-based software platform for collaborative data collection.
 :caption: Contents:
 
 introduction.md
+installation.md
+creating_surveys.md
