@@ -23,19 +23,17 @@ RUN apk add --no-cache \
     curl \
     libffi-dev
 RUN pip install --upgrade pip
-RUN pip install uwsgi
-#RUN pip install --no-cache-dir -r requirements.txt
 
 COPY requirements.txt /
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /citizenvoice
 
 WORKDIR /citizenvoice
 
 
-# RUN adduser --disabled-password --no-create-home django
-# COPY . .
-# RUN python manage.py collectstatic --no-input
-# RUN chown -R django:django /var/www/dockerize-django/citizenvoice
-# USER django
+RUN adduser --disabled-password --no-create-home django
+COPY . .
+RUN python manage.py collectstatic --no-input
+RUN chown -R django:django /citizenvoice
+USER django
