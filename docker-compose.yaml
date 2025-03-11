@@ -32,10 +32,11 @@ services:
     build: 
       context: ./citizenvoice
     command: >
-      sh -c "python manage.py migrate &&
-      python manage.py loaddata civilian-db.json &&
-      python manage.py runserver 0.0.0.0:8000"
-    #command: ["uwsgi", "--ini", "/var/www/dockerize-django/citizenvoice/uwsgi.ini", "--py-autoreload", "1"]
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    # command: >
+    #   sh -c "python manage.py migrate &&
+    #   python manage.py loaddata civilian-db.json &&
+    #   python manage.py runserver 0.0.0.0:8000"
     container_name: django-api
     environment:
       - SECRET_KEY=/run/secrets/django_token
@@ -69,6 +70,13 @@ services:
       retries: 5
       start_period: 10s
 
+    develop:
+      watch:
+        - path: ./citizenvoice
+          action: sync
+          target: ./citizenvoice
+
+
   frontend:
     build: 
       context: ./frontend
@@ -98,8 +106,8 @@ services:
     depends_on:
       frontend:
         condition: service_started
-      djangoapi:
-        condition: service_healthy
+      # djangoapi:
+      #   condition: service_healthy
     networks:
       - civo_network
 
