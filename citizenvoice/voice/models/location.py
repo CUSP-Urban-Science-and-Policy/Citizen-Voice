@@ -20,7 +20,7 @@ class PolygonFeature(gis_models.Model):
     location = models.ForeignKey('LocationCollection', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.id} - {self.annotation}!"
+        return f"{self.id} - anno {self.annotation}!"
 
 
 class LineFeature(gis_models.Model):
