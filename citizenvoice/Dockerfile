@@ -20,8 +20,10 @@ RUN apk add --no-cache \
     build-base \
     libjpeg-turbo-dev \
     zlib-dev \
-    curl
+    curl \
+    libffi-dev
 RUN pip install --upgrade pip
+RUN pip install uwsgi
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN adduser --disabled-password --no-create-home django

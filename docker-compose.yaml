@@ -17,6 +17,8 @@ services:
       - POSTGRES_PASSWORD=/run/secrets/postgres_password
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DATABASE}
+    env_file:
+      .env      
     restart: unless-stopped
     secrets:
       - postgres_password
@@ -32,6 +34,8 @@ services:
       sh -c "python manage.py migrate &&
       python manage.py loaddata civilian-db.json &&
       python manage.py runserver 0.0.0.0:8000"
+    #command: ["uwsgi", "--ini", "/var/www/dockerize-django/citizenvoice/uwsgi.ini", "--py-autoreload", "1"]
+
     container_name: django-api
     environment:
       - SECRET_KEY=/run/secrets/django_token
@@ -46,6 +50,8 @@ services:
     volumes:
       - ./citizenvoice:/citizenvoice
       - ./staticfiles:/citizenvoice/staticfiles
+    env_file:
+      .env      
     expose: # Expose ports without publishing them to the host machine
       - "8000"
     secrets:
@@ -63,6 +69,13 @@ services:
       timeout: 15s
       retries: 5
       start_period: 10s
+    develop:
+      watch:
+        - path: ./citizenvoice
+          action: sync
+          target: ./citizenvoice
+
+
 
   frontend:
     build: 
