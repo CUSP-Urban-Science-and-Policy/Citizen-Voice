@@ -18,7 +18,8 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DATABASE}
     env_file:
-      .env      
+      .env          
+
     restart: unless-stopped
     secrets:
       - postgres_password
@@ -35,7 +36,6 @@ services:
       python manage.py loaddata civilian-db.json &&
       python manage.py runserver 0.0.0.0:8000"
     #command: ["uwsgi", "--ini", "/var/www/dockerize-django/citizenvoice/uwsgi.ini", "--py-autoreload", "1"]
-
     container_name: django-api
     environment:
       - SECRET_KEY=/run/secrets/django_token
@@ -49,11 +49,10 @@ services:
       - DJANGO_DEBUG=${DJANGO_DEBUG}
     volumes:
       - ./citizenvoice:/citizenvoice
-      - ./staticfiles:/citizenvoice/staticfiles
     env_file:
-      .env      
-    expose: # Expose ports without publishing them to the host machine
-      - "8000"
+      .env          
+    ports:
+      - "8000:8000"
     secrets:
       - django_token
       - postgres_password
@@ -69,13 +68,6 @@ services:
       timeout: 15s
       retries: 5
       start_period: 10s
-    develop:
-      watch:
-        - path: ./citizenvoice
-          action: sync
-          target: ./citizenvoice
-
-
 
   frontend:
     build: 
@@ -103,7 +95,6 @@ services:
       - "80:80"  # Expose Nginx on port 80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Read-only mounting of config
-      - ./staticfiles:/citizenvoice/staticfiles
     depends_on:
       frontend:
         condition: service_started

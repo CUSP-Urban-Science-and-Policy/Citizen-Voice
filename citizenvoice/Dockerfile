@@ -28,6 +28,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN adduser --disabled-password --no-create-home django
 COPY . .
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --no-input
 RUN chown -R django:django /var/www/dockerize-django/citizenvoice
 USER django

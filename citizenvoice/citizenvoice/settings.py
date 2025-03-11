@@ -17,6 +17,9 @@ from dotenv import load_dotenv
 from datetime import timedelta
 from rest_framework.settings import api_settings
 
+# import mimetypes
+# mimetypes.add_type("text/css", ".css", True)
+
 # Uncomment to use local .env file wihtout Docker
 # load_dotenv("../local.env", override=True) # 
 
@@ -36,7 +39,6 @@ DEFAULT_SURVEY_PUBLISHING_DURATION = 7
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print("BASE_DIR: ", BASE_DIR, file=sys.stderr)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -86,6 +88,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware", # serves static files
     # CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -162,10 +165,7 @@ if os.environ.get('GITHUB_WORKFLOW'):
     }
 else:
     if DATABASE_ENGINE == "postgis":
-        print("PostGIS database engine is selected!", file=sys.stderr)
         dbase = os.environ.get('POSTGRES_DBASE')
-        print('database: ',dbase, file=sys.stderr)
-
         DATABASES = {
             'default': {
                 'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -222,14 +222,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-print("STATIC ROOT: ", STATIC_ROOT, file=sys.stderr)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # STATICFILES_DIRS = ['static_vue']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -292,4 +290,11 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
     "VERSION": "3.0.0",
     "SCHEMA_PATH_PREFIX": None,
+}
+
+STORAGES = {
+    "staticfiles": { 
+        # Whitenoise
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
 }
