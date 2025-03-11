@@ -106,8 +106,8 @@ services:
     depends_on:
       frontend:
         condition: service_started
-      # djangoapi:
-      #   condition: service_healthy
+      djangoapi:
+        condition: service_healthy
     networks:
       - civo_network
 

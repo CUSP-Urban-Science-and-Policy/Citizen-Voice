@@ -37,5 +37,3 @@ sqlparse==0.4.4
 uritemplate==4.1.1
 urllib3==2.1.0
 wheel==0.42.0
-
-#uWSGI
