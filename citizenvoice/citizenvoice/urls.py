@@ -30,16 +30,21 @@ urlpatterns = [
     path('api/admin/', admin.site.urls),
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
     path('respondent/', include('respondent.urls')),
-    path('auth/', include('users.urls')),
+    # path('auth/', include('users.urls')),
     path('voice/v3/', include('voice.urls')),
+    path('designer/', include('survey_design.urls')),
     path('civilian/v1/', include('civilian.urls')),
     path('login/', auth_view.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path(r'voice/auth/', include('knox_allauth.urls')),
+    path('api/auth/', include('knox_allauth.urls')),
     path('voice/v3/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('voice/v3/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('health/', health_check, name="health_check"),
 ]
+
+# TODO: continue here: Registering users work but the redirect page is not available. API returns success
+# but frontend does not redirect to the survey page. The issue is likely in the frontend.
+# error: [Vue Router warn]: No match found for location with path "/designer"
 
 # Serve static files through Django
 if settings.DEBUG:

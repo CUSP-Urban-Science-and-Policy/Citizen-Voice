@@ -4,6 +4,216 @@ info:
   version: 3.0.0
   description: Documentation of API endpoints in CitizenVoice
 paths:
+  /api/auth/email/resend/:
+    post:
+      operationId: api_auth_email_resend_create
+      description: Resend email verification to the passed email (if it exists and
+        is not verified already).
+      tags:
+      - email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResendVerificationView'
+          description: ''
+  /api/auth/email/verify/:
+    post:
+      operationId: api_auth_email_verify_create
+      description: Verify email address using random key sent in confirmation email.
+      tags:
+      - email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailIsVerified'
+          description: ''
+        '404':
+          description: Invalid confrimation key.
+  /api/auth/login/:
+    post:
+      operationId: api_auth_login_create
+      description: |-
+        Check the credentials from the request data and return a session token.
+
+        Similar to knox's `LoginView` but uses allauth authentication backend instead of
+        another API authentication method (basic/session auth).
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AllauthLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AllauthLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AllauthLogin'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/auth/logout/:
+    post:
+      operationId: api_auth_logout_create
+      description: Delete the session token associated with the incoming authenticated
+        request.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/logout/all/:
+    post:
+      operationId: api_auth_logout_all_create
+      description: Delete all session tokens associated with the authenticated user.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/me/:
+    get:
+      operationId: api_auth_me_retrieve
+      description: ViewSet for retrieving and updating current user instance.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_auth_me_update
+      description: ViewSet for retrieving and updating current user instance.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: api_auth_me_partial_update
+      description: ViewSet for retrieving and updating current user instance.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/auth/register/:
+    post:
+      operationId: api_auth_register_create
+      description: Register a new user using provided credentials via allauth.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AllauthRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AllauthRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AllauthRegister'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
   /civilian/v1/answers/:
     get:
       operationId: civilian_v1_answers_list
@@ -201,216 +411,6 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /voice/auth/email/resend/:
-    post:
-      operationId: voice_auth_email_resend_create
-      description: Resend email verification to the passed email (if it exists and
-        is not verified already).
-      tags:
-      - email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          multipart/form-data:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailResendVerificationView'
-          description: ''
-  /voice/auth/email/verify/:
-    post:
-      operationId: voice_auth_email_verify_create
-      description: Verify email address using random key sent in confirmation email.
-      tags:
-      - email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          multipart/form-data:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailIsVerified'
-          description: ''
-        '404':
-          description: Invalid confrimation key.
-  /voice/auth/login/:
-    post:
-      operationId: voice_auth_login_create
-      description: |-
-        Check the credentials from the request data and return a session token.
-
-        Similar to knox's `LoginView` but uses allauth authentication backend instead of
-        another API authentication method (basic/session auth).
-      tags:
-      - voice
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-        required: true
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthToken'
-          description: ''
-  /voice/auth/logout/:
-    post:
-      operationId: voice_auth_logout_create
-      description: Delete the session token associated with the incoming authenticated
-        request.
-      tags:
-      - voice
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          description: No response body
-  /voice/auth/logout/all/:
-    post:
-      operationId: voice_auth_logout_all_create
-      description: Delete all session tokens associated with the authenticated user.
-      tags:
-      - voice
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          description: No response body
-  /voice/auth/me/:
-    get:
-      operationId: voice_auth_me_retrieve
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - voice
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    put:
-      operationId: voice_auth_me_update
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - voice
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/User'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    patch:
-      operationId: voice_auth_me_partial_update
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - voice
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-  /voice/auth/register/:
-    post:
-      operationId: voice_auth_register_create
-      description: Register a new user using provided credentials via allauth.
-      tags:
-      - voice
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          description: No response body
   /voice/v3/answers/:
     get:
       operationId: voice_v3_answers_list
@@ -2293,7 +2293,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/VoiceUser'
           description: ''
     post:
       operationId: voice_v3_users_create
@@ -2305,13 +2305,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/VoiceUser'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/VoiceUser'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/VoiceUser'
+        required: true
       security:
       - tokenAuth: []
       responses:
@@ -2319,7 +2320,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/VoiceUser'
           description: ''
   /voice/v3/users/{id}/:
     get:
@@ -2342,7 +2343,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/VoiceUser'
           description: ''
     put:
       operationId: voice_v3_users_update
@@ -2361,13 +2362,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/VoiceUser'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/VoiceUser'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/VoiceUser'
+        required: true
       security:
       - tokenAuth: []
       responses:
@@ -2375,7 +2377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/VoiceUser'
           description: ''
     patch:
       operationId: voice_v3_users_partial_update
@@ -2394,13 +2396,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedVoiceUser'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedVoiceUser'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedVoiceUser'
       security:
       - tokenAuth: []
       responses:
@@ -2408,7 +2410,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/VoiceUser'
           description: ''
     delete:
       operationId: voice_v3_users_destroy
@@ -3163,6 +3165,32 @@ components:
           format: email
           readOnly: true
           title: Email address
+    PatchedVoiceUser:
+      type: object
+      description: |-
+        Serialises 'id', 'username', 'first_name', 'last_name', 'email'
+        fields of the User model for the API.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
     PointFeature:
       type: object
       description: |-
@@ -3505,6 +3533,35 @@ components:
           title: Email address
       required:
       - email
+      - id
+      - username
+    VoiceUser:
+      type: object
+      description: |-
+        Serialises 'id', 'username', 'first_name', 'last_name', 'email'
+        fields of the User model for the API.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+      required:
       - id
       - username
   securitySchemes:

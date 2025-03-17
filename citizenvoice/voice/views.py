@@ -11,7 +11,7 @@ from rest_framework.response import Response as rf_response
 from django.middleware import csrf
 from django.utils import timezone
 from .serializers import AnswerSerializer, LocationCollectionSerializer, PointFeatureSerializer, \
-    QuestionSerializer, SurveySerializer, ResponseSerializer, UserSerializer, \
+    QuestionSerializer, SurveySerializer, ResponseSerializer, VoiceUserSerializer, \
     MapViewSerializer, LineFeatureSerializer, PolygonFeatureSerializer, AnswerCSVSerializer, \
     TopicSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -480,7 +480,7 @@ class UserViewSet(viewsets.ModelViewSet):
     User ViewSet used internally to query data from database for all users.
     """
     permission_classes = [IsAuthenticatedAndSelf]
-    serializer_class = UserSerializer
+    serializer_class = VoiceUserSerializer
 
     def get_queryset(response):
         """
