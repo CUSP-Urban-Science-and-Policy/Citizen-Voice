@@ -11,7 +11,7 @@ class AccountAdapter(DefaultAccountAdapter):
         return settings.KNOX_ALLAUTH_CONFIRMATION_URL.format(key=emailconfirmation.key)
 
     def respond_email_verification_sent(self, request, user):
-        """If the email verification was send - do nothing (don't redirect anywhere)."""
+        """If the email verification was sent - do nothing (don't redirect anywhere)."""
         return None
 
     def respond_user_inactive(self, request, user):
