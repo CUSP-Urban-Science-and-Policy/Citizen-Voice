@@ -1,8 +1,8 @@
 <template>
     <NuxtLayout name="default">
         <div class="custom-login-form">
-            <h1 class="text-h6">Login or create an
-                <NuxtLink to="/register"> account</NuxtLink>
+            <h1 class="text-h6">Login or <br>
+                <NuxtLink to="/register">Create an account</NuxtLink>
             </h1>
 
             <form class="mt-4" @submit.prevent="onSubmit">

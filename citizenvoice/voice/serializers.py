@@ -60,7 +60,7 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
     respondent = serializers.HyperlinkedRelatedField(queryset=User.objects.all(),view_name='user-detail', allow_null=True)
 
     def get_respondent(self, User):
-        return UserSerializer(User.respondent).data
+        return VoiceUserSerializer(User.respondent).data
    
     class Meta:
         model = ResponseModel
@@ -97,7 +97,7 @@ class SurveySerializer(serializers.HyperlinkedModelSerializer):
                   'publish_date', 'expire_date', 'public_url', 'designer')
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class VoiceUserSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serialises 'id', 'username', 'first_name', 'last_name', 'email'
     fields of the User model for the API.
