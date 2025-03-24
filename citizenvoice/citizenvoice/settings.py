@@ -21,7 +21,7 @@ from rest_framework.settings import api_settings
 # mimetypes.add_type("text/css", ".css", True)
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../local.env", override=True) # 
+# load_dotenv("../local.env", override=True) #
 
 if os.name == 'nt':
     import platform
@@ -76,13 +76,19 @@ INSTALLED_APPS = [
     'survey_design.apps.SurveyDesignConfig',
     'respondent.apps.RespondentConfig',
     'corsheaders',
-    'knox',
-    'knox_allauth',
-    'allauth',
-    'allauth.account',
+    # 'knox',
+    # 'knox_allauth',
+    # 'allauth',
+    # 'allauth.account',
     'bulk_update_or_create',
     'django_extensions',
     'drf_spectacular',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+
 ]
 
 MIDDLEWARE = [
@@ -96,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -236,29 +243,30 @@ if os.name == 'nt':
     GDAL_LIBRARY_VERSION = os.getenv("GDAL_LIBRARY_VERSION", "gdal305.dll")
     GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin' + "\\" + GDAL_LIBRARY_VERSION
 
-LOGIN_REDIRECT_URL = 'survey-home'
 LOGIN_URL = 'survey-design-index'
 
-# Knox & AllAuth Authentication
-
-# django-allauth settings
-# In order to make allauth suitable for API user our patched account adapter
-ACCOUNT_ADAPTER = "knox_allauth.adapters.AccountAdapter"
-# SOCIALACCOUNT_ADAPTER = "apps.users.adapters.SocialAccountAdapter"
-# ACCOUNT_ALLOW_REGISTRATION = os.environ['DJANGO_ACCOUNT_ALLOW_REGISTRATION'] = True # fIXME
-ACCOUNT_ALLOW_REGISTRATION = True
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_USER_MODEL_EMAIL_FIELD = "email"
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"  # TODO: set to "mandatory"
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_USERNAME_MIN_LENGTH = 2
 
 SITE_ID = 1
 
+LOGIN_REDIRECT_URL = '/'
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        # For each OAuth based provider, either add a ''SocialApp''
+        # (''socialaccount'' app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': 'Ov23liKpHvPA3iG1IEfT',
+            'secret': 'a7ea45331278c00a3f5dbbae8d599eb0b436ad1b',
+            'key': ''
+        }
+    }
+}
+
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    #'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',  # ✅ Forces JSON output
@@ -293,8 +301,11 @@ SPECTACULAR_SETTINGS = {
 }
 
 STORAGES = {
-    "staticfiles": { 
+    "staticfiles": {
         # Whitenoise
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'emails'
