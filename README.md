@@ -5,7 +5,7 @@ An inclusive, web-based software platform for collaborative data collection that
 
 ## Documentation
 
-The application is under development, but relevant documentation will be available in our [documentation page.](https://citizenvoice.readthedocs.io)
+The application is under development, but relevant documentation will be available in our [documentation page.](https://cusp-urban-science-and-policy.github.io/Citizen-Voice/index.html)
 
 ## Contributions
 
