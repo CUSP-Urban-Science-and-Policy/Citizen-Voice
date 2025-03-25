@@ -10,29 +10,14 @@ permissions:
   contents: write
 
 jobs:
-  docs:
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install Pandoc
-        uses: pandoc/actions/setup@v1
-        with:
-          version: 3.5
-      - name: Install dependencies
-        run: |
-          pip install pip --upgrade
-          pip install -r docs/requirements.txt
-      - name: Sphinx build
-        run: |
-          sphinx-build docs _build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
-        with:
-          publish_branch: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/
-          force_orphan: true
+    - id: deployment
+      uses: sphinx-notes/pages@v3
