@@ -18,16 +18,24 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_view
+from django.shortcuts import render
+from django.http import JsonResponse
+
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 
-# Allows to check the health of the API
-from django.http import JsonResponse
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
+def home(request):
+    return render(request, 'home.html')
+
 urlpatterns = [
+    path('home', home),
+
     path('api/admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
+
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
     path('respondent/', include('respondent.urls')),
     # path('auth/', include('users.urls')),
@@ -36,7 +44,7 @@ urlpatterns = [
     path('civilian/v1/', include('civilian.urls')),
     path('login/', auth_view.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path('api/auth/', include('knox_allauth.urls')),
+    #path('api/auth/', include('knox_allauth.urls')),
     path('voice/v3/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('voice/v3/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('health/', health_check, name="health_check"),

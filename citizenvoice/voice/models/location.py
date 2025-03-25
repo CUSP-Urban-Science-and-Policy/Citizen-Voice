@@ -19,6 +19,10 @@ class PolygonFeature(gis_models.Model):
     annotation = models.CharField(max_length=150, blank=True, null=True)
     location = models.ForeignKey('LocationCollection', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.id} - {self.annotation}"
+
+
 class LineFeature(gis_models.Model):
     """
     Represents the location of a question or answer as a LINESTRING

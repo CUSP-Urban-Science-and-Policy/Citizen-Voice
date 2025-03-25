@@ -1,3 +1,16 @@
+# github
+
+Goto https://github.com/settings/applications/new for creating a new OAuth application on GitHub.
+For now:
+
+homepage url : https://127.0.0.1:8000/
+callback url : http://localhost/accounts/github/login/callback
+
+# google
+Here a webpage how to set up oauth for google: https://plainenglish.io/blog/proper-way-of-using-google-authentication-with-django-and-django-allauth
+
+
+
 # Developer documentation
 
 If you're looking for user documentation, go [here](README.md).
@@ -14,7 +27,7 @@ DATABASE=civo
 DJANGO_DB_ENGINE=postgis
 DB_USER=citizen
 DB_PORT=5432
-DJANGO_DEBUG=1  
+DJANGO_DEBUG=1
 DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] djangoapi
 ```
 
@@ -72,8 +85,8 @@ With the corresponding schemas and documentation at:
 - Schema: http://localhost/civilian/v1/schema
 - Documentation: http://localhost/civilian/v1/schema/redoc
 
-The 'answers' endpoint provides the list of answers for questions that contain spatial geometries. 
-One can navigate long list of answers by using the `page` parameter. The `topics` keyword in `question` contains the name of the categories for the legend in the dashboard. The `geojson` keyword in `mapview` contains valid GeoJson for all the geometries related to an answer. Notice, that the *property* `annotation` of each geometry contains a text, which if not a empty string,  shall be display as a pop-up on geometries in the dashboard. 
+The 'answers' endpoint provides the list of answers for questions that contain spatial geometries.
+One can navigate long list of answers by using the `page` parameter. The `topics` keyword in `question` contains the name of the categories for the legend in the dashboard. The `geojson` keyword in `mapview` contains valid GeoJson for all the geometries related to an answer. Notice, that the *property* `annotation` of each geometry contains a text, which if not a empty string,  shall be display as a pop-up on geometries in the dashboard.
 
 Coordinates of the geometries are the WSG84 reference system.
 
@@ -176,7 +189,7 @@ pip install -r requirements.txt
 ## Running the Django App
 
 1. Create a `local.env` file with a secret key for the django project, and the database configuration, such as:
-    
+
     ```shell
     # local.env file root directory
 
@@ -188,7 +201,7 @@ pip install -r requirements.txt
     DJANGO_DEBUG=1  # run in debug mode
     DJANGO_ALLOWED_HOSTS="localhost 127.0.0.1 [::1]"
     DB_HOST=localhost # Comment for docker
-    SECRET_KEY=django-insecure-#(7^@z1!1 
+    SECRET_KEY=django-insecure-#(7^@z1!1
     POSTGRES_PWD='admin@voice'
     TEST_DBASE=''
     ```
@@ -198,7 +211,7 @@ pip install -r requirements.txt
 ```python
 # load_dotenv("../local.env", override=True)
 ```
-    
+
 3. Run the development server from `citizenvoice/` directory. Saved changes will be automatically reloaded:
 
     ```shell
