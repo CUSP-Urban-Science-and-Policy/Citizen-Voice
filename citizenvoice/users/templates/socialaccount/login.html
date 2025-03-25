@@ -26,28 +26,17 @@
 
   {%else%}
   <div class="flex m-auto border w-[90%] justify-center  bg-blue-200 h-20 rounded rounded-lg">
-    <p class="mt-6 ml-3">Citizen Voice confirm you want to sign in with an oauth provider.</p>
     <a class="ml-auto mt-6 mr-3" href="{% url 'account_login' %}">Sign in</a>
   </div>
 
   {%endif%}
 
-  <div class="m-auto w-[90%] justify-center">
-    <h1 class="text-3xl font-bold ">
-      Google Autentication
-    </h1>
-  </div>
-
-
-  <div>
-    <button></button>
-  </div>
 
   <div class="m-auto w-[50%] m-auto border  rounded-lg">
     <h1 class="text-center bg-gray-100 h-[52px] font-bold text-3xl">Sign In</h1>
 
 
-    <h2 class="text-center my-3">You are about to use third party authentication!
+    <h2 class="text-center my-3">Citizen Voice wants to do authentication with a third party!
     </h2>
     <form method="post">
         <div class="justify-center mx-3">
