@@ -6,6 +6,7 @@ __pycache__/
 
 # NOTES
 dev-notes.md
+data/
 
 # Django #
 *.log
@@ -36,7 +37,6 @@ sdist/
 vue/
 node_modules/
 package-lock.json
-package.json
 var/
 wheels/
 pip-wheel-metadata/
@@ -121,7 +121,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+*.env
 .venv
 env/
 venv/

@@ -22,10 +22,11 @@ class Survey(models.Model):
     is_published = models.BooleanField(_("Survey is visible and accessible to users"), default=False)
     need_logged_user = models.BooleanField(_("Only authenticated users have access to this survey"), default=False)
     editable_answers = models.BooleanField(_("Answers can be edited after submission"), default=True)
+    submit_message = models.TextField(_("Message to be displayed after survey is submitted"), blank=True, default="Thank you for your participation!")
     publish_date = models.DateTimeField(_("Date that survey was made available"))
     expire_date = models.DateTimeField(_("Expiry date of survey"))
     public_url = models.CharField(_("Public URL"), max_length=255, blank=True) # TODO: [manuel] this should be auto-generated when chosen by the designer 
-    designer = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    designer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.name)

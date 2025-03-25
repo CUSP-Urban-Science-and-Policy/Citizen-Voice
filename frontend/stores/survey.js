@@ -14,11 +14,13 @@ export const useSurveyStore = defineStore('survey', {
     getters: {
         questionCount() {
             return this.questions.length
+        },
+        getMapViewUrl(index) {
+            return this.questions[index].map_view
         }
-
     },
     actions: {
-        async getSurvey(id) {
+        async getSurvey(suvery_url) {
             const user = useUserStore()
             const token = user.getAuthToken
 
@@ -27,18 +29,17 @@ export const useSurveyStore = defineStore('survey', {
                     'Content-Type': 'application/json',
                 },
                 method: 'GET',
+                // pathParams: () => ({ url: suvery_url.value })
             }
 
             if (token) {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            const data = await useAsyncData(() => $cmsApi('api/surveys/' + id, config));
+            const data = await useAsyncData(() => $cmsApi(suvery_url, config));
 
             return data
         },
-
-        
         
         selectSurvey(id) {
             this.selectedSurveyId = id
@@ -60,7 +61,7 @@ export const useSurveyStore = defineStore('survey', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            const { data, error} = await useAsyncData('surveys', () => $cmsApi('/api/surveys', config));
+            const { data, error} = await useAsyncData('surveys', () => $cmsApi('/surveys', config));
 
             return { data, error }
 
@@ -108,7 +109,7 @@ export const useSurveyStore = defineStore('survey', {
 
             }
 
-            const { data: register, pending, error } = await useAsyncData('createSurvey', () => $cmsApi('/api/surveys/create-survey/', config))
+            const { data: register, pending, error } = await useAsyncData('createSurvey', () => $cmsApi('/surveys/create-survey', config))
 
             if (error.value) {
                 let warnMessage = null
@@ -142,7 +143,7 @@ export const useSurveyStore = defineStore('survey', {
             const global = useGlobalStore()
             const config = setRequestConfig({ method: 'PATCH', body: { ...body } })
 
-            const { data: register, pending, error } = await useAsyncData('updateSurvey', () => $cmsApi(`/api/surveys/${id}/`, config))
+            const { data: register, pending, error } = await useAsyncData('updateSurvey', () => $cmsApi(`/surveys/${id}/`, config))
 
             if (error.value) {
                 let warnMessage = null
@@ -183,7 +184,7 @@ export const useSurveyStore = defineStore('survey', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            const response = await useAsyncData('getSurveys', () => $cmsApi('/api/surveys/my-surveys', config))
+            const response = await useAsyncData('getSurveys', () => $cmsApi('/surveys/my-surveys', config))
 
             const error = response.error
             if (error.value) {
@@ -224,7 +225,7 @@ export const useSurveyStore = defineStore('survey', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            const { data: register, pending, error } = await useAsyncData('deleteSurvey', () => $cmsApi('/api/surveys/' + id, config))
+            const { data: register, pending, error } = await useAsyncData('deleteSurvey', () => $cmsApi('/surveys/' + id, config))
 
             if (error.value) {
                 let warnMessage = null
@@ -258,7 +259,7 @@ export const useSurveyStore = defineStore('survey', {
             console.log('id in get questions//> ', id);
 
             // if (!this.questions){
-                const { data: response, pending, error} = await useAsyncData(() => $cmsApi('api/surveys/' + id + '/questions', config));
+                const { data: response, pending, error} = await useAsyncData(() => $cmsApi('/surveys/' + id + '/questions', config));
             
                 const responseData = await response.value;  
 

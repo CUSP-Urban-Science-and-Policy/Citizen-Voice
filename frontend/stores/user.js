@@ -11,6 +11,7 @@ export const useUserStore = defineStore('user', {
                 error: '',
                 user: {
                     id: null,
+                    url: '',
                     email: '',
                     username: ''
                 },
@@ -45,7 +46,7 @@ export const useUserStore = defineStore('user', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            await $cmsApi('/api/auth/me/', config)
+            await $authApi('/me/', config)
                 .then(response => {
                     this.userData = {
                         ...this.userData,

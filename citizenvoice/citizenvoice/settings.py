@@ -11,11 +11,14 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 from rest_framework.settings import api_settings
 
+# Uncomment to use local .env file wihtout Docker
+load_dotenv("../local.env")
 
 if os.name == 'nt':
     import platform
@@ -31,29 +34,23 @@ if os.name == 'nt':
 # Default settings survey
 DEFAULT_SURVEY_PUBLISHING_DURATION = 7
 
-# read environment variable form .env file
-load_dotenv("../.env")
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# read environment variable form .env file
-load_dotenv("../.env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'setme-in-production')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
 # Choice of database engine will be retrieved from .env file
-DATABASE_ENGINE = os.getenv('DATABASE_ENGINE')
+DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -68,7 +65,9 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django.contrib.sites',
     'apiapp',
+    'civilian',
     'rest_framework',
+    'rest_framework_gis',
     'rest_framework.permissions',
     'users.apps.UsersConfig',
     'survey_design.apps.SurveyDesignConfig',
@@ -80,6 +79,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'bulk_update_or_create',
     'django_extensions',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -126,10 +126,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://145.94.193.168:3000'
 ]
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1'
-]
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
@@ -147,7 +144,7 @@ CORS_ALLOWED_ORIGINS = [
 
 # The code below is necessary to distinguish a deployment for CI with
 # GitHub Actions (IF part) and any other deployment  (the ELSE part)
-if os.getenv('GITHUB_WORKFLOW'):
+if os.environ.get('GITHUB_WORKFLOW'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -160,16 +157,20 @@ if os.getenv('GITHUB_WORKFLOW'):
     }
 else:
     if DATABASE_ENGINE == "postgis":
+        print("PostGIS database engine is selected!", file=sys.stderr)
+        dbase = os.environ.get('POSTGRES_DBASE')
+        print('database: ',dbase, file=sys.stderr)
+
         DATABASES = {
             'default': {
                 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-                'NAME': os.getenv('POSTGRES_DBASE'),
-                'USER': os.getenv('POSTGRES_USER'),
-                'PASSWORD': os.getenv('POSTGRES_PWD'),
-                'HOST': os.getenv('POSTGRES_HOST'),
-                'PORT': os.getenv('POSTGRES_PORT'),
+                'NAME': os.environ.get('POSTGRES_DBASE'),
+                'USER': os.environ.get('POSTGRES_USER'),
+                'PASSWORD': os.environ.get('POSTGRES_PWD'),
+                'HOST': os.environ.get('POSTGRES_HOST'),
+                'PORT': os.environ.get('POSTGRES_PORT'),
                 'TEST': {
-                    'NAME': os.getenv('TEST_DBASE'),
+                    'NAME': os.environ.get('TEST_DBASE'),
                 },
             }
         }
@@ -250,6 +251,7 @@ SITE_ID = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -273,8 +275,8 @@ REST_KNOX = {
 # drf-spectacular
 #
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Address API",
-    "DESCRIPTION": "Documentation of API endpoints of Address",
-    "VERSION": "1.0.0",
+    "TITLE": "CitizenVoice API",
+    "DESCRIPTION": "Documentation of API endpoints for CitizenVoice",
+    "VERSION": "2.0.6",
     "SCHEMA_PATH_PREFIX": "/api",
 }
