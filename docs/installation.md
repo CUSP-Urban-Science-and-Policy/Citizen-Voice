@@ -6,17 +6,11 @@ The Citizen-Voice project is designed to be set up using Docker Compose, which s
 ## Prerequisites
 Before you begin, ensure you have the following software installed on your machine:
 
-1. **Docker** and **Docker Compose**: Docker is required to run the project in isolated containers. Docker Compose is used to manage multi-container Docker applications.
+**Docker** and **Docker Compose**: Docker is required to run the project in isolated containers. Docker Compose is used to manage multi-container Docker applications.
 
 - Install [Docker](https://docs.docker.com/get-started/get-docker/)
 - Install [Docker Compose](https://docs.docker.com/compose/install/)
 
-2. **GDAL**: The Geospatial Data Abstraction Library (GDAL) 3.3.2 or later is required for geospatial data processing.
-- Install [GDAL](https://gdal.org/en/stable/download.html#download) 
-
-3. **PostgreSQL** database with the **PostGIS** extension
-- Install [PostgreSQL](https://www.postgresql.org/)
-- Install and enable [PostGIS](https://postgis.net/documentation/getting_started/)
 
 ## Getting Started
 Follow these steps to set up the Citizen-Voice project:
@@ -75,4 +69,9 @@ Open a web browser and navigate to http://localhost/ to see the development vers
 
 This guide should help you set up the Citizen-Voice project efficiently. If you encounter any issues, please refer to the project's documentation or seek help from the community.
 
-## APIs
+
+## Front-end
+## Back-end
+### APIs
+
+## Optional Installation for the Documentation
