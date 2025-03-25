@@ -76,7 +76,7 @@ INSTALLED_APPS = [
     'survey_design.apps.SurveyDesignConfig',
     'respondent.apps.RespondentConfig',
     'corsheaders',
-    # 'knox',
+    # 'knox',My Project 9252
     # 'knox_allauth',
     # 'allauth',
     # 'allauth.account',
@@ -88,7 +88,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
-
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -253,14 +253,8 @@ LOGIN_REDIRECT_URL = '/'
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
-        # For each OAuth based provider, either add a ''SocialApp''
-        # (''socialaccount'' app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': 'Ov23liKpHvPA3iG1IEfT',
-            'secret': 'a7ea45331278c00a3f5dbbae8d599eb0b436ad1b',
-            'key': ''
-        }
+    },
+    'google': {
     }
 }
 

@@ -6,6 +6,9 @@ For now:
 homepage url : https://127.0.0.1:8000/
 callback url : http://localhost/accounts/github/login/callback
 
+# google
+Here a webpage how to set up oauth for google: https://plainenglish.io/blog/proper-way-of-using-google-authentication-with-django-and-django-allauth
+
 
 
 # Developer documentation
