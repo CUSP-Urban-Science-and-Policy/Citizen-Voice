@@ -55,8 +55,6 @@ DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
-# Application definition
-
 # note: add your custom apps after django apps
 INSTALLED_APPS = [
     'django.contrib.admin',
