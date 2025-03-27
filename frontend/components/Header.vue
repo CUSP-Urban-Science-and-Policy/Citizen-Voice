@@ -63,10 +63,6 @@ export default {
                 {
                     label: 'Design survey',
                     link: '/design/surveys'
-                },
-                {
-                    label: 'About',
-                    link: '/about'
                 }
             ],
             itemsAccount: [
