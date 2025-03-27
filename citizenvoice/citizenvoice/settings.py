@@ -11,12 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
-import sys
 from pathlib import Path
 from dotenv import load_dotenv
-import platform
-from datetime import timedelta
-from rest_framework.settings import api_settings
 
 # Uncomment to use local .env file wihtout Docker
 load_dotenv("../local.env", override=True) #
