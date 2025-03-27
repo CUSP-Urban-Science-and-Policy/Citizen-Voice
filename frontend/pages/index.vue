@@ -28,7 +28,7 @@
                     rounded="xl"
                     variant="elevated"
                     color="primary"
-                    @click="navigateTo('surveys/')">
+                    @click="navigateTo('/surveys')">
                     To Survey Demo
                 </v-btn>
                 </v-card-actions>
