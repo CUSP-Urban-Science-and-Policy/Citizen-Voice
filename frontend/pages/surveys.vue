@@ -1,7 +1,8 @@
 <template>
     <NuxtLayout name="default">
             <v-sheet 
-            class="d-flex align-center justify-center flex-wrap mx-auto px-5">
+                max-width="900px"
+                class="d-flex align-center flex-wrap mx-auto px-5">
                 <div>
                     <h1 class="text-h1 ">Voice Survey Tool</h1>
                 </div>
@@ -27,7 +28,7 @@
                         :title="survey.name"
                         :subtitle="'Published: ' + formatDate(survey.publishe_date)"
                         variant="elevated"
-                        width="400"
+                        max-width="400"
                         class="civo-card"
                         hover
                         >
@@ -52,9 +53,10 @@ surveyStore.$reset(); // reset SelectedSurvey to null
 const {data: surveys} = await surveyStore.getSurveys();
 
 // sets id on surveyStore and redirects to survey/id page
-function selectSurvey (id) {
+async function selectSurvey (id) {
     surveyStore.selectSurvey(id);
-    navigateTo(`survey/${id}`);
+    console.log(id);
+    await navigateTo(`survey/${id}`);
 };
 
 </script>
