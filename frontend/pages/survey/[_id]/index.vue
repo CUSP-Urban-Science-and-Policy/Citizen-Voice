@@ -37,7 +37,7 @@ const storeResponse = useStoreResponse()
 const storeUser = useUserStore()
 const survey_url = "/api/surveys/"
 const create_response_url = "/api/responses/"
-const origin_url = "http://localhost:3000"
+// const origin_url = "http://localhost:3000"
 const data = ref([])
 const route = useRoute()
 console.log('route id', route.params._id)
