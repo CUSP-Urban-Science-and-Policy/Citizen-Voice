@@ -32,9 +32,9 @@ export default defineNuxtConfig({
 
   app: {
       head: {
-          title: "Citizen Voice",
+          title: "Voice Survey Tool",
           link: [
-              { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+              { rel: 'icon', type: 'image/x-icon', href: '/favicon-blue.png' },
               {
                   rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.css',
                   integrity: 'sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=', crossorigin: ''
