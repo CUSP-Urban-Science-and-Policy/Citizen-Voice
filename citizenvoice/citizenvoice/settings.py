@@ -14,14 +14,15 @@ import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
+import platform
 from datetime import timedelta
 from rest_framework.settings import api_settings
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../local.env", override=True) #
+load_dotenv("../local.env", override=True) #
 
 if os.name == 'nt':
-    import platform
+    
     OSGEO4W = r"C:\OSGeo4W"
     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
     os.environ['OSGEO4W_ROOT'] = OSGEO4W
