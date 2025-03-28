@@ -29,7 +29,7 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-btn variant="tonal" block @click="submitMap">Save map</v-btn>
+                <v-btn variant="tonal" color="primary" block @click="submitMap">Save map</v-btn>
                 <!-- <v-btn color="primary" block @click="dialog = false">Save</v-btn> -->
             </v-card-actions>
         </v-card>
