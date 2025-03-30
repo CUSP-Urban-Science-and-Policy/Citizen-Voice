@@ -259,7 +259,8 @@ HEADLESS_FRONTEND_URLS ={
 }
 
 HEADLESS_SERVE_SPECIFICATION = True
-
+SESSION_COOKIE_DOMAIN = "localhost"
+CSRF_COOKIE_DOMAIN = "localhost"
 
 # drf-spectacular
 #

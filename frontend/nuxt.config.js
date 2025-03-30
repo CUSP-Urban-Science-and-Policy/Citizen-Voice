@@ -128,7 +128,7 @@ export default defineNuxtConfig({
                 schema: './openapi/voice/openapi.yml'
             },
             authApi: { // Becomes `$authApi()` and useAuthApiData()
-                url: process.env.AUTH_API_URL || 'http://localhost:8000/api/auth',
+                url: process.env.AUTH_API_URL || 'http://localhost:8000/_allauth/browser/v1/auth',
                 schema: './openapi/voice/openapi.yml'
             }
         }

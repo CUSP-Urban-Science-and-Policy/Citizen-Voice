@@ -35,7 +35,7 @@ urlpatterns = [
 
     path('api/admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('_allauth/', include('allauth.headless.urls')),
+    path('_allauth/', include('allauth.headless.urls')), # url endpoins are defined in settings.py
 
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
     path('respondent/', include('respondent.urls')),
