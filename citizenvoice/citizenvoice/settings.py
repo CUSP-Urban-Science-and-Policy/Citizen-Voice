@@ -228,6 +228,9 @@ LOGIN_REDIRECT_URL = '/'
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
+        'client_id': os.environ.get('GITHUB_CLIENT_ID'),
+        'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
+        'key': '',
     },
     'google': {
     }
