@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 
     'allauth',
     'allauth.account',
+    'allauth.headless',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
@@ -252,13 +253,22 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+HEADLESS_FRONTEND_URLS ={
+    "account_reset_password": "account/password/reset",
+    "account_signup": "accounts/signup",
+}
+
+HEADLESS_SERVE_SPECIFICATION = True
+
+
 # drf-spectacular
 #
 SPECTACULAR_SETTINGS = {
     "TITLE": "CitizenVoice APIs",
     "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
-    "VERSION": "3.0.0",
+    "VERSION": "3.1.1",
     "SCHEMA_PATH_PREFIX": None,
+    "EXTERNAL_DOCS": {"description": "User Authentication (allauth)", "url": "/_allauth/openapi.html"},
 }
 
 STORAGES = {
