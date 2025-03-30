@@ -56,7 +56,7 @@ const {data: surveys} = await surveyStore.getSurveys();
 async function selectSurvey (id) {
     surveyStore.selectSurvey(id);
     console.log(id);
-    await navigateTo(`survey/${id}`);
+    await navigateTo(`/survey/${id}`);
 };
 
 </script>
