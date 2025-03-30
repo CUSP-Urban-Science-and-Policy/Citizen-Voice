@@ -10,15 +10,11 @@
             </template>
             <template v-slot:subtitle>
                     <div class="title-wrapper" style="white-space: normal;">
-                        {{ question.order + ' ' + question.explanation}}
+                        {{ question.explanation}}
                     </div>
             </template>
                 <!-- Answer card-->
                 <div v-if="question.has_text_input" class="my-card col">
-              
-                    <!-- <p>Questions type: {{ question.question_type }}
-                    Answer body: {{ current_answer }}
-                    </p> -->
                     <RespondentViewQuestionTypesAnswerTypeText 
                     v-if="question.question_type === 'text'"
                     :question="question"
@@ -87,10 +83,6 @@
                                     <span class="q-pa-sm">Submit</span>
                                 </v-btn>
                     </v-card-actions>
-                    <!-- <div> 
-                        <p>Current index question {{current_question_index}} </p>
-                        <p>total questions {{survey_store.questionCount}} </p>
-                        </div> -->
                 </div>
             </v-card>
         </div>
@@ -115,7 +107,6 @@ const responseStore = useStoreResponse();
 const mapViewStore = useMapViewStore();
 
 mapViewStore.$reset();
-
 
 const route = useRoute();
 const survey_store = useSurveyStore();
