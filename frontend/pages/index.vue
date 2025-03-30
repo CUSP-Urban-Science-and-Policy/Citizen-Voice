@@ -4,7 +4,7 @@
             <v-card class="my-card" >
                 <v-img
                     height="300px"
-                    src="citizens.jpg"
+                    src="citizen-mapping.jpg"
                     eager
                     cover
                     position="center top"
@@ -29,7 +29,7 @@
                     variant="elevated"
                     color="primary"
                     @click="navigateTo('/surveys')">
-                    Try the Demo
+                    Try the Demos
                 </v-btn>
                 </v-card-actions>
             </v-card>
