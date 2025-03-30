@@ -1,219 +1,9 @@
 openapi: 3.0.3
 info:
   title: CitizenVoice APIs
-  version: 3.0.0
+  version: 3.1.1
   description: Documentation of API endpoints in CitizenVoice
 paths:
-  /api/auth/email/resend/:
-    post:
-      operationId: api_auth_email_resend_create
-      description: Resend email verification to the passed email (if it exists and
-        is not verified already).
-      tags:
-      - email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          multipart/form-data:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailResendVerificationView'
-          description: ''
-  /api/auth/email/verify/:
-    post:
-      operationId: api_auth_email_verify_create
-      description: Verify email address using random key sent in confirmation email.
-      tags:
-      - email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-          multipart/form-data:
-            schema:
-              type: object
-              additionalProperties: {}
-              description: Unspecified request body
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailIsVerified'
-          description: ''
-        '404':
-          description: Invalid confrimation key.
-  /api/auth/login/:
-    post:
-      operationId: api_auth_login_create
-      description: |-
-        Check the credentials from the request data and return a session token.
-
-        Similar to knox's `LoginView` but uses allauth authentication backend instead of
-        another API authentication method (basic/session auth).
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AllauthLogin'
-        required: true
-      security:
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthToken'
-          description: ''
-  /api/auth/logout/:
-    post:
-      operationId: api_auth_logout_create
-      description: Delete the session token associated with the incoming authenticated
-        request.
-      tags:
-      - api
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/auth/logout/all/:
-    post:
-      operationId: api_auth_logout_all_create
-      description: Delete all session tokens associated with the authenticated user.
-      tags:
-      - api
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/auth/me/:
-    get:
-      operationId: api_auth_me_retrieve
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - api
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    put:
-      operationId: api_auth_me_update
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/User'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    patch:
-      operationId: api_auth_me_partial_update
-      description: ViewSet for retrieving and updating current user instance.
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-  /api/auth/register/:
-    post:
-      operationId: api_auth_register_create
-      description: Register a new user using provided credentials via allauth.
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AllauthRegister'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          description: No response body
   /civilian/v1/answers/:
     get:
       operationId: civilian_v1_answers_list
@@ -234,7 +24,8 @@ paths:
       tags:
       - civilian
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -257,7 +48,8 @@ paths:
       tags:
       - civilian
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -389,7 +181,8 @@ paths:
       tags:
       - civilian
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -418,7 +211,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -447,7 +241,8 @@ paths:
               $ref: '#/components/schemas/Answer'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -470,7 +265,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -504,7 +300,8 @@ paths:
               $ref: '#/components/schemas/Answer'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -537,7 +334,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedAnswer'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -559,7 +357,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -571,7 +370,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -586,7 +386,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -599,7 +400,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -626,7 +428,8 @@ paths:
             schema:
               $ref: '#/components/schemas/LineFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -650,7 +453,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -684,7 +488,8 @@ paths:
             schema:
               $ref: '#/components/schemas/LineFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -718,7 +523,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedLineFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -741,7 +547,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -754,7 +561,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -783,7 +591,8 @@ paths:
             schema:
               $ref: '#/components/schemas/LocationCollection'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -807,7 +616,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -841,7 +651,8 @@ paths:
             schema:
               $ref: '#/components/schemas/LocationCollection'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -875,7 +686,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedLocationCollection'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -898,7 +710,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -918,7 +731,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -934,7 +748,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -962,7 +777,8 @@ paths:
             schema:
               $ref: '#/components/schemas/MapView'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -985,7 +801,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1018,7 +835,8 @@ paths:
             schema:
               $ref: '#/components/schemas/MapView'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1051,7 +869,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedMapView'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1073,7 +892,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -1085,7 +905,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1102,7 +923,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1129,7 +951,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PointFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -1153,7 +976,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1187,7 +1011,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PointFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1221,7 +1046,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedPointFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1244,7 +1070,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -1257,7 +1084,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1284,7 +1112,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PolygonFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -1308,7 +1137,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1342,7 +1172,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PolygonFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1376,7 +1207,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedPolygonFeature'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1399,7 +1231,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -1413,7 +1246,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1442,7 +1276,8 @@ paths:
               $ref: '#/components/schemas/Question'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '201':
           content:
@@ -1466,7 +1301,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1501,7 +1337,8 @@ paths:
               $ref: '#/components/schemas/Question'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1535,7 +1372,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedQuestion'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1558,7 +1396,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '204':
           description: No response body
@@ -1585,7 +1424,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1600,7 +1440,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1629,7 +1470,8 @@ paths:
               $ref: '#/components/schemas/Response'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -1651,7 +1493,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1684,7 +1527,8 @@ paths:
               $ref: '#/components/schemas/Response'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1716,7 +1560,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedResponse'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1737,7 +1582,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -1761,7 +1607,8 @@ paths:
               $ref: '#/components/schemas/Response'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1893,7 +1740,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -1922,7 +1770,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -1950,7 +1799,8 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '201':
           content:
@@ -1972,7 +1822,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2005,7 +1856,8 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2037,7 +1889,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSurvey'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2058,7 +1911,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '204':
           description: No response body
@@ -2076,7 +1930,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2103,7 +1958,8 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2118,7 +1974,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2133,7 +1990,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -2161,7 +2019,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Topic'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '201':
@@ -2184,7 +2043,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -2217,7 +2077,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Topic'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -2250,7 +2111,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTopic'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -2272,7 +2134,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '204':
@@ -2285,7 +2148,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2314,7 +2178,8 @@ paths:
               $ref: '#/components/schemas/VoiceUser'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '201':
           content:
@@ -2337,7 +2202,8 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2371,7 +2237,8 @@ paths:
               $ref: '#/components/schemas/VoiceUser'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2404,7 +2271,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedVoiceUser'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -2426,50 +2294,13 @@ paths:
       tags:
       - voice
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '204':
           description: No response body
 components:
   schemas:
-    AllauthLogin:
-      type: object
-      description: |-
-        Deserializer for login data using allauth.
-
-        Uses email + password or username + password depending on allauth settings.
-        Store authentication user instance in validated data.
-        Raise ValidationError if not able to login for any reason.
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-          writeOnly: true
-      required:
-      - email
-      - password
-    AllauthRegister:
-      type: object
-      description: |-
-        Registration serializer using email/username + password via allauth.
-
-        Controlled via allauth's settings.
-      properties:
-        username:
-          type: string
-          maxLength: 150
-          minLength: 2
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-          writeOnly: true
-      required:
-      - email
-      - password
-      - username
     Answer:
       type: object
       description: |-
@@ -2514,20 +2345,6 @@ components:
       - response
       - updated
       - url
-    AuthToken:
-      type: object
-      properties:
-        expiry:
-          type: string
-          format: date-time
-        token:
-          type: string
-        user:
-          $ref: '#/components/schemas/User'
-      required:
-      - expiry
-      - token
-      - user
     DashboardAnswer:
       type: object
       description: A serializer class for the Answer model that serializes the 'geom'
@@ -2564,18 +2381,6 @@ components:
           $ref: '#/components/schemas/Locations'
       required:
       - location
-    EmailIsVerified:
-      type: object
-      properties:
-        detail:
-          type: string
-          default: E-mail verification is successful.
-    EmailResendVerificationView:
-      type: object
-      properties:
-        detail:
-          type: string
-          default: Verification e-mail sent.
     GisFeatureCollectionEnum:
       type: string
       enum:
@@ -3148,23 +2953,6 @@ components:
           type: string
           title: Topic name
           maxLength: 150
-    PatchedUser:
-      type: object
-      description: User serializer for retrieving and update.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        username:
-          type: string
-          readOnly: true
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-        email:
-          type: string
-          format: email
-          readOnly: true
-          title: Email address
     PatchedVoiceUser:
       type: object
       description: |-
@@ -3514,27 +3302,6 @@ components:
           maxLength: 150
       required:
       - id
-    User:
-      type: object
-      description: User serializer for retrieving and update.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        username:
-          type: string
-          readOnly: true
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-        email:
-          type: string
-          format: email
-          readOnly: true
-          title: Email address
-      required:
-      - email
-      - id
-      - username
     VoiceUser:
       type: object
       description: |-
@@ -3565,8 +3332,13 @@ components:
       - id
       - username
   securitySchemes:
-    tokenAuth:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
       type: apiKey
-      in: header
-      name: Authorization
-      description: Token-based authentication with required prefix "Token"
+      in: cookie
+      name: sessionid
+externalDocs:
+  description: User Authentication (allauth)
+  url: /_allauth/openapi.html
