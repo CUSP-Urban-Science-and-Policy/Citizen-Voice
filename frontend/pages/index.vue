@@ -10,10 +10,10 @@
                     position="center top"
                 ></v-img>
                 <v-card-title>
-                    <h1>Voice Survey Tool</h1>
+                    <h1>Citizen Mapping Tool</h1>
                 </v-card-title>
                 <v-card-subtitle>
-                   Welcome to Voice Survey Tool
+                   Welcome to Citizen Mapping Tool!
                 </v-card-subtitle>
                 <v-card-text>
                     <strong>An inclusive, web-based, and open source software platform for collaborative data collection that facilitates the citizen participation.</strong>
@@ -29,7 +29,7 @@
                     variant="elevated"
                     color="primary"
                     @click="navigateTo('/surveys')">
-                    To Survey Demo
+                    Try the Demo
                 </v-btn>
                 </v-card-actions>
             </v-card>

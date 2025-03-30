@@ -4,12 +4,12 @@
                 max-width="900px"
                 class="d-flex align-center flex-wrap mx-auto px-5">
                 <div>
-                    <h1 class="text-h1 ">Voice Survey Tool</h1>
+                    <h1 class="text-h1 ">Citizen Mapping Tool</h1>
                 </div>
                 <div class="text-justify py-5">
                     <p class="text-body-1">
-                        The <strong>Voice Survey Tool</strong> is an <strong>open source tool</strong> that enable researchers and practitioners to create surveys that include 
-                        geospatial questions. Those questions are used to collect information about places respondents
+                        The <strong>Citizen Mapping Tool</strong> is an <strong>open source tool</strong> that enable researchers and practitioners to create surveys that include 
+                        geospatial questions. Those questions are used to collect information about places citizens
                         are familiar with, or to ask them to select locations on a map.
                     </p>
                     <p class="text-body-1 py-2">

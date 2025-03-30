@@ -32,7 +32,7 @@ export default defineNuxtConfig({
 
   app: {
       head: {
-          title: "Voice Survey Tool",
+          title: "Citizen Mapping Tool",
           link: [
               { rel: 'icon', type: 'image/x-icon', href: '/favicon-blue.png' },
               {
