@@ -39,6 +39,8 @@
 </template>
 
 <script setup>
+// const config = useRuntimeConfig();
+// console.log("api aprty endpoints", config.apiParty.endpoints);
 
 </script>
 
