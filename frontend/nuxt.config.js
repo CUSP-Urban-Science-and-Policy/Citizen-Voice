@@ -9,6 +9,7 @@ const ONE_WEEK = ONE_DAY * 7
 
 
 export default defineNuxtConfig({
+
   ssr: true,
 
   build: {
@@ -31,6 +32,7 @@ export default defineNuxtConfig({
 },
 
   app: {
+      baseURL: '/citizen-map/',
       head: {
           title: "Citizen Mapping Tool",
           link: [
@@ -94,7 +96,7 @@ export default defineNuxtConfig({
       // We are using tailwind utility classes instead of the Vuetify utility css classes
       // More info: https://tailwindcss.nuxtjs.org/
       '@nuxtjs/tailwindcss',
-
+      
       // We are using NuxtOpenFetch for OpenAPI clients
       // More info: https://nuxt-open-fetch.vercel.app/setup/quick-start
  
@@ -105,6 +107,12 @@ export default defineNuxtConfig({
           nuxt.hooks.hook("vite:extendConfig", (config) => config.plugins.push(vuetify()));
       },
   ],
+  
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+    // and more...
+  },
 
   runtimeConfig: {
     cookieName: process.env.COOKIE_NAME || '__session',
