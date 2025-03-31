@@ -133,7 +133,8 @@ export default defineNuxtConfig({
             cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
                 url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3',
                 // token: '',
-                schema: './openapi/voice/openapi.yml'
+                schema: './openapi/voice/openapi.yml',
+                // allowedUrls: [ ],
             },
             authApi: { // Becomes `$authApi()` and useAuthApiData()
                 url: process.env.AUTH_API_URL || 'http://localhost:8000/_allauth/browser/v1/auth',
