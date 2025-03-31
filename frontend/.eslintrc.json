@@ -1,9 +1,0 @@
-{
-    "parserOptions":{
-       "ecmaVersion":"latest",
-       "sourceType":"module"
-    },
-    "extends":[
-       "plugin:nuxt/recommended"
-    ]
- }
