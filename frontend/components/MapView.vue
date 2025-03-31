@@ -1,6 +1,6 @@
 
 <template>
-    <v-sheet v-model="dialog" width="auto">
+    <v-sheet width="auto">
         <!-- <template v-slot:activator="{ props }">
             <v-btn class="mt-4" variant="tonal" append-icon="mdi-pencil" border v-bind="props">Edit Map</v-btn>
         </template> -->
