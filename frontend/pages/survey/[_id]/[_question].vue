@@ -187,7 +187,7 @@ const submitAnswers = async () => {
 // inspired by Roy J's solution on Stack Overflow:
 // https://stackoverflow.com/questions/54499070/leaflet-and-vuejs-how-to-add-a-new-marker-onclick-in-the-map
 const removeCircle = async (index) => {
-    console.log("removeCircle function called")
+    // console.log("removeCircle function called")
     circles._value.splice(index, 1)
     circleClickedAndRemoved = true
 }
@@ -198,14 +198,14 @@ const addCircle = async (event) => {
     } else if (resetClicked) {
         resetClicked = false
     } else {
-        console.log("addCircle function called")
+        // console.log("addCircle function called")
         circles._value.push(
             [event.latlng.lat, event.latlng.lng]
         )
     }
 }
 const resetMap = async () => {
-    console.log("resetMap function called")
+    // console.log("resetMap function called")
     circles._value.splice(0, circles._value.length)
     // TODO: reset map center and zoom level based on mapview
     resetClicked = true
