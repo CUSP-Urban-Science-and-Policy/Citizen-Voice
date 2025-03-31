@@ -1,24 +1,53 @@
 <template>
     <NuxtLayout name="default">
-        <div class="padding-16">
-          <v-sheet
-            class="d-flex align-center flex-column"
-            height="200"
-          >
-          <v-card 
-            class="my-card" 
-            title="Thank you"   
-            text="Your response has been submitted successfully. Thank you for participating in the survey."
-            variant="flat"
-            >
-          </v-card>
-          </v-sheet>
-          </div>
-    </NuxtLayout>
+      <v-dialog  
+        v-model="isDialogOpen" 
+        max-width="500"
+        persistent
+        >
+  <template v-slot:default="{ isActive }">
+    <v-card >
+      <v-card-title class="text-center"> 
+        Thank you for Participating!
+      </v-card-title>
+      <v-card-subtitle class="text-center">
+        Your response has been recorded successfully.
+      </v-card-subtitle>
+      <v-card-text>
+      You can customize this message to suit your needs.
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          variant="tonal"
+          text="Try Another"
+          @click="redirectTo('/surveys')"
+        ></v-btn>
+        <v-btn
+          text="To Home Page"
+          @click="redirectTo('/')"
+        ></v-btn>
+      </v-card-actions>
+    </v-card>
+  </template>
+</v-dialog>
+</NuxtLayout>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 
+const isDialogOpen = ref(false);
+const router = useRouter();
+
+onMounted(() => {
+  isDialogOpen.value = true;
+});
+
+function redirectTo(path) {
+  isDialogOpen.value = false;
+  router.push(path);
+}
 </script>
 
 <style lang="scss" scoped>

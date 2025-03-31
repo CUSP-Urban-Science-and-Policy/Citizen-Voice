@@ -2,26 +2,35 @@
     <NuxtLayout name="default">
          <v-sheet d-flex mx-auto px-4 >
             <v-card class="my-card" >
-                <!-- <v-img
+                <v-img
                     height="300px"
-                    src="https://drive.google.com/file/d/1041hE1qlMs2tgF8s9nhtCab8rofvMdGP"
+                    src="citizen-mapping.jpg"
+                    eager
                     cover
-                ></v-img> -->
+                    position="center top"
+                ></v-img>
                 <v-card-title>
-                    <h1>Citizen Voice</h1>
+                    <h1>Citizen Mapping Tool</h1>
                 </v-card-title>
                 <v-card-subtitle>
-                    An inclusive, web-based, software platform for collaborative data collection that facilitates the citizen participation
+                   Welcome to Citizen Mapping Tool!
                 </v-card-subtitle>
                 <v-card-text>
-                    <h4>
+                    <strong>An inclusive, web-based, and open source software platform for collaborative data collection that facilitates the citizen participation.</strong>
+                    <br></br>
                     Engaging and understanding communities affected by urban development leads to better planning decisions and improved social outcomes. 
                     As a tool for public participation, Citizen Voice opens a channel for citizens to voice their experiences, needs, and aspirations. 
                     Citizen Voice provides the opportunity for citizen involvement from the early phase to the follow-up phase of urban development projects.
-                   </h4>
                 </v-card-text>  
-                <v-card-actions>
-                    <v-btn color="primary" @click="navigateTo('surveys/')">Take Survey</v-btn>
+                <v-card-actions class="d-flex justify-center">
+                    <v-btn 
+                    size="x-large"
+                    rounded="xl"
+                    variant="elevated"
+                    color="primary"
+                    @click="navigateTo('/surveys')">
+                    Try the Demos
+                </v-btn>
                 </v-card-actions>
             </v-card>
          </v-sheet>
@@ -30,6 +39,8 @@
 </template>
 
 <script setup>
+// const config = useRuntimeConfig();
+// console.log("api aprty endpoints", config.apiParty.endpoints);
 
 </script>
 

@@ -32,11 +32,9 @@ services:
     build: 
       context: ./citizenvoice
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-    # command: >
-    #   sh -c "python manage.py migrate &&
-    #   python manage.py loaddata civilian-db.json &&
-    #   python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py migrate &&
+      python manage.py loaddata civilian-db.json &&
+      python manage.py runserver 0.0.0.0:8000"
     container_name: django-api
     environment:
       - SECRET_KEY=/run/secrets/django_token
@@ -66,9 +64,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 10s
-      timeout: 15s
+      timeout: 30s
       retries: 5
-      start_period: 10s
+      start_period: 30s
 
     develop:
       watch:
@@ -82,8 +80,8 @@ services:
       context: ./frontend
     container_name: frontend
     environment:
-      - API_PARTY_CMS_URL=http://djangoapi:8000/voice/v3
-      - AUTH_API_URL=http://djangoapi:8000/api/auth
+      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://djangoapi:8000/voice/v3
+      - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://djangoapi:8000/api/auth
       # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
     expose: # Expose ports without publishing them to the host machine
       - "3000"

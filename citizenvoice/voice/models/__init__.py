@@ -9,6 +9,7 @@ from .survey import Survey
 from .location import PointFeature, PolygonFeature, LineFeature, LocationCollection
 from .mapview import MapView
 from .dashboard_topic import DashboardTopic
+from .world_border import WorldBorder
 
 __all__ = ["Answer", 
            "Response", 
@@ -19,4 +20,5 @@ __all__ = ["Answer",
            "PolygonFeature", 
            "LineFeature", 
            "MapView",
-           "DashboardTopic"]
+           "DashboardTopic",
+           "WorldBorder"]

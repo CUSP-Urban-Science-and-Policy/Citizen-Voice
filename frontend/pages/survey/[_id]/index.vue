@@ -37,12 +37,12 @@ const storeResponse = useStoreResponse()
 const storeUser = useUserStore()
 const survey_url = "/api/surveys/"
 const create_response_url = "/api/responses/"
-const origin_url = "http://localhost:3000"
+// const origin_url = "http://localhost:3000"
 const data = ref([])
 const route = useRoute()
-console.log('route id', route.params._id)
+// console.log('route id', route.params._id)
 const survey = await storeResponse.getSurvey({ id: route.params._id })
-console.log('survey.value. in survey index //', survey.value.id)
+// console.log('survey.value. in survey index //', survey.value.id)
 const storeSurvey = useSurveyStore()
 
 
@@ -63,7 +63,7 @@ const createResponse = async () => {
     // Navigate to the /survey/${survey.id}/1 page after the response is created
     if (responseId) {
 
-      console.log('response id //', responseId)
+      // console.log('response id //', responseId)
         // Navigate to the /survey/${survey.id}/1 page after the response is created
         return navigateTo('/survey/' + route.params._id )
     }
@@ -73,7 +73,7 @@ const createResponse = async () => {
 const getQuestions = async () => {
     // Make a GET request to your Django API endpoint to get the questions for the survey
     const questions = await storeSurvey.getQuestionsOfSurvey()
-    console.log('questions //', questions)
+    // console.log('questions //', questions)
     // Navigate to the /survey/${survey.id}/1 page after the response is created
     // if (questions) {
     //     // Navigate to the /survey/${survey.id}/1 page after the response is created

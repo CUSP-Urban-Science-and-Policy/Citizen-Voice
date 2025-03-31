@@ -86,7 +86,7 @@ export const useUserStore = defineStore('user', {
                 // For debugging
                 console.error('statusCode:', e.statusCode)
                 console.error('statusMessage:', e.statusMessage)
-                console.error('data:', e.data)
+                // console.error('data:', e.data)
 
                 let warnMessage = null
                 for (const [key, value] of Object.entries(e.data.data)) {

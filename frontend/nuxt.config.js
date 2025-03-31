@@ -9,6 +9,7 @@ const ONE_WEEK = ONE_DAY * 7
 
 
 export default defineNuxtConfig({
+
   ssr: true,
 
   build: {
@@ -31,10 +32,11 @@ export default defineNuxtConfig({
 },
 
   app: {
+      baseURL: '/citizen-map/',
       head: {
-          title: "Citizen Voice",
+          title: "Citizen Mapping Tool",
           link: [
-              { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+              { rel: 'icon', type: 'image/x-icon', href: '/favicon-blue.png' },
               {
                   rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.css',
                   integrity: 'sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=', crossorigin: ''
@@ -94,7 +96,7 @@ export default defineNuxtConfig({
       // We are using tailwind utility classes instead of the Vuetify utility css classes
       // More info: https://tailwindcss.nuxtjs.org/
       '@nuxtjs/tailwindcss',
-
+      
       // We are using NuxtOpenFetch for OpenAPI clients
       // More info: https://nuxt-open-fetch.vercel.app/setup/quick-start
  
@@ -105,6 +107,12 @@ export default defineNuxtConfig({
           nuxt.hooks.hook("vite:extendConfig", (config) => config.plugins.push(vuetify()));
       },
   ],
+  
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+    // and more...
+  },
 
   runtimeConfig: {
     cookieName: process.env.COOKIE_NAME || '__session',
@@ -125,10 +133,11 @@ export default defineNuxtConfig({
             cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
                 url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3',
                 // token: '',
-                schema: './openapi/voice/openapi.yml'
+                schema: './openapi/voice/openapi.yml',
+                // allowedUrls: [ ],
             },
             authApi: { // Becomes `$authApi()` and useAuthApiData()
-                url: process.env.AUTH_API_URL || 'http://localhost:8000/api/auth',
+                url: process.env.AUTH_API_URL || 'http://localhost:8000/_allauth/browser/v1/auth',
                 schema: './openapi/voice/openapi.yml'
             }
         }

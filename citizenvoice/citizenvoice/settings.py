@@ -11,23 +11,15 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
-import sys
 from pathlib import Path
 from dotenv import load_dotenv
-from datetime import timedelta
-from rest_framework.settings import api_settings
-
-# import mimetypes
-# mimetypes.add_type("text/css", ".css", True)
 
 # Uncomment to use local .env file wihtout Docker
 # load_dotenv("../local.env", override=True) #
 
 if os.name == 'nt':
-    import platform
+    
     OSGEO4W = r"C:\OSGeo4W"
-    # if '64' in platform.architecture()[0]:
-    #     OSGEO4W += "64"
     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
     os.environ['OSGEO4W_ROOT'] = OSGEO4W
     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
@@ -36,17 +28,10 @@ if os.name == 'nt':
 
 # Default settings survey
 DEFAULT_SURVEY_PUBLISHING_DURATION = 7
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'setme-in-production')
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
@@ -54,8 +39,6 @@ DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
-
-# Application definition
 
 # note: add your custom apps after django apps
 INSTALLED_APPS = [
@@ -76,16 +59,13 @@ INSTALLED_APPS = [
     'survey_design.apps.SurveyDesignConfig',
     'respondent.apps.RespondentConfig',
     'corsheaders',
-    # 'knox',My Project 9252
-    # 'knox_allauth',
-    # 'allauth',
-    # 'allauth.account',
     'bulk_update_or_create',
     'django_extensions',
     'drf_spectacular',
 
     'allauth',
     'allauth.account',
+    'allauth.headless',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
@@ -154,9 +134,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
 ]
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
 # The code below is necessary to distinguish a deployment for CI with
 # GitHub Actions (IF part) and any other deployment  (the ELSE part)
 if os.environ.get('GITHUB_WORKFLOW'):
@@ -198,7 +175,6 @@ else:
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -253,6 +229,9 @@ LOGIN_REDIRECT_URL = '/'
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
+        'client_id': os.environ.get('GITHUB_CLIENT_ID'),
+        'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
+        'key': '',
     },
     'google': {
     }
@@ -274,24 +253,23 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# django-rest-knox
-#
-REST_KNOX = {
-    "AUTH_HEADER_PREFIX": "Token",
-    "TOKEN_TTL": timedelta(hours=24),
-    "SECURE_HASH_ALGORITHM": "cryptography.hazmat.primitives.hashes.SHA512",
-    "AUTH_TOKEN_CHARACTER_LENGTH": 64,
-    "TOKEN_LIMIT_PER_USER": None,
-    "AUTO_REFRESH": False,
+HEADLESS_FRONTEND_URLS ={
+    "account_reset_password": "account/password/reset",
+    "account_signup": "accounts/signup",
 }
+
+HEADLESS_SERVE_SPECIFICATION = True
+SESSION_COOKIE_DOMAIN = "localhost"
+CSRF_COOKIE_DOMAIN = "localhost"
 
 # drf-spectacular
 #
 SPECTACULAR_SETTINGS = {
     "TITLE": "CitizenVoice APIs",
     "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
-    "VERSION": "3.0.0",
+    "VERSION": "3.1.1",
     "SCHEMA_PATH_PREFIX": None,
+    "EXTERNAL_DOCS": {"description": "User Authentication (allauth)", "url": "/_allauth/openapi.html"},
 }
 
 STORAGES = {
