@@ -115,7 +115,7 @@ const questions = survey_store.questions;
 // Here, we use the list of questions in the survey store to display questions according to the order
 // specified when the survey was created. We use the numbers in the URL to navigate between questions
 // while maintaining the order of the questions in the survey store. 
-var current_question_index = route.params._question; // use url questions id as an index to load each question 
+var current_question_index = parseInt(route.params._question, 10); // use url questions id as an index to load each question 
 let current_question_url = questions[current_question_index - 1].url;  // gets the id for the questions
 let current_mapview_id = questions[current_question_index - 1].mapview;  // gets the value for the map view
 let question = questions[current_question_index - 1];
