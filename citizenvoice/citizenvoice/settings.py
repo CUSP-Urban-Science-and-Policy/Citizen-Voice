@@ -15,7 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Uncomment to use local .env file wihtout Docker
-load_dotenv("../local.env", override=True) #
+# load_dotenv("../local.env", override=True) #
 
 if os.name == 'nt':
     
