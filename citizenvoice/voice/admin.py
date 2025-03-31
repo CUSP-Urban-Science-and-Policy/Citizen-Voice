@@ -1,10 +1,8 @@
-from django.contrib import admin
-import django.contrib.auth.models
-from django.contrib import auth
+from django.contrib.gis import admin
 
 from .models import ( Answer, Question, Survey, Response, PointFeature, 
                      PolygonFeature, LineFeature, MapView,
-                     LocationCollection, DashboardTopic)
+                     LocationCollection, DashboardTopic, WorldBorder)
 
 # Register the models in the admin site in order to view, create and edit them from the admin page
 admin.site.register(Answer)
@@ -18,8 +16,4 @@ admin.site.register(MapView)
 admin.site.register(LocationCollection)
 admin.site.register(DashboardTopic)
 
-
-# Unregister User and Group fields
-# admin.site.unregister(auth.models.User)
-# admin.site.unregister(auth.models.Group)
-
+admin.site.register(WorldBorder, admin.GISModelAdmin)
