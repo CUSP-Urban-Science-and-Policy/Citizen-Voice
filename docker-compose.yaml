@@ -32,12 +32,9 @@ services:
     build: 
       context: ./citizenvoice
     command: >
-      sh -c "python manage.py migrate && 
+      sh -c "python manage.py migrate &&
+      python manage.py loaddata civilian-db.json &&
       python manage.py runserver 0.0.0.0:8000"
-    # command: >
-    #   sh -c "python manage.py migrate &&
-    #   python manage.py loaddata civilian-db.json &&
-    #   python manage.py runserver 0.0.0.0:8000"
     container_name: django-api
     environment:
       - SECRET_KEY=/run/secrets/django_token
@@ -67,9 +64,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 10s
-      timeout: 15s
+      timeout: 30s
       retries: 5
-      start_period: 10s
+      start_period: 30s
 
     develop:
       watch:
