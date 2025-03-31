@@ -109,7 +109,6 @@ import { useGlobalStore } from "~/stores/global";
 
 // import leaflet from "leaflet"
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LCircle, LControl } from "@vue-leaflet/vue-leaflet";
 
 const responseStore = useStoreResponse();
 const mapViewStore = useMapViewStore();
