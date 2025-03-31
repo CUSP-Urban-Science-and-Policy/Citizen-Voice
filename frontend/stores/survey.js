@@ -116,11 +116,11 @@ export const useSurveyStore = defineStore('survey', {
                 }
                 // Notification
                 global.warning(warnMessage)
-                console.log(warnMessage)
+                // console.log(warnMessage)
                 return null
 
             }
-            console.log('register?.value //> ', register.value.id)
+           
             if (register?.value) {
                 // Notification
                 global.succes('createSurvey complete')
@@ -150,7 +150,7 @@ export const useSurveyStore = defineStore('survey', {
                 }
                 // Notification
                 global.warning(warnMessage)
-                console.log(warnMessage)
+                // console.log(warnMessage)
                 return null
 
             }
@@ -254,7 +254,7 @@ export const useSurveyStore = defineStore('survey', {
             });
 
             const id = this.selectedSurveyId
-            console.log('id in get questions//> ', id);
+            // console.log('id in get questions//> ', id);
 
             // if (!this.questions){
                 const { data: response, pending, error} = await useAsyncData(() => $cmsApi('/surveys/' + id + '/questions', config));
@@ -263,7 +263,7 @@ export const useSurveyStore = defineStore('survey', {
 
                  
                 this.questions = responseData;
-                console.log('Questions //> ', responseData);
+                // console.log('Questions //> ', responseData);
             // }
 
               if (error.value){
