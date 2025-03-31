@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
-from apiapp.views import SurveyViewSet, QuestionViewSet, ResponseViewSet, PointFeatureViewSet
+from voice.views import SurveyViewSet, QuestionViewSet, ResponseViewSet, PointFeatureViewSet
 from .forms import ResponseCreationForm, AnswerCreationForm
 from django.utils import timezone
 

@@ -17,8 +17,11 @@ from dotenv import load_dotenv
 from datetime import timedelta
 from rest_framework.settings import api_settings
 
+# import mimetypes
+# mimetypes.add_type("text/css", ".css", True)
+
 # Uncomment to use local .env file wihtout Docker
-load_dotenv("../local.env")
+# load_dotenv("../local.env", override=True) #
 
 if os.name == 'nt':
     import platform
@@ -50,7 +53,7 @@ DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 # Choice of database engine will be retrieved from .env file
 DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 # Application definition
 
@@ -64,7 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django.contrib.sites',
-    'apiapp',
+    'voice',
     'civilian',
     'rest_framework',
     'rest_framework_gis',
@@ -73,18 +76,25 @@ INSTALLED_APPS = [
     'survey_design.apps.SurveyDesignConfig',
     'respondent.apps.RespondentConfig',
     'corsheaders',
-    'knox',
-    'knox_allauth',
-    'allauth',
-    'allauth.account',
+    # 'knox',My Project 9252
+    # 'knox_allauth',
+    # 'allauth',
+    # 'allauth.account',
     'bulk_update_or_create',
     'django_extensions',
     'drf_spectacular',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware", # serves static files
     # CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,11 +102,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
@@ -122,21 +136,22 @@ WSGI_APPLICATION = 'citizenvoice.wsgi.application'
 
 # Configure CORS allowed ports
 CSRF_TRUSTED_ORIGINS = [
+    "http://frontend:3000",
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://145.94.193.168:3000'
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True # Set to False in production
 CORS_ORIGIN_WHITELIST = (
+    "http://frontend:3000",
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://145.94.193.168:3000'
 )
 CORS_ALLOWED_ORIGINS = [
+    "http://frontend:3000", # allows docker frontend requests
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://145.94.193.168:3000",
+    "http://localhost",
 ]
 
 # Database
@@ -157,10 +172,7 @@ if os.environ.get('GITHUB_WORKFLOW'):
     }
 else:
     if DATABASE_ENGINE == "postgis":
-        print("PostGIS database engine is selected!", file=sys.stderr)
         dbase = os.environ.get('POSTGRES_DBASE')
-        print('database: ',dbase, file=sys.stderr)
-
         DATABASES = {
             'default': {
                 'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -217,10 +229,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = 'var/static_root/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # STATICFILES_DIRS = ['static_vue']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -228,30 +243,28 @@ if os.name == 'nt':
     GDAL_LIBRARY_VERSION = os.getenv("GDAL_LIBRARY_VERSION", "gdal305.dll")
     GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin' + "\\" + GDAL_LIBRARY_VERSION
 
-LOGIN_REDIRECT_URL = 'survey-home'
 LOGIN_URL = 'survey-design-index'
 
-# Knox & AllAuth Authentication
-
-# django-allauth settings
-# In order to make allauth suitable for API user our patched account adapter
-ACCOUNT_ADAPTER = "knox_allauth.adapters.AccountAdapter"
-# SOCIALACCOUNT_ADAPTER = "apps.users.adapters.SocialAccountAdapter"
-# ACCOUNT_ALLOW_REGISTRATION = os.environ['DJANGO_ACCOUNT_ALLOW_REGISTRATION'] = True # fIXME
-ACCOUNT_ALLOW_REGISTRATION = True
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_USER_MODEL_EMAIL_FIELD = "email"
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"  # TODO: set to "mandatory"
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_USERNAME_MIN_LENGTH = 2
 
 SITE_ID = 1
 
+LOGIN_REDIRECT_URL = '/'
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+    },
+    'google': {
+    }
+}
+
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+    #'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # ✅ Forces JSON output
+    ),
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -275,8 +288,18 @@ REST_KNOX = {
 # drf-spectacular
 #
 SPECTACULAR_SETTINGS = {
-    "TITLE": "CitizenVoice API",
-    "DESCRIPTION": "Documentation of API endpoints for CitizenVoice",
-    "VERSION": "2.0.6",
-    "SCHEMA_PATH_PREFIX": "/api",
+    "TITLE": "CitizenVoice APIs",
+    "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
+    "VERSION": "3.0.0",
+    "SCHEMA_PATH_PREFIX": None,
 }
+
+STORAGES = {
+    "staticfiles": {
+        # Whitenoise
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'emails'

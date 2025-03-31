@@ -1,4 +1,8 @@
 .git
 .gitignore
-node_modules/
+node_modules
+dist
+.nuxt
+output
 .env
+.DS_Store

@@ -18,6 +18,7 @@ media
 
 # SECRETS
 Secrets
+secrets
 
 # C extensions
 *.so
@@ -165,3 +166,4 @@ dmypy.json
 
 # devel
 dev-notes.md
+social_accounts.txt

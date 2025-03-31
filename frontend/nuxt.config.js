@@ -1,11 +1,16 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 import vuetify from "vite-plugin-vuetify";
+import pinia from '@pinia/nuxt';
 
 const ONE_DAY = 60 * 60 * 24 * 1000;
 const ONE_WEEK = ONE_DAY * 7;
 
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
+    ssr: true,
+    build: {
+        transpile: ["vuetify", "vue-toastification/nuxt"],
+    },
     modules: [// We are using @pinia/nuxt for the store
         "@pinia/nuxt", // Nuxt api party is used for the proxy API
         "nuxt-api-party", // We are not using this now but maybe in the future
@@ -24,13 +29,17 @@ export default defineNuxtConfig({
         },
 
         // Eslint
-        "@nuxt/eslint", "@nuxtjs/leaflet"],
+        "@nuxt/eslint", "@nuxtjs/leaflet"
+    ],
 
     plugins: [
         //     { src: '@/plugins/vuedraggable' }
         // { src: '@/plugins/vue-draggable/index.js', ssr: false }
     ],
-    ssr: true,
+
+    nitro: {
+        compressPublicAssets: true,
+    },
 
     // For speeding up load time in development, loading in all components from external packages increases the loading time, here we disabling to auto imports
     components: {
@@ -88,10 +97,6 @@ export default defineNuxtConfig({
         paymentSecretKey: "",
     },
 
-    build: {
-        transpile: ["vuetify", "vue-toastification/nuxt"],
-    },
-
     routeRules: {
         // Render these routes with SPA // See: https://nuxt.com/docs/guide/concepts/rendering#route-rules
         "/design/**": { ssr: false },
@@ -134,6 +139,36 @@ export default defineNuxtConfig({
         //   }
     },
 
+    runtimeConfig: {
+        cookieName: process.env.COOKIE_NAME || '__session',
+        cookieSecret: process.env.COOKIE_SECRET || 'secret',
+        cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day
+        cookieRememberMeExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_WEEK.toString(), 10), // 7 days
+        public: {
+            // set api for reference to the frontend
+            // usage: `${config.public.apiBaseAPI}`
+            //   apiBaseCms: "/api/v2",
+            apiHostPayment: '',
+            //   apiBaseAuth: "/api/auth"
+        },
+
+        // API party configuration
+        apiParty: {
+            endpoints: {
+                cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
+                    url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3',
+                    // token: '',
+                    schema: './openapi/voice/openapi.yml'
+                },
+                authApi: { // Becomes `$authApi()` and useAuthApiData()
+                    url: process.env.AUTH_API_URL || 'http://localhost:8000/api/auth',
+                    schema: './openapi/voice/openapi.yml'
+                }
+            }
+        },
+        paymentSecretKey: '',
+    },
+
     // See: https://github.com/johannschopplich/nuxt-api-party
     apiParty: {
         endpoints: {
@@ -154,21 +189,14 @@ export default defineNuxtConfig({
         },
     },
 
-    eslint: {
-        config: {
-            stylistic: {
-                // tabWidth: 4,
-                // useTabs: false,
-                // semi: true,
-                // printWidth: 120, // Adjust this value based on your needs
-                // htmlWhitespaceSensitivity: "ignore",
-                // trailingComma: "es5",
-                // endOfLine: "lf",
-                // arrowParens: "always",
-                // bracketSpacing: true,
-                // embeddedLanguageFormatting: "auto",
-                // vueIndentScriptAndStyle: true,
-            },
-        },
+    routeRules: {
+        // Render these routes with SPA // See: https://nuxt.com/docs/guide/concepts/rendering#route-rules
+        '/design/**': { ssr: false },
+        '/design/surveys/**': { ssr: false },
+        '/user/**': { ssr: false },
+        '/surveys/**': { ssr: false },
     },
+
+    compatibilityDate: '2025-03-03',
 });
+

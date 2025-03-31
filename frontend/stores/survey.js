@@ -60,11 +60,9 @@ export const useSurveyStore = defineStore('survey', {
             if (token) {
                 config.headers['Authorization'] = `Token ${token}`
             }
-
             const { data, error} = await useAsyncData('surveys', () => $cmsApi('/surveys', config));
 
             return { data, error }
-
         },
 
         /**

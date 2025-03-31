@@ -25,10 +25,9 @@
 </template>
 <script setup>
 import { formatDate } from "~/utils/formatData"
-
+// const config = useRuntimeConfig();
 // TODO [MANUEL]: useSubmitForm is not  in survey.js
 // import { useSubmitForm } from "~/stores/survey.js";
-
 
 
 /**
@@ -39,12 +38,13 @@ import { formatDate } from "~/utils/formatData"
 const surveyStore = useSurveyStore();
 surveyStore.$reset(); // reset SelectedSurvey to null
 
+// const surveys = {};
 const {data: surveys} = await surveyStore.getSurveys();
 
 // sets id on surveyStore and redirects to survey/id page
 function selectSurvey (id) {
     surveyStore.selectSurvey(id);
-    navigateTo(`/survey/${id}`);
+    navigateTo(`survey/${id}`);
 };
 
 </script>
