@@ -51,11 +51,11 @@ surveyStore.$reset(); // reset SelectedSurvey to null
 
 // const surveys = {};
 const {data: surveys} = await surveyStore.getSurveys();
+console.log(surveys);
 
 // sets id on surveyStore and redirects to survey/id page
 async function selectSurvey (id) {
     surveyStore.selectSurvey(id);
-    console.log(id);
     await navigateTo(`/survey/${id}`);
 };
 
