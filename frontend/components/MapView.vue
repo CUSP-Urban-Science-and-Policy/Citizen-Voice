@@ -1,4 +1,3 @@
-
 <template>
     <v-sheet v-model="dialog" width="auto">
         <!-- <template v-slot:activator="{ props }">
@@ -9,18 +8,13 @@
                 <!-- <v-text-field v-model="title" label="Name of map view" variant="outlined"></v-text-field> -->
                 <!-- <p>Map name: {{ questionMapView.name }}</p> -->
                 <div style="height:600px; width:auto">
-                    <l-map ref="mapGeometriesRef" 
-                        :zoom="questionMapView.options.zoom" 
-                        :center="questionMapView.options.center"
-                        @ready="onMapWWControlReady"  @update:zoom="handleUpdateMapViewZoom"
-                        @update:center="handleUpdateMapViewCenter" :noBlockingAnimations="true">
-                        <l-tile-layer 
-                            :url="questionMapView.map_service_url"
-                            layer-type="base"
-                            >
+                    <l-map ref="mapGeometriesRef" :zoom="questionMapView.options.zoom"
+                        :center="questionMapView.options.center" @ready="onMapWWControlReady"
+                        @update:zoom="handleUpdateMapViewZoom" @update:center="handleUpdateMapViewCenter"
+                        :noBlockingAnimations="true">
+                        <l-tile-layer :url="questionMapView.map_service_url" layer-type="base">
                         </l-tile-layer>
-                        <l-geo-json 
-                        @ready="geoJsonReady" :key="updateKeyGeoJson">
+                        <l-geo-json @ready="geoJsonReady" :key="updateKeyGeoJson">
                         </l-geo-json>
                         <l-feature-group ref="featureGroupRef">
 
@@ -35,12 +29,11 @@
         </v-card>
     </v-sheet>
 </template>
-  
+
 <script setup>
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "leaflet-toolbar/dist/leaflet.toolbar.css";
-import { LMap, LTileLayer, LFeatureGroup, LGeoJson, LCircle, LCircleMarker } from "@vue-leaflet/vue-leaflet";
 import "leaflet-draw/dist/leaflet.draw-src.js";
 import "leaflet-toolbar";
 import "leaflet-draw-toolbar/dist/leaflet.draw-toolbar.js";
@@ -53,7 +46,6 @@ import { useAnswerMapViewStore } from "~/stores/answerMapview";
 import { useStoreResponse } from "~/stores/response";
 import { useQuestionDesignStore } from "~/stores/questionDesign";
 import { useGlobalStore } from '~/stores/global';
-import { parse } from "postcss";
 import { th } from "vuetify/locale";
 
 // API endpoints
@@ -87,7 +79,7 @@ function extractMapviewId(mapUrl) {
 
 const route = useRoute();
 var question_id = route.params._question; // use url questions id as an index to load each question 
-let answer_index = question_id -1;  // gets the id for the questions
+let answer_index = question_id - 1;  // gets the id for the questions
 
 var questionMapView;
 // console.log('props.mapViewUrl //> ', props.mapViewUrl)
@@ -95,8 +87,8 @@ var questionMapView;
 if (props.mapViewUrl) {
     const mapViewId = extractMapviewId(props.mapViewUrl)
     console.log('mapViewId //> ', mapViewId)
-    const {data, error, pending} = await useCmsApiData(`${map_views_endpoint}${mapViewId}`)
-    
+    const { data, error, pending } = await useCmsApiData(`${map_views_endpoint}${mapViewId}`)
+
     console.log('mapview data', data.value)
 
     questionMapView = data.value
@@ -110,7 +102,7 @@ if (props.mapViewUrl) {
 }
 
 
-const mapGeometriesRef = ref() 
+const mapGeometriesRef = ref()
 // Map without controls
 const storedMapWithoutControls = ref(null)
 // Map with controls (the pop up one)
@@ -129,10 +121,11 @@ const updateKeyGeoJson = ref(0)
 // collects map parameters for the user's answer
 const currentMapView = reactive({
     map_service_url: null,
-    options: { 
-        zoom:  null,
-        center:  [] },
-    name: "", 
+    options: {
+        zoom: null,
+        center: []
+    },
+    name: "",
     geometries: {
         type: "FeatureCollection",
         features: []
@@ -158,7 +151,7 @@ const mapViewAnswerData = reactive({
     id: props.mapViewId || null,
     url: props.mapViewUrl || null,
     options: { zoom: 8, center: [52.045, 5.10] },
-    name: "", 
+    name: "",
     geometries: {
         type: "FeatureCollection",
         features: []
@@ -213,15 +206,15 @@ const title = computed({
  * Methods
  */
 
- const emit = defineEmits(['saveDescription']);
+const emit = defineEmits(['saveDescription']);
 
- const handleSaveDescription = (description) => {
-      // Emit the saveDescription event with the description text
-      emit('saveDescription', description);
-      console.log('Description saved:', description);
-      // You can also perform other actions here, like sending the description to a server
-      // TODO: Fix. save the description to the layer
-    }
+const handleSaveDescription = (description) => {
+    // Emit the saveDescription event with the description text
+    emit('saveDescription', description);
+    console.log('Description saved:', description);
+    // You can also perform other actions here, like sending the description to a server
+    // TODO: Fix. save the description to the layer
+}
 
 
 /**
@@ -289,8 +282,8 @@ const onMapWWControlReady = () => {
                     },
                 });
                 drawnItemsRef.value.addLayer(circleLayer);
-            } else {                
-                drawnItemsRef.value.addLayer(layer); 
+            } else {
+                drawnItemsRef.value.addLayer(layer);
             }
             // popup
             const popupContent = document.createElement('div');
@@ -300,17 +293,17 @@ const onMapWWControlReady = () => {
             input.id = 'feature-description';
             input.placeholder = 'Type a description';
             input.style.width = '100%'; // Make input take the full width of its parent
-            input.style.padding = '5px 5px'; 
-            input.style.borderRadius = '3px'; 
+            input.style.padding = '5px 5px';
+            input.style.borderRadius = '3px';
             input.style.overflowWrap = 'break-word'; // Break long words to prevent overflow
-            
+
             const saveButton = document.createElement('button');
             saveButton.textContent = 'Save';
             saveButton.style.backgroundColor = '#FF4C50';
-            saveButton.style.color = 'white'; 
-            saveButton.style.padding = '4px 8px'; 
-            saveButton.style.borderRadius = '5px'; 
-            saveButton.style.marginTop = '10px'; 
+            saveButton.style.color = 'white';
+            saveButton.style.padding = '4px 8px';
+            saveButton.style.borderRadius = '5px';
+            saveButton.style.marginTop = '10px';
             saveButton.onclick = () => {
                 console.log('layer value //> ', input.value)
                 handleSaveDescription(input.value);
@@ -330,9 +323,9 @@ const onMapWWControlReady = () => {
             popupContent.appendChild(saveButton);
 
             layer.bindPopup(popupContent);
-            
-                    //   
-            
+
+            //   
+
             console.log('drawnItemsRef.value  add //> ', drawnItemsRef.value.toGeoJSON())
 
             answerMapViewStore.updateGeometries(drawnItemsRef.value.toGeoJSON());
@@ -340,10 +333,10 @@ const onMapWWControlReady = () => {
 
         map.on(L.Draw.Event.DELETED, (event) => {
             const layers = event.layers;
-    
+
             layers.eachLayer((layer) => {
                 // console.log('layer to remove //> ', layer)
-                    drawnItemsRef.value.removeLayer(layer);
+                drawnItemsRef.value.removeLayer(layer);
             });
             // console.log('drawnItemsRef.value  delete //> ', drawnItemsRef.value.toGeoJSON())
             answerMapViewStore.updateGeometries(drawnItemsRef.value.toGeoJSON());
@@ -365,7 +358,7 @@ const onMapWWControlReady = () => {
 
 const current_question_id = route.params._question
 const suveryStore = useSurveyStore()
-const current_question_url = suveryStore.questions[current_question_id-1].url
+const current_question_url = suveryStore.questions[current_question_id - 1].url
 
 // CONTINUE HERE
 /// TODO: check why a new answer is created in response store when  text is updated, after map is saved
@@ -379,7 +372,7 @@ const submitMap = async () => {
     /**
      * Check if the mapView already exists, if it exist then update, if not then create a new one
      */
-    
+
     if (answerMapViewStore.name === null) {
         answerMapViewStore.updateName(uuidv4())
     };
@@ -388,7 +381,7 @@ const submitMap = async () => {
         const mapview_slug = answerMapViewStore.url.match(/map-views\/.*/);
         response = await answerMapViewStore.updateMapview(mapview_slug)
 
-        
+
 
     } else {
         // mapViewAnswerData.name = mapViewAnswerData?.name || uuidv4()
@@ -397,11 +390,12 @@ const submitMap = async () => {
             // responseStore.updateAnswerMapView
             // responseStore.answers.push(answer);
             const answer_mapview = {
-                question_url: current_question_url, 
+                question_url: current_question_url,
                 mapview: {
                     url: answerMapViewStore.url,
                     location: answerMapViewStore.location
-                } }
+                }
+            }
             responseStore.updateAnswerMapView(answer_mapview)
             // console.log('response.data //> ', response.data)
             // console.log('mapstore answer //> ', answer_mapview)
@@ -413,7 +407,7 @@ const submitMap = async () => {
 
     // TODO: find a solution to update the anwer object in response store when map is saved for
     // the first time. But not modify the answer object when the map is updated.
-   
+
     // if (response.data) {
     //     mapViewData.name = response.data.name
     //     await questionStore.editCurrentQuestionKeyValue(props.questionIndex, { map_view: response.data.id })
@@ -423,10 +417,10 @@ const submitMap = async () => {
     setGeoJsonMarkers()
     // response.refresh()
     // global.succes('Map view saved')
-    
+
 }
 
 
 </script>
-  
+
 <style></style>
