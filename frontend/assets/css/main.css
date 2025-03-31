@@ -1,0 +1,97 @@
+@font-face {
+    font-family: 'Chillax';
+    src:
+        url('../fonts/Chillax-Regular.woff2') format('woff2'),
+        url('../fonts/Chillax-Regular.woff') format('woff'),
+        url('../fonts/Chillax-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Chillax';
+    src:
+        url('../fonts/Chillax-Medium.woff2') format('woff2'),
+        url('../fonts/Chillax-Medium.woff') format('woff'),
+        url('../fonts/Chillax-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Chillax';
+    src:
+        url('../fonts/Chillax-Semibold.woff2') format('woff2'),
+        url('../fonts/Chillax-Semibold.woff') format('woff'),
+        url('../fonts/Chillax-Semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-display: swap;
+    font-style: normal;
+}
+
+.icon-noise_pollution {
+    background-color: #ffb380;
+    border-color: #ffb380;
+}
+
+.icon-favorite_place {
+    background-color: #578dfc;
+    border-color: #578dfc;
+}
+
+.icon-least_favorite_place {
+    background-color: #a280ff;
+    border-color: #a280ff;
+}
+
+.icon-presence_of_wildlife {
+    background-color: #83d873;
+    border-color: #83d873;
+}
+
+.icon-closest_green_area {
+    background-color: #36b17a;
+    border-color: #36b17a;
+}
+
+.icon-lack_of_green {
+    background-color: #4cd84b;
+    border-color: #4cd84b;
+}
+
+/* .icon-need_for_improvement {
+    background-color: #add8ff;
+    border-color: #add8ff;
+    } */
+
+.icon-air_pollution {
+    background-color: #8366da;
+    border-color: #8366da;
+}
+
+.icon-water_on_the_ground {
+    background-color: #ff9933;
+    border-color: #ff9933;
+}
+
+.icon-feeling_of_unsafety {
+    background-color: #339933;
+    border-color: #339933;
+}
+
+.icon-trash_in_the_streets {
+    background-color: #008866;
+    border-color: #008866;
+}
+
+.icon-need_for_improvement {
+    background-color: #2244aa;
+    border-color: #2244aa;
+}
+
+.icon-hottest_place {
+    background-color: cornflowerblue;
+    border-color: cornflowerblue;
+}
