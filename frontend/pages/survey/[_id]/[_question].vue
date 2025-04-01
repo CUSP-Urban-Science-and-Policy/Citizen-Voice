@@ -162,6 +162,54 @@ const nextQuestion = async () => {
     return navigateTo('/survey/' + route.params._id + '/' + (parseInt(route.params._question, 10) + 1))
 }
 
+const submitAnswers = async () => {
+    // TODO: host ulr should be dynamic
+    const global = useGlobalStore();
+    const response_root = "http://localhost:8000/api/responses/";
+    const question_root = "http://localhost:8000/api/questions/";
+
+    for (let i = 0; i < responseStore.answers.length; i++) {
+        const response_url = response_root + responseStore.responseId + "/";
+        const question_url = question_root + responseStore.answers[i].question_id + "/";
+        const answer_text = responseStore.answers[i].text;
+        console.log("submitting answer: ", answer_text);
+        responseStore.submitAnswer(
+            response_url,
+            question_url,
+            answer_text
+        )
+    }
+    global.succes("Your answers have been submitted")
+    return navigateTo('/submitted/')
+    
+};
+
+// inspired by Roy J's solution on Stack Overflow:
+// https://stackoverflow.com/questions/54499070/leaflet-and-vuejs-how-to-add-a-new-marker-onclick-in-the-map
+const removeCircle = async (index) => {
+    console.log("removeCircle function called")
+    circles._value.splice(index, 1)
+    circleClickedAndRemoved = true
+}
+
+const addCircle = async (event) => {
+    if (circleClickedAndRemoved) {
+        circleClickedAndRemoved = false
+    } else if (resetClicked) {
+        resetClicked = false
+    } else {
+        console.log("addCircle function called")
+        circles._value.push(
+            [event.latlng.lat, event.latlng.lng]
+        )
+    }
+}
+const resetMap = async () => {
+    console.log("resetMap function called")
+    circles._value.splice(0, circles._value.length)
+    // TODO: reset map center and zoom level based on map_view
+    resetClicked = true
+}
 
 const submitAnswers = async () => {
     
