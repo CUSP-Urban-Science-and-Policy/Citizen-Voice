@@ -10,6 +10,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from .survey import Survey
 from .mapview import MapView
+from .dashboard_topic import DashboardTopic
 from bulk_update_or_create import BulkUpdateOrCreateQuerySet
 
 
@@ -44,14 +45,17 @@ class Question(models.Model):
         (DATE, _("date")),
     )
 
-    text = models.TextField(_("Text of the Question"))
+    text = models.TextField(_("Question"))
+    explanation = models.TextField(_("Explanation for the question"), max_length=200, blank=True, null=True)
     order = models.IntegerField(_("Order of where question is placed"))
     required = models.BooleanField(_("Question must be filled out"), default=True)
+    has_text_input = models.BooleanField(_("Show the input text field"), default=True)
     question_type = models.CharField(_("Type of question"), max_length=150, choices=QUESTION_TYPES, default=TEXT)
     choices = models.TextField(_("Choices for answers"), blank=True, null=True)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, default=1)
     is_geospatial = models.BooleanField(_("If the question must be answered geospatially or not"), default=False)
-    map_view = models.ForeignKey(MapView, on_delete=models.CASCADE, blank=True, null=True)
+    mapview = models.ForeignKey(MapView, on_delete=models.SET_NULL, blank=True, null=True)
+    topics = models.ManyToManyField(DashboardTopic, verbose_name=_("Topics"), blank=True)
 
     objects = BulkUpdateOrCreateQuerySet.as_manager()
 
@@ -66,10 +70,10 @@ class Question(models.Model):
         return self.question_set.count()
 
 
-    class Meta:
-        verbose_name = _("question")
-        verbose_name_plural = _("questions")
-        ordering = ("survey", "order")
+    # class Meta:
+    #     verbose_name = _("question")
+    #     verbose_name_plural = _("questions")
+    #     ordering = ("survey", "order")
 
-    def question_count(self):
-        return self.question_set.count()
+    # def question_count(self):
+    #     return self.question_set.count()

@@ -20,15 +20,15 @@ class Response(models.Model):
     
     created = models.DateTimeField(_("Date response was submitted"), auto_now_add=True)
     updated = models.DateTimeField(_("Last edit"), auto_now=True)
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    interview_uuid = models.UUIDField (
+    survey = models.ForeignKey(Survey, on_delete=models.RESTRICT)
+    response_id = models.UUIDField (
         _("Unique ID of interview"),
         primary_key=True, 
         default=uuid.uuid4,
          max_length=150,
          unique=True
          )
-    respondent = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    respondent = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"Response {self.pk} ({self.survey.name})"

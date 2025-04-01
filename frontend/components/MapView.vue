@@ -1,37 +1,39 @@
-<template>
-    <v-dialog v-model="dialog" width="auto">
-        <template v-slot:activator="{ props }">
-            <div style="height:600px; width:600px">
-                <l-map :key="updateKeyMapWithoutControls" :useGlobalLeaflet="true" ref="mapRef"
-                    @ready="onLeafletReadyMapWithoutControls" :options="{ zoomControl: false }" :minZoom="3" :maxZoom="19"
-                    :noBlockingAnimations="true">
-                    <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
-                        name="OpenStreetMap"></l-tile-layer>
-                    <l-geo-json @ready="geoJsonReady" :key="updateKeyGeoJson"></l-geo-json>
-                    <l-feature-group ref="featureGroupRef" />
-                </l-map>
-            </div>
-            <v-btn class="mt-4" variant="tonal" append-icon="mdi-pencil" border v-bind="props">Edit Map</v-btn>
-        </template>
 
+<template>
+    <v-sheet v-model="dialog" width="auto">
+        <!-- <template v-slot:activator="{ props }">
+            <v-btn class="mt-4" variant="tonal" append-icon="mdi-pencil" border v-bind="props">Edit Map</v-btn>
+        </template> -->
         <v-card>
             <v-card-text>
-                <v-text-field v-model="title" label="Name of map view" variant="outlined"></v-text-field>
-                <div style="height:600px; width:600px">
-                    <l-map ref="mapRefPopUp" @ready="onMapWWControlReady" @update:zoom="updateZoom"
-                        @update:center="updateCenter" :noBlockingAnimations="true">
-                        <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"></l-tile-layer>
-                        <l-feature-group ref="featureGroupRefWControl"></l-feature-group>
+                <!-- <v-text-field v-model="title" label="Name of map view" variant="outlined"></v-text-field> -->
+                <!-- <p>Map name: {{ questionMapView.name }}</p> -->
+                <div style="height:600px; width:auto">
+                    <l-map ref="mapGeometriesRef" 
+                        :zoom="questionMapView.options.zoom" 
+                        :center="questionMapView.options.center"
+                        @ready="onMapWWControlReady"  @update:zoom="handleUpdateMapViewZoom"
+                        @update:center="handleUpdateMapViewCenter" :noBlockingAnimations="true">
+                        <l-tile-layer 
+                            :url="questionMapView.map_service_url"
+                            layer-type="base"
+                            >
+                        </l-tile-layer>
+                        <l-geo-json 
+                        @ready="geoJsonReady" :key="updateKeyGeoJson">
+                        </l-geo-json>
+                        <l-feature-group ref="featureGroupRef">
+
+                        </l-feature-group>
                     </l-map>
                 </div>
             </v-card-text>
-
             <v-card-actions>
                 <v-btn variant="tonal" block @click="submitMap">Save map</v-btn>
                 <!-- <v-btn color="primary" block @click="dialog = false">Save</v-btn> -->
             </v-card-actions>
         </v-card>
-    </v-dialog>
+    </v-sheet>
 </template>
   
 <script setup>
@@ -42,56 +44,135 @@ import { LMap, LTileLayer, LFeatureGroup, LGeoJson, LCircle, LCircleMarker } fro
 import "leaflet-draw/dist/leaflet.draw-src.js";
 import "leaflet-toolbar";
 import "leaflet-draw-toolbar/dist/leaflet.draw-toolbar.js";
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import { forEach } from 'ramda'
 // Store
-import { useMapViewStore } from "~/stores/mapview"
-import { useQuestionDesignStore } from "~/stores/questionDesign"
 
-const mapViewStore = useMapViewStore()
+import { useAnswerMapViewStore } from "~/stores/answerMapview";
+import { useStoreResponse } from "~/stores/response";
+import { useQuestionDesignStore } from "~/stores/questionDesign";
+import { useGlobalStore } from '~/stores/global';
+import { parse } from "postcss";
+import { th } from "vuetify/locale";
+
+// API endpoints
+const map_views_endpoint = '/map-views/'
+
 const questionStore = useQuestionDesignStore()
 
+const answerMapViewStore = useAnswerMapViewStore()
+const responseStore = useStoreResponse()
+answerMapViewStore.$reset()
+
 const props = defineProps({
-    questionIndex: Number,
-    mapViewId: Number | undefined
+    mapViewUrl: String | undefined
 })
 
+
+function extractMapviewId(mapUrl) {
+    /*
+    * Extracts the mapview id from the url
+    * @param {String} mapViewUrl 
+    * @returns {Number} id
+    */
+    const match = mapUrl.match(/\d+\/?$/);
+    if (match) {
+        const id = parseInt(match[0], 10);
+        return id;
+    } else {
+        throw new Error('Could not extract mapview id from url', mapUrl)
+    }
+}
+
+const route = useRoute();
+var question_id = route.params._question; // use url questions id as an index to load each question 
+let answer_index = question_id -1;  // gets the id for the questions
+
+var questionMapView;
+// console.log('props.mapViewUrl //> ', props.mapViewUrl)
+// Fetch the map view for corresponding Question
+if (props.mapViewUrl) {
+    const mapViewId = extractMapviewId(props.mapViewUrl)
+    console.log('mapViewId //> ', mapViewId)
+    const {data, error, pending} = await useCmsApiData(`${map_views_endpoint}${mapViewId}`)
+    
+    console.log('mapview data', data.value)
+
+    questionMapView = data.value
+    // store the mapview values to answerMapViewStore
+    answerMapViewStore.updateMapServiceUrl(questionMapView.map_service_url)
+    answerMapViewStore.updateZoomLevel(questionMapView.options.zoom)
+    answerMapViewStore.updateCenter(questionMapView.options.center)
+    if (error?.value) {
+        throw new Error('error in questionMapView //> ', error)
+    }
+}
+
+
+const mapGeometriesRef = ref() 
 // Map without controls
-const mapRefPopUp = ref(null)
 const storedMapWithoutControls = ref(null)
 // Map with controls (the pop up one)
 const mapRef = ref(null)
 const featureGroupRef = ref(null)
 const featureGroupRefWControl = ref(null)
-const dialog = ref(props.dialogOpen)
+// const dialog = ref(props.dialogOpen)
 const drawnItemsRef = ref(null)
+
 const optionsTempStoreZoom = ref(null)
 const optionsTempStoreCenter = ref(null)
 const updateKeyMapWithoutControls = ref(0)
 const updateKeyGeoJson = ref(0)
 
-const mapViewData = reactive({
+
+// collects map parameters for the user's answer
+const currentMapView = reactive({
+    map_service_url: null,
+    options: { 
+        zoom:  null,
+        center:  [] },
+    name: "", 
+    geometries: {
+        type: "FeatureCollection",
+        features: []
+    }
+});
+
+const handleUpdateMapViewZoom = (updatedZoom) => {
+    // Handle the updated answer here
+    currentMapView.options.zoom = updatedZoom;
+    answerMapViewStore.updateZoomLevel(updatedZoom);
+};
+
+const handleUpdateMapViewCenter = (updatedCenter) => {
+    // Update the center of the map. Converts object {lat:value, lng:value} to array [lat, lng]
+    // console.log('current mapview \\>', currentMapView);
+    const newCenter = [updatedCenter.lat, updatedCenter.lng];
+    currentMapView.options.center = newCenter;
+    answerMapViewStore.updateCenter(newCenter);
+};
+
+
+const mapViewAnswerData = reactive({
     id: props.mapViewId || null,
-    name: props.title || "",
-    map_service_url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    options: {
-        zoom: 7,
-        center: [52.04573404034129, 5.108642578125001]
-    },
-    geojson: {
+    url: props.mapViewUrl || null,
+    options: { zoom: 8, center: [52.045, 5.10] },
+    name: "", 
+    geometries: {
         type: "FeatureCollection",
         features: []
     }
 })
 
+
 /**
  * Utils
  */
-
 const setGeoJsonMarkers = () => {
+    // const drawnItems = featureGroupRef.value.features // this schould be a leafleft object?
     const drawnItems = featureGroupRef.value.leafletObject
-    const initialGeojson = mapViewData.geojson;
+    const initialGeojson = mapViewAnswerData.geometries;
 
     initialGeojson.features.forEach((feature) => {
         const layer = L.geoJSON(feature, {
@@ -103,6 +184,7 @@ const setGeoJsonMarkers = () => {
                 }
             },
         }).addTo(drawnItems);
+        // console.log('drawnItems //> ', drawnItems)
         drawnItems.addLayer(layer);
     });
 }
@@ -113,64 +195,48 @@ const setGeoJsonMarkers = () => {
 
 const geoJsonReady = () => {
     setGeoJsonMarkers()
-}
+};
 
-/**
- * Fetch the geojson data from the DB and add it to the mapViewData
- */
-
-onMounted(async () => {
-    if (props.mapViewId) {
-        const geoData = await mapViewStore.fetchMapView(props.mapViewId)
-        if (geoData?.geojson?.features) {
-            mapViewData.geojson = geoData.geojson
-        }
-        if (geoData?.name) {
-            mapViewData.name = geoData.name
-        }
-        if (geoData?.options?.zoom) {
-            mapViewData.options.zoom = geoData.options.zoom
-        }
-        if (geoData?.options?.center) {
-            mapViewData.options.center = geoData.options.center
-        }
-    }
-})
-
-/**
- * Watch mapViewData.geojson to update the map after changes or else the new values won't be visible
- */
-
-watch(
-    () => mapViewData.geojson,
-    (newvalue) => {
-        updateKeyGeoJson.value++
-    },
-    { deep: true }
-)
 
 /**
  * Computed functions
  */
 
 const title = computed({
-    get: () => props.title || mapViewData.name,
+    get: () => props.title || mapViewAnswerData.name,
     set: (value) => {
-        mapViewData.name = value
+        mapViewAnswerData.name = value
     }
 })
 
 /**
+ * Methods
+ */
+
+ const emit = defineEmits(['saveDescription']);
+
+ const handleSaveDescription = (description) => {
+      // Emit the saveDescription event with the description text
+      emit('saveDescription', description);
+      console.log('Description saved:', description);
+      // You can also perform other actions here, like sending the description to a server
+      // TODO: Fix. save the description to the layer
+    }
+
+
+/**
  * Add the props.geojson to the drawnItemsRef value
  */
-const onMapWWControlReady = () => {
-    const map = mapRefPopUp.value.leafletObject;
-    if (map !== null) {
-        drawnItemsRef.value = featureGroupRefWControl.value.leafletObject;
 
-        if (mapViewData.geojson.features) {
-            const drawnItems = drawnItemsRef.value;
-            const initialGeojson = mapViewData.geojson;
+
+const onMapWWControlReady = () => {
+    const map = mapGeometriesRef.value.leafletObject;
+    if (map !== null) {
+        drawnItemsRef.value = featureGroupRef.value.leafletObject;
+
+        if (currentMapView.geometries?.features) {
+            const drawnItems = drawnItemsRef.value; // TODO: check if this is the correct way to hangle geometries during map load
+            const initialGeojson = currentMapView.geometries;
 
             initialGeojson.features.forEach((feature) => {
                 const layer = L.geoJSON(feature, {
@@ -197,14 +263,13 @@ const onMapWWControlReady = () => {
                 polyline: true,
                 polygon: true,
                 rectangle: false,
-                circleMarker: false
+                circleMarker: false,
             }
         });
 
         map.addControl(drawControl);
         // set options
-        map.setView(mapViewData.options.center, mapViewData.options.zoom);
-
+        // map.setView(mapViewData.options.center, mapViewData.options.zoom);
 
         map.on(L.Draw.Event.CREATED, (event) => {
             const layer = event.layer;
@@ -224,17 +289,64 @@ const onMapWWControlReady = () => {
                     },
                 });
                 drawnItemsRef.value.addLayer(circleLayer);
-            } else {
-                drawnItemsRef.value.addLayer(layer);
+            } else {                
+                drawnItemsRef.value.addLayer(layer); 
             }
-        });
+            // popup
+            const popupContent = document.createElement('div');
+            popupContent.style.width = '200px'; // Set the width of the popup
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'feature-description';
+            input.placeholder = 'Type a description';
+            input.style.width = '100%'; // Make input take the full width of its parent
+            input.style.padding = '5px 5px'; 
+            input.style.borderRadius = '3px'; 
+            input.style.overflowWrap = 'break-word'; // Break long words to prevent overflow
+            
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save';
+            saveButton.style.backgroundColor = '#FF4C50';
+            saveButton.style.color = 'white'; 
+            saveButton.style.padding = '4px 8px'; 
+            saveButton.style.borderRadius = '5px'; 
+            saveButton.style.marginTop = '10px'; 
+            saveButton.onclick = () => {
+                console.log('layer value //> ', input.value)
+                handleSaveDescription(input.value);
+                // TODO: check if options are saved to the map view
+                // event.layer.properties.description = input.value;    
+                // drawnItemsRef.value.addLayer(event.layer);
 
+                // console.log('drawItems ref //> ', drawnItemsRef.value);
+                // event.layer.bindPopup(input.value, closeButton = true);
+                console.log('event layer  //> ', event.layer);
+                // TODO: Fix. save the description to the layer
+
+                // layer.properties = { description: input.value };
+            };
+
+            popupContent.appendChild(input);
+            popupContent.appendChild(saveButton);
+
+            layer.bindPopup(popupContent);
+            
+                    //   
+            
+            console.log('drawnItemsRef.value  add //> ', drawnItemsRef.value.toGeoJSON())
+
+            answerMapViewStore.updateGeometries(drawnItemsRef.value.toGeoJSON());
+        });
 
         map.on(L.Draw.Event.DELETED, (event) => {
             const layers = event.layers;
+    
             layers.eachLayer((layer) => {
-                drawnItemsRef.value.removeLayer(layer);
+                // console.log('layer to remove //> ', layer)
+                    drawnItemsRef.value.removeLayer(layer);
             });
+            // console.log('drawnItemsRef.value  delete //> ', drawnItemsRef.value.toGeoJSON())
+            answerMapViewStore.updateGeometries(drawnItemsRef.value.toGeoJSON());
         });
 
         map.on(L.Draw.Event.EDITED, (event) => {
@@ -242,87 +354,79 @@ const onMapWWControlReady = () => {
             layers.eachLayer((layer) => {
                 // Remove the old version of the edited layer
                 drawnItemsRef.value.removeLayer(layer);
-
                 // Add the updated version of the edited layer
                 drawnItemsRef.value.addLayer(layer);
             });
+            answerMapViewStore.updateGeometries(drawnItemsRef.value.toGeoJSON());
         });
     }
 };
 
-/**
- * Init the map with out controls
- */
 
-const onLeafletReadyMapWithoutControls = () => {
-    const map = mapRef.value.leafletObject;
+const current_question_id = route.params._question
+const suveryStore = useSurveyStore()
+const current_question_url = suveryStore.questions[current_question_id-1].url
 
-    if (map !== null) {
-        // storedMapWithoutControls.value = map
-        // set options
-        map.setView(mapViewData.options.center, mapViewData.options.zoom);
+// CONTINUE HERE
+/// TODO: check why a new answer is created in response store when  text is updated, after map is saved
 
-        map.dragging.disable();
-        map.touchZoom.disable();
-        map.doubleClickZoom.disable();
-        map.scrollWheelZoom.disable();
-        map.boxZoom.disable();
-        map.keyboard.disable();
-        if (map.tap) map.tap.disable();
-        // document.getElementById('map').style.cursor = 'default';
-    }
-
-};
-
-/**
- * Handlers
- */
-
-const updateZoom = (value) => {
-    console.log('value //> ', value)
-    optionsTempStoreZoom.value = value
-    console.log('optionsTempStoreZoom.valu //> ', optionsTempStoreZoom.value)
-}
-
-const updateCenter = (value) => {
-    console.log('value //> ', value)
-    optionsTempStoreCenter.value = [value.lat, value.lng]
-    console.log('optionsTempStoreCenter.valu //> ', optionsTempStoreCenter.value)
-}
 
 const submitMap = async () => {
+    // const global = useGlobalStore()
     let response
-    mapViewData.geojson = drawnItemsRef.value.toGeoJSON()
-    // Save new zoom value if not falsely
-    console.log('optionsTempStoreZoom.value submit //> ', optionsTempStoreZoom.value)
-    if (optionsTempStoreZoom?.value) {
-        mapViewData.options.zoom = optionsTempStoreZoom.value
-    }
-    console.log('optionsTempStoreZoom.valu submit //> ', optionsTempStoreCenter.value)
-    // Save new center value if not falsely
-    if (optionsTempStoreCenter?.value) {
-        mapViewData.options.center = optionsTempStoreCenter.value
-    }
+    // mapViewAnswerData.geometries = drawnItemsRef.value.toGeoJSON()
+
     /**
      * Check if the mapView already exists, if it exist then update, if not then create a new one
      */
+    
+    if (answerMapViewStore.name === null) {
+        answerMapViewStore.updateName(uuidv4())
+    };
 
-    if (props.mapViewId) {
-        response = await mapViewStore.updateMapview(props.mapViewId, mapViewData)
+    if (answerMapViewStore.url) {
+        const mapview_slug = answerMapViewStore.url.match(/map-views\/.*/);
+        response = await answerMapViewStore.updateMapview(mapview_slug)
+
+        
+
     } else {
-        mapViewData.name = mapViewData?.name || uuidv4()
-        response = await mapViewStore.createMapview(mapViewData)
+        // mapViewAnswerData.name = mapViewAnswerData?.name || uuidv4()
+        response = await answerMapViewStore.createMapview()
+        if (response.data) {
+            // responseStore.updateAnswerMapView
+            // responseStore.answers.push(answer);
+            const answer_mapview = {
+                question_url: current_question_url, 
+                mapview: {
+                    url: answerMapViewStore.url,
+                    location: answerMapViewStore.location
+                } }
+            responseStore.updateAnswerMapView(answer_mapview)
+            // console.log('response.data //> ', response.data)
+            // console.log('mapstore answer //> ', answer_mapview)
+        }
+
+        // responseStore.updateAnswerMapView(answer_index, mapViewStore.getMapViewAnswer)
     }
 
-    if (response.data) {
-        mapViewData.name = response.data.name
-        await questionStore.editCurrentQuestionKeyValue(props.questionIndex, { map_view: response.data.id })
-        await questionStore.saveCurrentQuestions()
-    }
+
+    // TODO: find a solution to update the anwer object in response store when map is saved for
+    // the first time. But not modify the answer object when the map is updated.
+   
+    // if (response.data) {
+    //     mapViewData.name = response.data.name
+    //     await questionStore.editCurrentQuestionKeyValue(props.questionIndex, { map_view: response.data.id })
+    //     await questionStore.saveCurrentQuestions()
+    // }
     updateKeyMapWithoutControls.value++
     setGeoJsonMarkers()
     // response.refresh()
+    // global.succes('Map view saved')
+    
 }
+
+
 </script>
   
 <style></style>

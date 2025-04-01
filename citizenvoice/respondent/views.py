@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
-from apiapp.views import SurveyViewSet, QuestionViewSet, ResponseViewSet, PointLocationViewSet
+from apiapp.views import SurveyViewSet, QuestionViewSet, ResponseViewSet, PointFeatureViewSet
 from .forms import ResponseCreationForm, AnswerCreationForm
 from django.utils import timezone
 
@@ -85,7 +85,7 @@ def question_detail(request, survey_id, question_order, response_id):
     try:
         context['survey'] = SurveyViewSet.GetSurveyByID(survey_id)[0]
         context['question'] = QuestionViewSet.GetOrderedQuestionBySurvey(survey_id, question_order)[0]
-        context['locations_by_question'] = PointLocationViewSet.GetLocationsByQuestion(context['question'])
+        context['locations_by_question'] = PointFeatureViewSet.GetLocationsByQuestion(context['question'])
 
         if context['survey'].question_count() > question_order:
             context['next_question_order'] = question_order + 1

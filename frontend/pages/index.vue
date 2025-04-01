@@ -1,17 +1,29 @@
 <template>
     <NuxtLayout name="default">
          <v-sheet d-flex mx-auto px-4 >
-            <h1 class="pt-10">Home</h1>
-            <div class="my-card col">
-                <p class="text-body-2 mb-4">
-                Ullamco eu quis mollit elit occaecat ullamco veniam. Ullamco sit laboris laborum ex veniam tempor ut. Aute excepteur esse consectetur aliqua sint irure consequat elit proident et occaecat ullamco. Duis laborum dolore fugiat dolore id eu laboris et. Velit pariatur quis qui adipisicing eiusmod sit velit esse consequat aliqua et anim culpa ex. Ea aliqua reprehenderit consectetur sunt magna veniam consectetur nostrud.
-                </p>
-                <p class="text-body-2 mb-4">
-                Voluptate ea dolore deserunt nulla consectetur aliqua adipisicing eu labore labore Lorem in in ea. Ullamco incididunt qui elit enim labore consectetur reprehenderit veniam est eu amet ad et nulla. Anim pariatur consectetur veniam veniam reprehenderit voluptate incididunt id.
-                </p>
-                <p class="text-body-2 mb-4">Hola Deserunt aliquip exercitation laborum magna sit enim ipsum nostrud. Ipsum irure elit incididunt ea occaecat commodo velit. Amet excepteur minim elit esse et reprehenderit. Veniam eiusmod ullamco occaecat amet incididunt sit voluptate elit.    
-                </p>
-            </div>
+            <v-card class="my-card" >
+                <!-- <v-img
+                    height="300px"
+                    src="https://drive.google.com/file/d/1041hE1qlMs2tgF8s9nhtCab8rofvMdGP"
+                    cover
+                ></v-img> -->
+                <v-card-title>
+                    <h1>Citizen Voice</h1>
+                </v-card-title>
+                <v-card-subtitle>
+                    An inclusive, web-based, software platform for collaborative data collection that facilitates the citizen participation
+                </v-card-subtitle>
+                <v-card-text>
+                    <h4>
+                    Engaging and understanding communities affected by urban development leads to better planning decisions and improved social outcomes. 
+                    As a tool for public participation, Citizen Voice opens a channel for citizens to voice their experiences, needs, and aspirations. 
+                    Citizen Voice provides the opportunity for citizen involvement from the early phase to the follow-up phase of urban development projects.
+                   </h4>
+                </v-card-text>  
+                <v-card-actions>
+                    <v-btn color="primary" @click="navigateTo('/surveys/')">Take Survey</v-btn>
+                </v-card-actions>
+            </v-card>
          </v-sheet>
 
     </NuxtLayout>

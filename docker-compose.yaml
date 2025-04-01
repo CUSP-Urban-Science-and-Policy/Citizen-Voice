@@ -1,0 +1,71 @@
+name: civo
+
+services:
+
+  postgis_db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: postgis-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DATABASE}"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+    environment:
+      - POSTGRES_PASSWORD=/run/secrets/postgres_password
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DATABASE}
+    restart: unless-stopped
+    secrets:
+      - postgres_password
+    ports:
+      - 5432:5432
+    networks:
+      - civo-network
+
+  django_api:
+    build: 
+      context: ./citizenvoice
+    command: >
+      sh -c "python manage.py migrate &&
+      python manage.py loaddata civilian-db.json &&
+      python manage.py runserver 0.0.0.0:8000"
+    container_name: django-api
+    environment:
+      - SECRET_KEY=/run/secrets/django_token
+      - DATABASE_ENGINE=${JDANGO_DB_ENGINE}
+      - POSTGRES_DBASE=${DATABASE}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PWD=/run/secrets/postgres_password
+      - POSTGRES_HOST=postgis_db
+      - POSTGRES_PORT=${DB_PORT}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+    volumes:
+      - ./citizenvoice:/citizenvoice
+    ports:
+      - 8000:8000
+    secrets:
+      - django_token
+      - postgres_password
+    depends_on:
+      postgis_db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - civo-network
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  django_token:
+    file: ./secrets/django_token.txt
+volumes:
+  postgis_data:
+
+networks:
+  civo-network:
+    driver: bridge

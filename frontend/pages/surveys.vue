@@ -9,7 +9,7 @@
                     :subtitle="'Published: ' + formatDate(survey.publishe_date)"
                     variant="elevated"
                     width="400"
-                    class="my-card"
+                    class="civo-card"
                     >
                  
                         <v-card-actions>
@@ -49,7 +49,7 @@ function selectSurvey (id) {
 
 </script>
 <style lang="scss">
-.my-card {
+.civo-card {
     margin: 20px 15px
 }
 

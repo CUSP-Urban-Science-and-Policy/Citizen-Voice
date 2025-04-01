@@ -1,0 +1,14 @@
+# Use this for testing when using a local set up with PostgreSQL
+# Match missing value with your set up
+POSTGRES_DBASE=database-name
+DATABASE_ENGINE=postgis
+POSTGRES_USER=user-name
+DB_PORT=5432
+DJANGO_DEBUG=1
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+DB_HOST=localhost
+SECRET_KEY=django-insecure-token123456 
+POSTGRES_PWD=your-password
+TEST_DBASE=''
+API_PARTY_CMS_URL=http://localhost:8000/api/v2 
+# API_PARTY_AUTH_URL=http://localhost:8000/api/auth

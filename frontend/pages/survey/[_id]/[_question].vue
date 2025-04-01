@@ -2,10 +2,20 @@
     <NuxtLayout name="default">
         <div class="">
             <!-- Question card: number & text -->
-            <v-card class="my-card" :title="question.text" :subtitle="question.order">
+            <v-card class="my-card">
+            <template v-slot:title>
+                    <div class="title-wrapper" style="white-space: normal;">
+                        {{ question.text }}
+                    </div>
+            </template>
+            <template v-slot:subtitle>
+                    <div class="title-wrapper" style="white-space: normal;">
+                        {{ question.order + ' ' + question.explanation}}
+                    </div>
+            </template>
                 <!-- Answer card-->
-                <div class="my-card col">
-                    <!-- COTINUE HERE: use the pops (attributes) of the commopents (see example) to pass write values and capture answers -->
+                <div v-if="question.has_text_input" class="my-card col">
+              
                     <!-- <p>Questions type: {{ question.question_type }}
                     Answer body: {{ current_answer }}
                     </p> -->
@@ -24,7 +34,7 @@
                     @update-answer="handleUpdateAnswer"
                     />
                     <RespondentViewQuestionTypesAnswerTypeSelect
-                    v-if="question.question_type === 'select'"
+                    v-if="question.question_type === 'radio'"
                     :question="question"
                     :question_index="current_question_index"
                     :answer="current_answer"
@@ -56,10 +66,11 @@
 
                 <div class="q-pa-md row items-start q-gutter-md">
                     <!-- Map card -->
-                    <!-- TODO: link answerMapview with map view props in each question -->
-                    <div v-if="(question.map_view != null || question.is_geospatial)" style="min-width: 600px;"
+                    <div v-if="(question.mapview != null )" style="min-width: 600px;"
                         class="my-card col">
-                        <AnswerMapView />
+                        <MapView
+                        :mapViewUrl ="question.mapview" 
+                        />
                     </div>
                     <!-- Navigation -->
                     <v-card-actions>
@@ -93,6 +104,7 @@ import { ref, watch } from "vue"
 import { navigateTo } from "nuxt/app";
 import { useSurveyStore } from "~/stores/survey";
 import { useStoreResponse } from '~/stores/response';
+import { useMapViewStore } from "~/stores/mapview";
 import { useGlobalStore } from "~/stores/global";
 
 // import leaflet from "leaflet"
@@ -100,8 +112,10 @@ import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LCircle, LControl } from "@vue-leaflet/vue-leaflet";
 
 const responseStore = useStoreResponse();
-const questions_url = "/api/questions/";
-const mapview_url = "/api/map_views/";
+const mapViewStore = useMapViewStore();
+
+mapViewStore.$reset();
+
 
 const route = useRoute();
 const survey_store = useSurveyStore();
@@ -111,23 +125,21 @@ const questions = survey_store.questions;
 // specified when the survey was created. We use the numbers in the URL to navigate between questions
 // while maintaining the order of the questions in the survey store. 
 var current_question_index = route.params._question; // use url questions id as an index to load each question 
-let current_question_id = questions[current_question_index - 1].id;  // gets the id for the questions
-let current_map_view_id = questions[current_question_index - 1].map_view;  // gets the value for the map view
-let { data: question } = await useAsyncData(() => $cmsApi(questions_url + current_question_id));
-console.log("current map view //", current_map_view_id);
-
-let {data: map_View} = await useAsyncData(() => $cmsApi(mapview_url + current_map_view_id));
-console.log("map_View //", map_View)
+let current_question_url = questions[current_question_index - 1].url;  // gets the id for the questions
+let current_mapview_id = questions[current_question_index - 1].mapview;  // gets the value for the map view
+let question = questions[current_question_index - 1];
 
 // Replace with your actual answer object
-const current_answer = ref({ question_id: current_question_id, text: '' });
+const current_answer = ref({ question_url: current_question_url, text: '', mapview: {} });
 // const answers = ref({ text: body });  // body of the answer must be a string (as per the API)
 // ref makes the variable reactive
 const handleUpdateAnswer = (updatedAnswer, questionIndex) =>{
       // Handle the updated answer here
-    console.log(updatedAnswer);
+    // console.log(updatedAnswer);
     current_answer.text = updatedAnswer;
     current_answer.question_index = questionIndex;
+    const current_mapview = mapViewStore.getMapViewAnswer;
+    current_answer.mapview = current_mapview;
     responseStore.updateAnswer(updatedAnswer);
     };
 
@@ -142,7 +154,6 @@ const circles = ref([]) // this is what user will add
 // if that is the case, we will not call the addCircle function
 let circleClickedAndRemoved = false
 let resetClicked = false
-
 
 // to navigate from one question to the previous/next
 const prevQuestion = async () => {
@@ -208,6 +219,56 @@ const resetMap = async () => {
     // TODO: reset map center and zoom level based on map_view
     resetClicked = true
 }
+
+const submitAnswers = async () => {
+    
+    const global = useGlobalStore();
+
+    for (let i = 0; i < responseStore.answers.length; i++) {
+        let response_url = responseStore.responseUrl;
+        let question_url = responseStore.answers[i].question_url;
+        let mapview_url = responseStore.answers[i].mapview.url;
+        const answer_text = responseStore.answers[i].text;
+        responseStore.submitAnswer(
+            response_url,
+            question_url,
+            answer_text,
+            mapview_url
+        )
+    }
+    global.succes("Your answers have been submitted")
+    return navigateTo('/submitted/')
+    
+};
+
+// inspired by Roy J's solution on Stack Overflow:
+// https://stackoverflow.com/questions/54499070/leaflet-and-vuejs-how-to-add-a-new-marker-onclick-in-the-map
+const removeCircle = async (index) => {
+    console.log("removeCircle function called")
+    circles._value.splice(index, 1)
+    circleClickedAndRemoved = true
+}
+
+const addCircle = async (event) => {
+    if (circleClickedAndRemoved) {
+        circleClickedAndRemoved = false
+    } else if (resetClicked) {
+        resetClicked = false
+    } else {
+        console.log("addCircle function called")
+        circles._value.push(
+            [event.latlng.lat, event.latlng.lng]
+        )
+    }
+}
+const resetMap = async () => {
+    console.log("resetMap function called")
+    circles._value.splice(0, circles._value.length)
+    // TODO: reset map center and zoom level based on mapview
+    resetClicked = true
+}
+
+
 
 </script>
 
