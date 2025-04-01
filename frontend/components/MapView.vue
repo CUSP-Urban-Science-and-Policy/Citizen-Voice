@@ -1,6 +1,6 @@
 
 <template>
-    <v-sheet v-model="dialog" width="auto">
+    <v-sheet width="auto">
         <!-- <template v-slot:activator="{ props }">
             <v-btn class="mt-4" variant="tonal" append-icon="mdi-pencil" border v-bind="props">Edit Map</v-btn>
         </template> -->
@@ -29,7 +29,7 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-btn variant="tonal" block @click="submitMap">Save map</v-btn>
+                <v-btn variant="tonal" color="primary" block @click="submitMap">Save map</v-btn>
                 <!-- <v-btn color="primary" block @click="dialog = false">Save</v-btn> -->
             </v-card-actions>
         </v-card>
@@ -94,10 +94,10 @@ var questionMapView;
 // Fetch the map view for corresponding Question
 if (props.mapViewUrl) {
     const mapViewId = extractMapviewId(props.mapViewUrl)
-    console.log('mapViewId //> ', mapViewId)
+    // console.log('mapViewId //> ', mapViewId)
     const {data, error, pending} = await useCmsApiData(`${map_views_endpoint}${mapViewId}`)
     
-    console.log('mapview data', data.value)
+    // console.log('mapview data', data.value)
 
     questionMapView = data.value
     // store the mapview values to answerMapViewStore
@@ -218,7 +218,7 @@ const title = computed({
  const handleSaveDescription = (description) => {
       // Emit the saveDescription event with the description text
       emit('saveDescription', description);
-      console.log('Description saved:', description);
+    //   console.log('Description saved:', description);
       // You can also perform other actions here, like sending the description to a server
       // TODO: Fix. save the description to the layer
     }
@@ -312,7 +312,7 @@ const onMapWWControlReady = () => {
             saveButton.style.borderRadius = '5px'; 
             saveButton.style.marginTop = '10px'; 
             saveButton.onclick = () => {
-                console.log('layer value //> ', input.value)
+                // console.log('layer value //> ', input.value)
                 handleSaveDescription(input.value);
                 // TODO: check if options are saved to the map view
                 // event.layer.properties.description = input.value;    
@@ -320,7 +320,7 @@ const onMapWWControlReady = () => {
 
                 // console.log('drawItems ref //> ', drawnItemsRef.value);
                 // event.layer.bindPopup(input.value, closeButton = true);
-                console.log('event layer  //> ', event.layer);
+                // console.log('event layer  //> ', event.layer);
                 // TODO: Fix. save the description to the layer
 
                 // layer.properties = { description: input.value };
@@ -333,7 +333,7 @@ const onMapWWControlReady = () => {
             
                     //   
             
-            console.log('drawnItemsRef.value  add //> ', drawnItemsRef.value.toGeoJSON())
+            // console.log('drawnItemsRef.value  add //> ', drawnItemsRef.value.toGeoJSON())
 
             answerMapViewStore.updateGeometries(drawnItemsRef.value.toGeoJSON());
         });

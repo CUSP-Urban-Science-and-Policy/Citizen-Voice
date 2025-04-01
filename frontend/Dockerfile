@@ -1,19 +1,30 @@
-FROM node:22.8.0-alpine3.20
+FROM node:22.8.0-alpine3.20 AS build
 
-RUN mkdir -p /var/www/dockerize-nuxt/nuxt-app
+# ENV NODE_ENV=production
+
 WORKDIR /var/www/dockerize-nuxt/nuxt-app
 
 COPY package*.json ./
-RUN yarn install
+
+RUN yarn install --fronzen-lockfile
 
 COPY . .
 
 RUN yarn run build
 
-EXPOSE 3000
+FROM node:22.8.0-alpine3.20 AS production
 
-ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=3000
-ENV API_PARTY_CMS_URL=http://localhost:3001
+RUN mkdir -p /var/www/dockerize-nuxt/nuxt-app
+WORKDIR /var/www/dockerize-nuxt/nuxt-app
+
+RUN apk add --no-cache curl
+
+COPY --from=build /var/www/dockerize-nuxt/nuxt-app /var/www/dockerize-nuxt/nuxt-app
+RUN adduser --disabled-password nuxt && \
+    chown -R nuxt:nuxt /var/www/dockerize-nuxt/nuxt-app
+
+USER nuxt
+
+EXPOSE 3000
 
 CMD [ "yarn", "start" ]
