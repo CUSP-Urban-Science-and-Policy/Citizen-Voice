@@ -1,3 +1,29 @@
+https://testdriven.io/blog/django-rest-authjs/#backend
+
+
+####REGISTER USER
+ curl -XPOST -H "Content-type: application/json" -d '{
+      "username": "user1",
+      "email": "test@gmail.com",
+      "password1": "complexpassword123",
+      "password2": "complexpassword123"
+  }' 'http://localhost/api/auth/register/' | jq
+
+
+#### LOGIN
+$ curl -XPOST -H "Content-type: application/json" -d '{
+      "username": "user1",
+      "password": "complexpassword123"
+  }' 'http://localhost/api/auth/login/'
+
+
+
+
+curl -XGET -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQzNTAzNjgxLCJpYXQiOjE3NDM1MDAwODEsImp0aSI6IjA1MmYyNDBlZjk4MzRmZmNhZjNiYTNjZTg0MmI4ODQ3IiwidXNlcl9pZCI6MTF9.wVnmLc2g-_d2AmFsLmD2umJaoKKASKi27-ekvJXbdDwdgPVJoKeVFyNcdG06Bqx8GdLbRqKVmdIveFBeZgVbsg' \
+    -H "Content-type: application/json" 'http://localhost:8000/api/auth/user/'
+
+
+
 # github
 
 Goto https://github.com/settings/applications/new for creating a new OAuth application on GitHub.
