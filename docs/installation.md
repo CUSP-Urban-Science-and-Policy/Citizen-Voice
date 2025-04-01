@@ -1,7 +1,7 @@
 # Installation Guide
-This guide will walk you through the process of setting up the Citizen-Voice project on your local machine. Follow these steps to get the development environment up and running.
+This guide will walk you through the process of setting up the Citizen Mapping Tool on your local machine. Follow these steps to get the development environment up and running.
 
-The Citizen-Voice project is designed to be set up using Docker Compose, which simplifies the process of managing dependencies and environment configurations. This guide assumes you have basic knowledge of using the command line and Docker.
+The tool is designed to be set up using Docker Compose, which simplifies the process of managing dependencies and environment configurations. This guide assumes you have basic knowledge of using the command line and Docker.
 
 ## Prerequisites
 Before you begin, ensure you have the following software installed on your machine:
@@ -58,6 +58,7 @@ nano secrets/postgres_password.txt
 ```
 Paste your PostgreSQL superuser password into this file. For our use case, it is ```<postgres-superuser-password>```
 
+(step-5-build-and-run-the-project)=
 ### Step 5: Build and Run the Project
 Build and run the project using Docker Compose:
 ```bash
@@ -69,9 +70,15 @@ Open a web browser and navigate to http://localhost/ to see the development vers
 
 This guide should help you set up the Citizen-Voice project efficiently. If you encounter any issues, please refer to the project's documentation or seek help from the community.
 
+  <!---
 
 ## Front-end
+Coming Soon
 ## Back-end
+Coming Soon
 ### APIs
-
+Coming Soon
 ## Optional Installation for the Documentation
+Coming Soon
+
+  -->
