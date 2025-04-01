@@ -1,24 +1,23 @@
-from django.shortcuts import render
-
+from django.middleware import csrf
 from rest_framework.decorators import api_view
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response as rf_response
-from django.middleware import csrf
+
+from voice.models import Answer, PointFeature, \
+    PolygonFeature, LineFeature, DashboardTopic
+
 from .serializers import  PointFeatureSerializer, \
     LineFeatureSerializer, PolygonFeatureSerializer, \
     DashboardAnswerSerializer, DashboardTopicSerializer
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
-from voice.models import Answer, PointFeature, \
-    PolygonFeature, LineFeature, DashboardTopic
+
 
 @api_view(['GET'])
 def get_csrf_token(request):
     token = csrf.get_token(request)
     return rf_response({'csrf_token': token})
 
-# TODO: consider if using viewset is a good option for this. Viewsets are a fast way to create a CRUD API, 
+# TODO: consider if using viewset is a good option for this. Viewsets are a fast way to create a CRUD API,
 # but they obfuscate the code; we might want to have more control over the API.
 # REF: https://www.django-rest-framework.org/api-guide/viewsets/
 
@@ -37,7 +36,7 @@ class PointFeatureViewSet(viewsets.ModelViewSet):
 
     serializer_class = PointFeatureSerializer
 
-    def get_queryset(response):
+    def get_queryset(self):
         """
         Returns a set of all PointFeature instances in the database.
 
@@ -46,7 +45,7 @@ class PointFeatureViewSet(viewsets.ModelViewSet):
         """
 
         queryset = PointFeature.objects.all()
-        return queryset    
+        return queryset
 
 
 class PolygonFeatureViewSet(viewsets.ModelViewSet):
@@ -56,7 +55,7 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
 
     serializer_class = PolygonFeatureSerializer
 
-    def get_queryset(response):
+    def get_queryset(self):
         """
         Returns a set of all PolygonFeature instances in the database.
 
@@ -66,7 +65,7 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
 
         queryset = PolygonFeature.objects.all()
         return queryset
-    
+
     @staticmethod
     def GetLocationsByQuestion(question):
         """
@@ -75,7 +74,7 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             question (int): Question ID to be used for finding related PointFeatures.
 
-        Return: 
+        Return:
             queryset: containing the PointFeature instances related to this Question
         """
 
@@ -91,7 +90,7 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             answer (int): Answer ID to be used for finding related PolygonFeatures.
 
-        Return: 
+        Return:
             queryset: containing the PolygonFeature instances related to this Answer
         """
 
@@ -106,7 +105,7 @@ class LineFeatureViewSet(viewsets.ModelViewSet):
 
     serializer_class = LineFeatureSerializer
 
-    def get_queryset(response):
+    def get_queryset(self):
         """
         Returns a set of all LineStringLocation instances in the database.
 
@@ -125,7 +124,7 @@ class LineFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             question (int): Question ID to be used for finding related LineStringLocations.
 
-        Return: 
+        Return:
             queryset: containing the LineStringLocation instances related to this Question
         """
 
@@ -140,7 +139,7 @@ class LineFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             answer (int): Answer ID to be used for finding related LineStringLocations.
 
-        Return: 
+        Return:
             queryset: containing the LineStringLocation instances related to this Answer
         """
 
@@ -152,9 +151,9 @@ class DashboardTopicViewSet(viewsets.ModelViewSet):
     """
     A ViewSet that returns the topics associated to a question
     """
-    
+
     serializer_class = DashboardTopicSerializer
-    
+
     def get_queryset(self):
         queryset = DashboardTopic.objects.all()
         return queryset
@@ -179,7 +178,7 @@ class AnswerGeoJsonViewSet(viewsets.ReadOnlyModelViewSet):
             survey (int): Survey ID to be used for finding related Answers
 
         Returns:
-            queryset: 
+            queryset:
         """
 
         # FORWARD FOERIGN KEY: use select_related

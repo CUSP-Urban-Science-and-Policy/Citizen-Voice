@@ -17,21 +17,24 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-# from django.contrib.auth import views as auth_view
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.shortcuts import redirect
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
-
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('/citizen-map')
+
     return render(request, 'home.html')
 
 urlpatterns = [
     path('home', home),
+    path('api/auth/', include('authentication.urls')),
 
     path('api/admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
@@ -47,6 +50,8 @@ urlpatterns = [
     path('voice/v3/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('voice/v3/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('health/', health_check, name="health_check"),
+
+
 ]
 
 # TODO: continue here: Registering users work but the redirect page is not available. API returns success
