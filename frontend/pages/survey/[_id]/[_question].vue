@@ -10,15 +10,11 @@
             </template>
             <template v-slot:subtitle>
                     <div class="title-wrapper" style="white-space: normal;">
-                        {{ question.order + ' ' + question.explanation}}
+                        {{ question.explanation}}
                     </div>
             </template>
                 <!-- Answer card-->
                 <div v-if="question.has_text_input" class="my-card col">
-              
-                    <!-- <p>Questions type: {{ question.question_type }}
-                    Answer body: {{ current_answer }}
-                    </p> -->
                     <RespondentViewQuestionTypesAnswerTypeText 
                     v-if="question.question_type === 'text'"
                     :question="question"
@@ -82,15 +78,11 @@
                             <i class="fa-solid fa-arrow-right"></i>
                             <span class="q-pa-sm">Next Question</span>
                         </v-btn>
-                                <v-btn v-show="survey_store.questionCount == current_question_index" @click="submitAnswers" color="primary" variant="tonal">
+                                <v-btn v-show="survey_store.questionCount == current_question_index" @click="submitAnswers" color="primary" variant="flat">
                                     <i class="fa-solid fa-check"></i>
                                     <span class="q-pa-sm">Submit</span>
                                 </v-btn>
                     </v-card-actions>
-                    <!-- <div> 
-                        <p>Current index question {{current_question_index}} </p>
-                        <p>total questions {{survey_store.questionCount}} </p>
-                        </div> -->
                 </div>
             </v-card>
         </div>
@@ -116,7 +108,6 @@ const mapViewStore = useMapViewStore();
 
 mapViewStore.$reset();
 
-
 const route = useRoute();
 const survey_store = useSurveyStore();
 const questions = survey_store.questions;
@@ -124,7 +115,7 @@ const questions = survey_store.questions;
 // Here, we use the list of questions in the survey store to display questions according to the order
 // specified when the survey was created. We use the numbers in the URL to navigate between questions
 // while maintaining the order of the questions in the survey store. 
-var current_question_index = route.params._question; // use url questions id as an index to load each question 
+var current_question_index = parseInt(route.params._question, 10); // use url questions id as an index to load each question 
 let current_question_url = questions[current_question_index - 1].url;  // gets the id for the questions
 let current_mapview_id = questions[current_question_index - 1].mapview;  // gets the value for the map view
 let question = questions[current_question_index - 1];
@@ -196,7 +187,7 @@ const submitAnswers = async () => {
 // inspired by Roy J's solution on Stack Overflow:
 // https://stackoverflow.com/questions/54499070/leaflet-and-vuejs-how-to-add-a-new-marker-onclick-in-the-map
 const removeCircle = async (index) => {
-    console.log("removeCircle function called")
+    // console.log("removeCircle function called")
     circles._value.splice(index, 1)
     circleClickedAndRemoved = true
 }
@@ -207,14 +198,14 @@ const addCircle = async (event) => {
     } else if (resetClicked) {
         resetClicked = false
     } else {
-        console.log("addCircle function called")
+        // console.log("addCircle function called")
         circles._value.push(
             [event.latlng.lat, event.latlng.lng]
         )
     }
 }
 const resetMap = async () => {
-    console.log("resetMap function called")
+    // console.log("resetMap function called")
     circles._value.splice(0, circles._value.length)
     // TODO: reset map center and zoom level based on mapview
     resetClicked = true

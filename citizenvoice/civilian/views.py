@@ -10,7 +10,7 @@ from .serializers import  PointFeatureSerializer, \
     DashboardAnswerSerializer, DashboardTopicSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from apiapp.models import Answer, PointFeature, \
+from voice.models import Answer, PointFeature, \
     PolygonFeature, LineFeature, DashboardTopic
 
 @api_view(['GET'])

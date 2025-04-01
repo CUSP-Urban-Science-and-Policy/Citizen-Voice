@@ -1,11 +1,15 @@
 import path from "path"
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 import vuetify from "vite-plugin-vuetify";
+import pinia from '@pinia/nuxt';
 
 const ONE_DAY = 60 * 60 * 24 * 1000
 const ONE_WEEK = ONE_DAY * 7
 
+
+
 export default defineNuxtConfig({
+
   ssr: true,
 
   build: {
@@ -25,13 +29,14 @@ export default defineNuxtConfig({
 
   nitro: {
       compressPublicAssets: true,
-  },
+},
 
   app: {
+      baseURL: '/citizen-map/',
       head: {
-          title: "Citizen Voice",
+          title: "Citizen Mapping Tool",
           link: [
-              { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+              { rel: 'icon', type: 'image/x-icon', href: '/favicon-blue.png' },
               {
                   rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.css',
                   integrity: 'sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=', crossorigin: ''
@@ -75,11 +80,12 @@ export default defineNuxtConfig({
       ssr: {
           noExternal: ["vuetify"],
       },
+      
   },
 
   modules: [
       // We are using @pinia/nuxt for the store
-      '@pinia/nuxt',
+      pinia,
 
       // Nuxt api party is used for the proxy API
       'nuxt-api-party',
@@ -90,7 +96,7 @@ export default defineNuxtConfig({
       // We are using tailwind utility classes instead of the Vuetify utility css classes
       // More info: https://tailwindcss.nuxtjs.org/
       '@nuxtjs/tailwindcss',
-
+      
       // We are using NuxtOpenFetch for OpenAPI clients
       // More info: https://nuxt-open-fetch.vercel.app/setup/quick-start
  
@@ -101,31 +107,42 @@ export default defineNuxtConfig({
           nuxt.hooks.hook("vite:extendConfig", (config) => config.plugins.push(vuetify()));
       },
   ],
-
-  runtimeConfig: {
-      cookieName: process.env.COOKIE_NAME || '__session',
-      cookieSecret: process.env.COOKIE_SECRET || 'secret',
-      cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day
-      cookieRememberMeExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_WEEK.toString(), 10), // 7 days
-      public: {
-          baseAPI: process.env.BASE_API || 'http://localhost:3000',
-          apiHostPayment: '',
-      },
-      paymentSecretKey: '',
+  
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+    // and more...
   },
 
-  // See: https://github.com/johannschopplich/nuxt-api-party
-  apiParty: {
-      endpoints: {
-          cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
-              url: process.env.API_PARTY_CMS_URL,
-              schema: './openapi/citizenvoice/openapi.yaml'
-          },
-          authApi: { // Becomes `$authApi()` and useAuthApiData()
-              url: process.env.API_PARTY_AUTH_URL,
-              schema: './openapi/citizenvoice/openapi.yaml'
-          }
-      }
+  runtimeConfig: {
+    cookieName: process.env.COOKIE_NAME || '__session',
+    cookieSecret: process.env.COOKIE_SECRET || 'secret',
+    cookieExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_DAY.toString(), 10), // 1 day
+    cookieRememberMeExpires: parseInt(process.env.COOKIE_REMEMBER_ME_EXPIRES || ONE_WEEK.toString(), 10), // 7 days
+    public: {
+        // set api for reference to the frontend
+        // usage: `${config.public.apiBaseAPI}`
+    //   apiBaseCms: "/api/v2", 
+        apiHostPayment: '',
+    //   apiBaseAuth: "/api/auth"
+    },
+
+    // API party configuration
+    apiParty: {
+        endpoints: {
+            cmsApi: { // Becomes `$cmsApi()` and useCmsApiData()
+                url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3',
+                // token: '',
+                schema: './openapi/voice/openapi.yml',
+                // allowedUrls: [ ],
+            },
+            authApi: { // Becomes `$authApi()` and useAuthApiData()
+                url: process.env.AUTH_API_URL || 'http://localhost:8000/_allauth/browser/v1/auth',
+                schema: './openapi/voice/openapi.yml'
+            }
+        }
+    },
+      paymentSecretKey: '',
   },
 
   hooks: {
@@ -144,8 +161,9 @@ export default defineNuxtConfig({
       '/design/**': { ssr: false },
       '/design/surveys/**': { ssr: false },
       '/user/**': { ssr: false },
-      '/survey/**': { ssr: false },
+      '/surveys/**': { ssr: false },
   },
 
-  compatibilityDate: '2024-09-04',
-})
+  compatibilityDate: '2025-03-03',
+});
+

@@ -81,11 +81,11 @@ export const useUserStore = defineStore('user', {
             let res
 
             try {
-                res = await $cmsApi('/api/auth/register/', config)
+                res = await $authApi('/register/', config)
             } catch (e) {
                 // For debugging
-                // console.error('statusCode:', e.statusCode)
-                // console.error('statusMessage:', e.statusMessage)
+                console.error('statusCode:', e.statusCode)
+                console.error('statusMessage:', e.statusMessage)
                 // console.error('data:', e.data)
 
                 let warnMessage = null
@@ -131,7 +131,7 @@ export const useUserStore = defineStore('user', {
             }
 
             try {
-                const res = await $cmsApi('/api/auth/login/', config)
+                const res = await $authApi('/register/', config)
 
                 if (res?.token) {
                     this.userData = {
@@ -194,7 +194,7 @@ export const useUserStore = defineStore('user', {
                 config.headers['Authorization'] = `Token ${token}`
             }
 
-            await $cmsApi('/api/auth/logout/', config).then(async () => {
+            await $authApi('/logout/', config).then(async () => {
                 localStorage.removeItem('token')
                 this.$reset()
                 // Navigate to home

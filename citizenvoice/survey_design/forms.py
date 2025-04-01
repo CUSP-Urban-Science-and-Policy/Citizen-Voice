@@ -1,5 +1,5 @@
 from django import forms
-from apiapp.models.survey import Survey
+from voice.models.survey import Survey
 
 
 class SurveyCreationForm(forms.ModelForm):

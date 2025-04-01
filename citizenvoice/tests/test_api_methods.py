@@ -1,8 +1,8 @@
 from django.test import TestCase
-from apiapp.models import Question, Survey, Answer, Response, PointFeature, PolygonFeature, LineFeature, LocationCollection
+from voice.models import Question, Survey, Answer, Response, PointFeature, PolygonFeature, LineFeature, LocationCollection
 from django.contrib.auth.models import User
 from datetime import date, timedelta
-from apiapp import views
+from voice import views
 
 
 class ModelTest(TestCase):

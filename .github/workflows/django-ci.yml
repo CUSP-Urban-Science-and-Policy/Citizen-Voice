@@ -2,6 +2,7 @@ name: Django CI
 
 # triggers
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - devel
@@ -15,17 +16,16 @@ on:
 # job definition
 jobs:
   health-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
-        image: postgis/postgis:14-master
+        image: postgis/postgis:16-master
         env:  # environmental variables required for the job
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: github_actions
         ports: 
           - 5432:5432
-
         options: >- 
           --health-cmd pg_isready 
           --health-interval 10s 
@@ -42,14 +42,14 @@ jobs:
           restore-keys: |
            ${{ runner.os }}-pip-
       - name: Setup python environment
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install GDAL library
         run: |
-          sudo add-apt-repository ppa:ubuntugis/ppa -y
-          sudo apt-get update -y
-          sudo apt-get install gdal-bin libgdal-dev -y
+          sudo add-apt-repository ppa:ubuntugis -y
+          sudo apt-get update
+          sudo apt-get install libgdal-dev libgeos-dev libproj-dev -y
           export CPLUS_INCLUDE_PATH=/usr/include/gdal
           export C_INCLUDE_PATH=/usr/include/gdal
           pip install GDAL==3.3.2
