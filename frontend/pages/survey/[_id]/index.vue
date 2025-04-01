@@ -94,6 +94,7 @@ const startSurvey = async () => {
 
 // Clear all answers in the Response store
 storeResponse.clearAnswers()
+</script>
 
 <style>
 .preserve-breaks {
