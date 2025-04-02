@@ -28,6 +28,11 @@ def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
 def home(request):
+
+    # if request.user.is_authenticated:
+    #     access_token = request.user.socialaccount_set.get(provider='google').socialtoken_set.get().token
+    #     print(access_token)
+
     return render(request, 'home.html')
 
 urlpatterns = [

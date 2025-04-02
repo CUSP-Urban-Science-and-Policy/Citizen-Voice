@@ -257,7 +257,7 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
     }
 }
-
+SOCIALACCOUNT_STORE_TOKENS = True
 
 REST_FRAMEWORK = {
     #'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
