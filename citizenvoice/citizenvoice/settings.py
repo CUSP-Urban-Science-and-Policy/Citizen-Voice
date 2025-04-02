@@ -11,11 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
-import sys
 from pathlib import Path
-from dotenv import load_dotenv
 from datetime import timedelta
-from rest_framework.settings import api_settings
 
 # import mimetypes
 # mimetypes.add_type("text/css", ".css", True)
@@ -70,16 +67,18 @@ INSTALLED_APPS = [
     'voice',
     'civilian',
     'rest_framework',
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     'rest_framework_gis',
     'rest_framework.permissions',
+
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+
     'users.apps.UsersConfig',
     'survey_design.apps.SurveyDesignConfig',
     'respondent.apps.RespondentConfig',
     'corsheaders',
-    # 'knox',My Project 9252
-    # 'knox_allauth',
-    # 'allauth',
-    # 'allauth.account',
     'bulk_update_or_create',
     'django_extensions',
     'drf_spectacular',
@@ -89,6 +88,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
+    "authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [
@@ -153,6 +153,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost",
 ]
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -260,11 +263,16 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_STORE_TOKENS = True
 
 REST_FRAMEWORK = {
-    #'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': ["rest_framework_simplejwt.authentication.JWTAuthentication"],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',  # ✅ Forces JSON output
     ),
+}
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -303,3 +311,18 @@ STORAGES = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'emails'
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
+    "SIGNING_KEY": "complexsigningkey",  # generate a key and replace me
+    "ALGORITHM": "HS512",
+}
+
+#ACCOUNT_SIGNUP_FIELDS = ['email', 'username*', 'password1*', 'password2*']
+ACCOUNT_SIGNUP_FIELDS = ['username*', 'password1*', 'password2*']
+#ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
