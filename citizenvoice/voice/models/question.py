@@ -69,11 +69,3 @@ class Question(models.Model):
     def question_count(self):
         return self.question_set.count()
 
-
-    # class Meta:
-    #     verbose_name = _("question")
-    #     verbose_name_plural = _("questions")
-    #     ordering = ("survey", "order")
-
-    # def question_count(self):
-    #     return self.question_set.count()

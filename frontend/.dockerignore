@@ -5,4 +5,4 @@ dist
 .nuxt
 output
 .env
-.DS_Store
+*.DS_Store

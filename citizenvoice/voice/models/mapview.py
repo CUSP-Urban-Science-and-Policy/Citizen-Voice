@@ -10,6 +10,15 @@ def default_service_url():
     return "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
 
+
+def default_options():
+    return {"zoom": 7, "center": [52.456009, 5.251465]}
+
+
+def default_service_url():
+    return "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+
 class MapView(models.Model):
     """
     The MapView class provides additional configuration settings for the Question class, and supports

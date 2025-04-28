@@ -6,7 +6,7 @@
 # ====================================================================================================================
 
 from django.urls import include, path
-from rest_framework import routers, renderers
+from rest_framework import routers
 from . import views
 
 # Render viewsets
