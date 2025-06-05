@@ -227,7 +227,3 @@ python manage.py test
 4. Run the unit tests with `python manage.py test`
 5. Go through the steps outlined above for [generating a new package from the command line](#), and verify that the generated package works as it should.
 
-### GitHub
-
-1. Make sure that the GitHub-Zenodo integration is enabled for https://github.com/NLeSC/python-template
-1. Go to https://github.com/NLeSC/python-template/releases and click `Draft a new release`
