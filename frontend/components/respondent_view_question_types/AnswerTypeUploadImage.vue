@@ -155,8 +155,9 @@ async function uploadImage() {
       formData.append('response', props.answer.response)
     }
     
-    // Make API call to upload image
-
+      // Make API call to upload image
+    
+    //TODO: CONTINUE HERE Replace this call with a call that includes the actual question url, response url and  mapview value (should be null)
     const response = await $cmsApi('/answers/upload_image_answer/', {
       method: 'POST',
       body: formData
