@@ -230,6 +230,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+# Image upload settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+
+# Allowed image formats
+ALLOWED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
+MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
