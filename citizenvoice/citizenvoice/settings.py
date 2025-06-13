@@ -30,8 +30,6 @@ if os.name == "nt":
     os.environ["PROJ_LIB"] = OSGEO4W + r"\share\proj"
     os.environ["PATH"] = OSGEO4W + r"\bin;" + os.environ["PATH"]
 
-print("engine:", os.environ.get("DATABASE_ENGINE"))
-
 # Default settings survey
 DEFAULT_SURVEY_PUBLISHING_DURATION = 7
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -117,6 +115,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -337,15 +336,17 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS512",
 }
 
-# ACCOUNT_LOGIN_METHOD = "username"
-
-# ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "none"
+# Account signup fields
 ACCOUNT_SIGNUP_FIELDS = {
-    "email": {"required": False},
     "username": {"required": True},
+    "email": {"required": True},
     "password1": {"required": True},
     "password2": {"required": True},
 }
+
+# Add these missing Allauth settings:
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
 
 # TODO: integrate this changes into the app and see if the authentication works. The instructions on the blog are outdated.
