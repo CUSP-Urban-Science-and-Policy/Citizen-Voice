@@ -4,6 +4,283 @@ info:
   version: 3.1.1
   description: Documentation of API endpoints in CitizenVoice
 paths:
+  /api/auth/google/:
+    post:
+      operationId: api_auth_google_create
+      description: |-
+        class used for social authentications
+        example usage for facebook with access_token
+        -------------
+        from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+
+        class FacebookLogin(SocialLoginView):
+            adapter_class = FacebookOAuth2Adapter
+        -------------
+
+        example usage for facebook with code
+
+        -------------
+        from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+        from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
+        class FacebookLogin(SocialLoginView):
+            adapter_class = FacebookOAuth2Adapter
+            client_class = OAuth2Client
+            callback_url = 'localhost:8000'
+        -------------
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SocialLogin'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialLogin'
+          description: ''
+  /api/auth/login/:
+    post:
+      operationId: api_auth_login_create
+      description: |-
+        Check the credentials and return the REST Token
+        if the credentials are valid and authenticated.
+        Calls Django Auth login method to register User ID
+        in Django session framework
+
+        Accept the following POST parameters: username, password
+        Return the REST Framework Token Object's key.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+          description: ''
+  /api/auth/logout/:
+    post:
+      operationId: api_auth_logout_create
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/register/:
+    post:
+      operationId: api_auth_register_create
+      description: |-
+        Registers a new user.
+
+        Accepts the following POST parameters: username, email, password1, password2.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: api_auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/token/verify/:
+    post:
+      operationId: api_auth_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/auth/user/:
+    get:
+      operationId: api_auth_user_retrieve
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+    put:
+      operationId: api_auth_user_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+    patch:
+      operationId: api_auth_user_partial_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
   /civilian/v1/answers/:
     get:
       operationId: civilian_v1_answers_list
@@ -24,8 +301,7 @@ paths:
       tags:
       - civilian
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -48,8 +324,7 @@ paths:
       tags:
       - civilian
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -181,8 +456,7 @@ paths:
       tags:
       - civilian
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -211,8 +485,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -225,24 +498,20 @@ paths:
           description: ''
     post:
       operationId: voice_v3_answers_create
-      description: Answer ViewSet used internally to query data from database.
+      description: Override create to handle both regular and image uploads.
       tags:
       - voice
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/Answer'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Answer'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Answer'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -265,8 +534,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -289,19 +557,15 @@ paths:
       - voice
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/Answer'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Answer'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Answer'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -324,18 +588,14 @@ paths:
       - voice
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedAnswer'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedAnswer'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedAnswer'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -357,8 +617,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -370,8 +629,32 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+  /voice/v3/answers/upload_image_answer/:
+    post:
+      operationId: voice_v3_answers_upload_image_answer_create
+      description: Handle image upload for answers.
+      tags:
+      - voice
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        required: true
+      security:
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -386,8 +669,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -400,8 +682,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -428,8 +709,7 @@ paths:
             schema:
               $ref: '#/components/schemas/LineFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -453,8 +733,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -488,8 +767,7 @@ paths:
             schema:
               $ref: '#/components/schemas/LineFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -523,8 +801,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedLineFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -547,8 +824,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -561,8 +837,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -591,8 +866,7 @@ paths:
             schema:
               $ref: '#/components/schemas/LocationCollection'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -616,8 +890,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -651,8 +924,7 @@ paths:
             schema:
               $ref: '#/components/schemas/LocationCollection'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -686,8 +958,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedLocationCollection'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -710,8 +981,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -731,8 +1001,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -748,8 +1017,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -777,8 +1045,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MapView'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -801,8 +1068,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -835,8 +1101,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MapView'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -869,8 +1134,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedMapView'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -892,8 +1156,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -905,8 +1168,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -923,8 +1185,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -951,8 +1212,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PointFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -976,8 +1236,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1011,8 +1270,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PointFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1046,8 +1304,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedPointFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1070,8 +1327,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -1084,8 +1340,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1112,8 +1367,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PolygonFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -1137,8 +1391,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1172,8 +1425,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PolygonFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1207,8 +1459,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedPolygonFeature'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1231,8 +1482,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -1246,8 +1496,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1276,8 +1525,7 @@ paths:
               $ref: '#/components/schemas/Question'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '201':
           content:
@@ -1301,8 +1549,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1337,8 +1584,7 @@ paths:
               $ref: '#/components/schemas/Question'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1372,8 +1618,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedQuestion'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1396,8 +1641,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -1424,8 +1668,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1440,8 +1683,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1470,8 +1712,7 @@ paths:
               $ref: '#/components/schemas/Response'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -1493,8 +1734,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1527,8 +1767,7 @@ paths:
               $ref: '#/components/schemas/Response'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1560,8 +1799,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedResponse'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1582,8 +1820,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -1607,8 +1844,7 @@ paths:
               $ref: '#/components/schemas/Response'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1740,8 +1976,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -1770,8 +2005,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1799,8 +2033,7 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '201':
           content:
@@ -1822,8 +2055,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1856,8 +2088,7 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1889,8 +2120,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSurvey'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1911,8 +2141,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -1930,8 +2159,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1958,8 +2186,7 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1974,8 +2201,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -1990,8 +2216,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -2019,8 +2244,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Topic'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '201':
@@ -2043,8 +2267,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -2077,8 +2300,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Topic'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -2111,8 +2333,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTopic'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -2134,8 +2355,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
@@ -2148,8 +2368,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -2178,8 +2397,7 @@ paths:
               $ref: '#/components/schemas/VoiceUser'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '201':
           content:
@@ -2202,8 +2420,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -2237,8 +2454,7 @@ paths:
               $ref: '#/components/schemas/VoiceUser'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -2271,8 +2487,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedVoiceUser'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -2294,8 +2509,7 @@ paths:
       tags:
       - voice
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -2304,7 +2518,7 @@ components:
     Answer:
       type: object
       description: |-
-        Serialises 'response', 'question', 'created', 'updated', 'body'
+        Serialises 'response', 'question', 'created', 'updated', 'body', 'image'
         fields of the Answer model for the API.
       properties:
         id:
@@ -2327,6 +2541,10 @@ components:
         body:
           type: string
           title: Answer Body
+        image:
+          type: string
+          format: uri
+          nullable: true
         question:
           type: string
           format: uri
@@ -2389,6 +2607,20 @@ components:
       type: string
       enum:
       - Feature
+    JWT:
+      type: object
+      description: Serializer for JWT authentication.
+      properties:
+        access:
+          type: string
+        refresh:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserDetails'
+      required:
+      - access
+      - refresh
+      - user
     LineFeature:
       type: object
       description: |-
@@ -2490,6 +2722,18 @@ components:
           readOnly: true
       required:
       - geojson
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
     MapView:
       type: object
       description: |-
@@ -2553,7 +2797,7 @@ components:
     PatchedAnswer:
       type: object
       description: |-
-        Serialises 'response', 'question', 'created', 'updated', 'body'
+        Serialises 'response', 'question', 'created', 'updated', 'body', 'image'
         fields of the Answer model for the API.
       properties:
         id:
@@ -2576,6 +2820,10 @@ components:
         body:
           type: string
           title: Answer Body
+        image:
+          type: string
+          format: uri
+          nullable: true
         question:
           type: string
           format: uri
@@ -2953,6 +3201,31 @@ components:
           type: string
           title: Topic name
           maxLength: 150
+    PatchedUserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
     PatchedVoiceUser:
       type: object
       description: |-
@@ -3181,6 +3454,7 @@ components:
       - integer
       - float
       - date
+      - image-upload
       type: string
       description: |-
         * `text` - text (multiple line)
@@ -3192,6 +3466,26 @@ components:
         * `integer` - integer
         * `float` - float
         * `date` - date
+        * `image-upload` - Image Upload
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+          minLength: 1
+        email:
+          type: string
+          format: email
+        password1:
+          type: string
+          writeOnly: true
+        password2:
+          type: string
+          writeOnly: true
+      required:
+      - password1
+      - password2
     Response:
       type: object
       description: |-
@@ -3231,6 +3525,23 @@ components:
       - survey
       - updated
       - url
+    RestAuthDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - detail
+    SocialLogin:
+      type: object
+      properties:
+        access_token:
+          type: string
+        code:
+          type: string
+        id_token:
+          type: string
     Survey:
       type: object
       description: |-
@@ -3289,6 +3600,26 @@ components:
       - name
       - publish_date
       - url
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
     Topic:
       type: object
       description: A serializer class for the DashboardTopic model.
@@ -3302,6 +3633,35 @@ components:
           maxLength: 150
       required:
       - id
+    UserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - pk
+      - username
     VoiceUser:
       type: object
       description: |-
@@ -3332,13 +3692,10 @@ components:
       - id
       - username
   securitySchemes:
-    basicAuth:
+    jwtAuth:
       type: http
-      scheme: basic
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
+      scheme: bearer
+      bearerFormat: JWT
 externalDocs:
   description: User Authentication (allauth)
   url: /_allauth/openapi.html
