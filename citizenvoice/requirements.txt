@@ -66,7 +66,6 @@ djangorestframework-gis==1.1
 djangorestframework_simplejwt==5.5.0
 drf-spectacular==0.26.5
 Flask==3.0.3
-GDAL @ file:///Users/runner/miniforge3/conda-bld/gdal-split_1700792462874/work/build/swig/python
 idna==3.6
 importlib_metadata==8.6.1
 inflection==0.5.1
