@@ -58,6 +58,13 @@
                     :answer="current_answer"
                     @update-answer="handleUpdateAnswer"
                     />
+                    <RespondentViewQuestionTypesAnswerTypeUploadImage
+                    v-if="question.question_type === 'image-upload'"
+                    :question="question"
+                    :question_index="current_question_index"
+                    :answer="current_answer"
+                    @update-answer="handleUpdateAnswer"
+                    />
                 </div>
 
                 <div class="q-pa-md row items-start q-gutter-md">
