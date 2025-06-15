@@ -84,13 +84,16 @@ export default {
 
 <script setup>
 
+import { useSurveyStore } from '~/stores/survey'
 
+const surveyStore = useSurveyStore();
+const router = useRouter();
 
 const emit = defineEmits(['updateAnswer'])
 const props = defineProps({
   question_index: Number,
   question: Object,
-  answer: Object,
+  answer: Object
 })
 
 // Reactive data
@@ -114,6 +117,11 @@ const fileRules = [
     return true
   }
 ]
+
+// TODO: continue here. maintian the interface (props) of other questions types to build solution.
+
+const current_question_index = router.currentRoute.value.params._question - 1; // Adjusting to zero-based index
+
 
 // Handle file selection
 function handleFileSelect(file) {
@@ -148,6 +156,7 @@ async function uploadImage() {
     // Create FormData for the upload
     const formData = new FormData()
     formData.append('question', props.question.url) // Use question URL as expected by your API
+    console.log('question url', props.question.url)
     formData.append('image', selectedFile.value)
     
     // If you have a response ID, include it
