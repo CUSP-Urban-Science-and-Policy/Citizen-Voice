@@ -85,8 +85,11 @@ export default {
 <script setup>
 
 import { useSurveyStore } from '~/stores/survey'
+import { useResponseStore } from '~/stores/response';
 
 const surveyStore = useSurveyStore();
+const responseStore = useResponseStore();
+
 const router = useRouter();
 
 const emit = defineEmits(['updateAnswer'])
@@ -156,8 +159,11 @@ async function uploadImage() {
     // Create FormData for the upload
     const formData = new FormData()
     formData.append('question', props.question.url) // Use question URL as expected by your API
-    console.log('question url', props.question.url)
     formData.append('image', selectedFile.value)
+    formData.append('response', responseStore.responseUrl) // Use the response URL from the store
+    formData.append('mapview', null)
+
+    console.log( 'responseurl', responseStore.responseUrl)
     
     // If you have a response ID, include it
     if (props.answer.response) {
