@@ -30,10 +30,10 @@
 <script setup>
 import { ref } from "vue"
 import { navigateTo } from "nuxt/app";
-import { useStoreResponse } from '~/stores/response'
+import { useResponseStore } from '~/stores/response'
 import { useSurveyStore } from '~/stores/survey'
 import { useUserStore } from '~/stores/user'
-const storeResponse = useStoreResponse()
+const storeResponse = useResponseStore()
 const storeUser = useUserStore()
 const survey_url = "/api/surveys/"
 const create_response_url = "/api/responses/"

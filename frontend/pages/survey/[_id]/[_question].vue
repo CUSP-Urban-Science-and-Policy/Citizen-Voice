@@ -102,7 +102,7 @@
 import { ref, watch } from "vue"
 import { navigateTo } from "nuxt/app";
 import { useSurveyStore } from "~/stores/survey";
-import { useStoreResponse } from '~/stores/response';
+import { useResponseStore } from '~/stores/response';
 import { useMapViewStore } from "~/stores/mapview";
 import { useGlobalStore } from "~/stores/global";
 
@@ -110,7 +110,7 @@ import { useGlobalStore } from "~/stores/global";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LCircle, LControl } from "@vue-leaflet/vue-leaflet";
 
-const responseStore = useStoreResponse();
+const responseStore = useResponseStore();
 const mapViewStore = useMapViewStore();
 
 mapViewStore.$reset();
@@ -141,15 +141,8 @@ const handleUpdateAnswer = (updatedAnswer, questionIndex) =>{
     responseStore.updateAnswer(updatedAnswer);
     };
 
-// to set up the map
-// const center = ref([47.41322, -1.219482])
-// const circleSettings = ref(
-//   {circleColor: 'red', radius: 3000}
-// )
+
 const circles = ref([]) // this is what user will add
-// L.latLng(47.414, -1.22),
-// circleClickedAndRemoved is a boolean we use to keep track of whether a circle was just clicked
-// if that is the case, we will not call the addCircle function
 let circleClickedAndRemoved = false
 let resetClicked = false
 

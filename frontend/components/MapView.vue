@@ -50,7 +50,7 @@ import { forEach } from 'ramda'
 // Store
 
 import { useAnswerMapViewStore } from "~/stores/answerMapview";
-import { useStoreResponse } from "~/stores/response";
+import { useResponseStore } from "~/stores/response";
 import { useQuestionDesignStore } from "~/stores/questionDesign";
 import { useGlobalStore } from '~/stores/global';
 import { parse } from "postcss";
@@ -62,7 +62,7 @@ const map_views_endpoint = '/map-views/'
 const questionStore = useQuestionDesignStore()
 
 const answerMapViewStore = useAnswerMapViewStore()
-const responseStore = useStoreResponse()
+const responseStore = useResponseStore()
 answerMapViewStore.$reset()
 
 const props = defineProps({
