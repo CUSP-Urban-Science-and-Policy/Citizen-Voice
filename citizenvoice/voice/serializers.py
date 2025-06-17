@@ -322,9 +322,6 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
     response = serializers.HyperlinkedRelatedField(
         queryset=ResponseModel.objects.all(), view_name="response-detail"
     )
-    mapview = serializers.HyperlinkedRelatedField(
-        queryset=MapView.objects.all(), view_name="mapview-detail", allow_null=True
-    )
     question = serializers.HyperlinkedRelatedField(
         queryset=Question.objects.all(), view_name="question-detail"
     )
@@ -341,7 +338,6 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
             "image",
             "question",
             "response",
-            "mapview",
         )
         read_only_fields = ("id", "url", "created")
         depth = 2
