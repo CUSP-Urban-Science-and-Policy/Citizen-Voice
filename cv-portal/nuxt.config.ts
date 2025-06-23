@@ -30,5 +30,3 @@ export default defineNuxtConfig({
         }
     },
 })
-
-console.log(process.env.API_PARTY_CMS_URL)

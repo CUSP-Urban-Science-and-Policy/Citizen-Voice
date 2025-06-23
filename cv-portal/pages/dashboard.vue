@@ -93,8 +93,6 @@ onMounted(async () => {
     // Fetch topics
     try {
         const topicsData = await $cmsApiV3('/voice/v3/topics/')
-
-        console.log('topicsData //> ', topicsData)
         if (topicsData) {
             topics.value = topicsData.map((topic: TopicExtended) => ({ ...topic, checked: true }))
         } else {
