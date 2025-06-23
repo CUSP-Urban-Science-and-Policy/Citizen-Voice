@@ -46,49 +46,55 @@ const updatekey = ref(1);
 const geoJsonReady = ref(false)
 const geoJson = shallowRef(null)
 
-
 const geoJsonOptions = {
     onEachFeature: (feature, layer) => {
         if (feature?.properties?.question) {
 
-            const icon = feature.properties.question?.topics[0]
             const options = {
                 direction: "top",
                 opacity: 1,
             }
             const toolTipContent = `<strong>Question</strong>: ${feature.properties.question.text} ${feature.properties?.annotation ? '<br/> <strong>Answer</strong> ' + feature.properties?.annotation : ''}`
 
-            if (feature.geometry.type === 'Point' && icon) {
-                const iconString = icon.toLowerCase().split(' ').join('_')
+            const icon = feature.properties.question?.topics[0]
 
-                const myIcon = feature.properties?.annotation ? L.divIcon({
-                    className: 'my-div-icon',
-                    html: `<div class="wrapper_icon-bubble icon-${iconString}"><img src="${images[iconString]}" class="leaflet-marker-icon icon-pin-bubble icon-${iconString} w-9 h-9" alt="Marker" tabindex="0" role="button"></div>`,
-                    tooltipAnchor: [0, -19],
-                    iconSize: [56, 36],
-                }) : L.icon({
-                    iconUrl: images[iconString],
-                    iconSize: [38, 38],
-                    className: `icon-pin-circle icon-${iconString}`
-                })
+            if (icon) {
+                const iconString = icon.toLowerCase().split(' ').join('-')
+                if (feature.geometry.type === 'Point' && icon) {
+                    const myIcon = feature.properties?.annotation ? L.divIcon({
+                        className: 'my-div-icon',
+                        html: `<div class="wrapper_icon-bubble icon-${iconString}"><img src="${images[iconString]}" class="leaflet-marker-icon icon-pin-bubble icon-${iconString} w-9 h-9" alt="Marker" tabindex="0" role="button"></div>`,
+                        tooltipAnchor: [0, -19],
+                        iconSize: [56, 36],
+                    }) : L.icon({
+                        iconUrl: images[iconString],
+                        iconSize: [38, 38],
+                        className: `icon-pin-circle icon-${iconString}`
+                    })
 
-                options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
-                layer.setIcon(myIcon);
-                layer.bindTooltip(toolTipContent, options);
-            }
+                    options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
+                    layer.setIcon(myIcon);
+                    layer.bindTooltip(toolTipContent, options);
+                }
 
-            // Add an pin icon to the center of any non Point types
-            if (feature.geometry.type !== 'Point') {
-                layer.on('add', () => {
-                    const defaultIcon = new L.Icon.Default();
-                    const centerMarker = L.marker(layer.getCenter(), { icon: defaultIcon });
-                    centerMarker.bindTooltip(toolTipContent, { ...options, offset: [-15, -10] });
-                    centerMarker.addTo(mapRef.value.leafletObject);
-                })
-            }
+                // Add an pin icon to the center of any non Point types
+                if (feature.geometry.type !== 'Point') {
+                    layer.setStyle({
+                        color: `var(--${iconString})`,
+                        weight: 5,
+                        fillColor: `var(--${iconString})`,
+                        fillOpacity: 0.4
+                    });
 
-            // Some how this speech bubble is not centered so we are centering it with this
-            if (!icon) {
+                    layer.on('add', () => {
+                        const defaultIcon = new L.Icon.Default();
+                        const centerMarker = L.marker(layer.getCenter(), { icon: defaultIcon });
+                        centerMarker.bindTooltip(toolTipContent, { ...options, offset: [-15, -10] });
+                        centerMarker.addTo(mapRef.value.leafletObject);
+                    })
+                }
+            } else {
+                // Some how this speech bubble is not centered so we are centering it with this
                 options.offset = [-15, -10]
                 layer.bindTooltip(toolTipContent, options);
             }
