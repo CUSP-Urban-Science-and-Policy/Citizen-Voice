@@ -31,62 +31,77 @@
     font-style: normal;
 }
 
-.icon-noise_pollution {
-    background-color: #FF82E2;
-    border-color: #FF82E2;
+:root {
+    --noise-pollution: #FF82E2;
+    --favorite-place: #578DFC;
+    --least-favorite-place: #FF4C50;
+    --presence-of-wildlife: #83D873;
+    --closest-green-area: #36B17A;
+    --lack-of-green: #FFC64C;
+    --air-pollution: #8366DA;
+    --water-on-the-ground: #81DFD4;
+    --feeling-of-unsafety: #C5C5B9;
+    --trash-in-the-streets: #937549;
+    --need-for-improvement: #000000;
+    --hottest-place: #FF8442;
 }
 
-.icon-favorite_place {
-    background-color: #578DFC;
-    border-color: #578DFC;
+.icon-noise-pollution {
+    background-color: var(--noise-pollution);
+    border-color: var(--noise-pollution);
 }
 
-.icon-least_favorite_place {
-    background-color: #FF4C50;
-    border-color: #FF4C50;
+.icon-favorite-place {
+    background-color: var(--favorite-place);
+    border-color: var(--favorite-place);
 }
 
-.icon-presence_of_wildlife {
-    background-color: #83D873;
-    border-color: #83D873;
+.icon-least-favorite-place {
+    background-color: var(--least-favorite-place);
+    border-color: var(--least-favorite-place);
 }
 
-.icon-closest_green_area {
-    background-color: #36B17A;
-    border-color: #36B17A;
+.icon-presence-of-wildlife {
+    background-color: var(--presence-of-wildlife);
+    border-color: var(--presence-of-wildlife);
 }
 
-.icon-lack_of_green {
-    background-color: #FFC64C;
-    border-color: #FFC64C;
+.icon-closest-green-area {
+    background-color: var(--closest-green-area);
+    border-color: var(--closest-green-area);
 }
 
-.icon-air_pollution {
-    background-color: #8366DA;
-    border-color: #8366DA;
+.icon-lack-of-green {
+    background-color: var(--lack-of-green);
+    border-color: var(--lack-of-green);
 }
 
-.icon-water_on_the_ground {
-    background-color: #81DFD4;
-    border-color: #81DFD4;
+.icon-air-pollution {
+    background-color: var(--air-pollution);
+    border-color: var(--air-pollution);
 }
 
-.icon-feeling_of_unsafety {
-    background-color: #C5C5B9;
-    border-color: #C5C5B9;
+.icon-water-on-the-ground {
+    background-color: var(--water-on-the-ground);
+    border-color: var(--water-on-the-ground);
 }
 
-.icon-trash_in_the_streets {
-    background-color: #937549;
-    border-color: #937549;
+.icon-feeling-of-unsafety {
+    background-color: var(--feeling-of-unsafety);
+    border-color: var(--feeling-of-unsafety);
 }
 
-.icon-need_for_improvement {
-    background-color: #000000;
-    border-color: #000000;
+.icon-trash-in-the-streets {
+    background-color: var(--trash-in-the-streets);
+    border-color: var(--trash-in-the-streets);
 }
 
-.icon-hottest_place {
-    background-color: #FF8442;
-    border-color: #FF8442;
+.icon-need-for-improvement {
+    background-color: var(--need-for-improvement);
+    border-color: var(--need-for-improvement);
+}
+
+.icon-hottest-place {
+    background-color: var(--hottest-place);
+    border-color: var(--hottest-place);
 }
