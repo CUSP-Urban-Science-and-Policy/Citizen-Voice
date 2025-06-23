@@ -32,66 +32,61 @@
 }
 
 .icon-noise_pollution {
-    background-color: #ffb380;
-    border-color: #ffb380;
+    background-color: #FF82E2;
+    border-color: #FF82E2;
 }
 
 .icon-favorite_place {
-    background-color: #578dfc;
-    border-color: #578dfc;
+    background-color: #578DFC;
+    border-color: #578DFC;
 }
 
 .icon-least_favorite_place {
-    background-color: #a280ff;
-    border-color: #a280ff;
+    background-color: #FF4C50;
+    border-color: #FF4C50;
 }
 
 .icon-presence_of_wildlife {
-    background-color: #83d873;
-    border-color: #83d873;
+    background-color: #83D873;
+    border-color: #83D873;
 }
 
 .icon-closest_green_area {
-    background-color: #36b17a;
-    border-color: #36b17a;
+    background-color: #36B17A;
+    border-color: #36B17A;
 }
 
 .icon-lack_of_green {
-    background-color: #4cd84b;
-    border-color: #4cd84b;
+    background-color: #FFC64C;
+    border-color: #FFC64C;
 }
 
-/* .icon-need_for_improvement {
-    background-color: #add8ff;
-    border-color: #add8ff;
-    } */
-
 .icon-air_pollution {
-    background-color: #8366da;
-    border-color: #8366da;
+    background-color: #8366DA;
+    border-color: #8366DA;
 }
 
 .icon-water_on_the_ground {
-    background-color: #ff9933;
-    border-color: #ff9933;
+    background-color: #81DFD4;
+    border-color: #81DFD4;
 }
 
 .icon-feeling_of_unsafety {
-    background-color: #339933;
-    border-color: #339933;
+    background-color: #C5C5B9;
+    border-color: #C5C5B9;
 }
 
 .icon-trash_in_the_streets {
-    background-color: #008866;
-    border-color: #008866;
+    background-color: #937549;
+    border-color: #937549;
 }
 
 .icon-need_for_improvement {
-    background-color: #2244aa;
-    border-color: #2244aa;
+    background-color: #000000;
+    border-color: #000000;
 }
 
 .icon-hottest_place {
-    background-color: cornflowerblue;
-    border-color: cornflowerblue;
+    background-color: #FF8442;
+    border-color: #FF8442;
 }
