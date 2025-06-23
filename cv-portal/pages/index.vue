@@ -3,8 +3,8 @@
         <HeaderCVPortal />
         <v-main style="padding-top: 0">
 
-            <div class="w-full h-[420px] lg:h-[538px] p-16 bg-gradient-to-b from-[#edece7] to-[#edece7] flex-col justify-end items-start gap-4 inline-flex overflow-hidden bg-no-repeat bg-cover bg-center"
-                :style="{ backgroundImage: `url(${bg})` }">
+            <div
+                class="w-full h-[420px] lg:h-[538px] p-16 flex-col justify-end items-start gap-4 inline-flex overflow-hidden gradient-hero">
                 <v-container>
                     <div
                         class="w-full text-[#ff4c50] text-[55px] font-semibold font-['Chillax'] leading-[60px] tracking-wide">
@@ -107,7 +107,7 @@
 </template>
 
 <script setup>
-import bg from '~/assets/img/portal-hero.jpg'
+// import bg from '~/assets/img/portal-hero.jpg'
 
 definePageMeta({
     layout: false
@@ -117,5 +117,9 @@ definePageMeta({
 <style scoped>
 .padding-16 {
     padding: 16px;
+}
+
+.gradient-hero {
+    background: linear-gradient(180deg, rgba(237, 236, 231, 0.00) 10.34%, #EDECE7 100%), url('~/assets/img/portal-hero.jpg') lightgray 50% / cover no-repeat;
 }
 </style>
