@@ -13,7 +13,6 @@
 <script setup>
 import { filename } from 'pathe/utils'
 import "leaflet/dist/leaflet.css";
-// import "leaflet-draw/dist/leaflet.draw.css";
 import L from 'leaflet';
 import { isEmpty } from 'ramda'
 
@@ -50,36 +49,49 @@ const geoJson = shallowRef(null)
 
 const geoJsonOptions = {
     onEachFeature: (feature, layer) => {
-        if (feature?.properties && feature?.properties?.question) {
-
+        if (feature?.properties?.question) {
 
             const icon = feature.properties.question?.topics[0]
             const options = {
                 direction: "top",
                 opacity: 1,
             }
+            const toolTipContent = `<strong>Question</strong>: ${feature.properties.question.text} ${feature.properties?.annotation ? '<br/> <strong>Answer</strong> ' + feature.properties?.annotation : ''}`
 
-            if (layer?.setIcon && icon) {
+            if (feature.geometry.type === 'Point' && icon) {
                 const iconString = icon.toLowerCase().split(' ').join('_')
 
                 const myIcon = feature.properties?.annotation ? L.divIcon({
-                    className: 'my-div-icon', // Add your own class name
+                    className: 'my-div-icon',
                     html: `<div class="wrapper_icon-bubble icon-${iconString}"><img src="${images[iconString]}" class="leaflet-marker-icon icon-pin-bubble icon-${iconString} w-9 h-9" alt="Marker" tabindex="0" role="button"></div>`,
                     tooltipAnchor: [0, -19],
                     iconSize: [56, 36],
                 }) : L.icon({
                     iconUrl: images[iconString],
                     iconSize: [38, 38],
-                    className: `${feature.properties?.annotation ? 'icon-pin-bubble' : 'icon-pin-circle'} icon-${iconString}`
+                    className: `icon-pin-circle icon-${iconString}`
                 })
-                options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
 
+                options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
                 layer.setIcon(myIcon);
-            } else {
-                options.offset = [-15, -10]
+                layer.bindTooltip(toolTipContent, options);
             }
 
-            layer.bindTooltip(`<strong>Question</strong>: ${feature.properties.question.text} ${feature.properties?.annotation ? '<br/> <strong>Answer</strong> ' + feature.properties?.annotation : ''}`, options);
+            // Add an pin icon to the center of any non Point types
+            if (feature.geometry.type !== 'Point') {
+                layer.on('add', () => {
+                    const defaultIcon = new L.Icon.Default();
+                    const centerMarker = L.marker(layer.getCenter(), { icon: defaultIcon });
+                    centerMarker.bindTooltip(toolTipContent, { ...options, offset: [-15, -10] });
+                    centerMarker.addTo(mapRef.value.leafletObject);
+                })
+            }
+
+            // Some how this speech bubble is not centered so we are centering it with this
+            if (!icon) {
+                options.offset = [-15, -10]
+                layer.bindTooltip(toolTipContent, options);
+            }
         }
     }
 };
@@ -97,6 +109,7 @@ const zoomModel = computed({
 // Watch for GeoJSON changes
 watch(
     () => props.features,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (newGeojson) => {
         if (isEmpty(props.features)) return
         geoJsonReady.value = true
@@ -106,6 +119,7 @@ watch(
 
 watch(
     () => props.filteredFeatures,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (newGeojson) => {
         if (isEmpty(props.filteredFeatures)) return
         geoJson.value = props.filteredFeatures
