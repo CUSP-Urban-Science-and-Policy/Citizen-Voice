@@ -121,8 +121,6 @@ const fileRules = [
   }
 ]
 
-// TODO: continue here. maintian the interface (props) of other questions types to build solution.
-
 const current_question_index = router.currentRoute.value.params._question - 1; // Adjusting to zero-based index
 
 
