@@ -86,7 +86,7 @@ function extractMapviewId(mapUrl) {
 }
 
 const route = useRoute();
-var question_id = route.params._question; // use url questions id as an index to load each question 
+var question_id = route.params.question; // use url questions id as an index to load each question 
 let answer_index = question_id -1;  // gets the id for the questions
 
 var questionMapView;
@@ -363,7 +363,7 @@ const onMapWWControlReady = () => {
 };
 
 
-const current_question_id = route.params._question
+const current_question_id = route.params.question
 const suveryStore = useSurveyStore()
 const current_question_url = suveryStore.questions[current_question_id-1].url
 
