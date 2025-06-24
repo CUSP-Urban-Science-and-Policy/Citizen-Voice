@@ -14,8 +14,8 @@ data/
 *.pyc
 __pycache__
 db.sqlite3
-media
-citizenvoice/uploads/
+media/
+
 
 # NuxtJS
 **/.nuxt/
