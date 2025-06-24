@@ -325,10 +325,6 @@ MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "OPTIONS": {
-            "location": os.path.join(BASE_DIR, "uploads"),
-            "base_url": "/uploads/",
-        },
     },
     "staticfiles": {
         # Whitenoise
