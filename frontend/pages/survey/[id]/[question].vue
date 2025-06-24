@@ -65,6 +65,13 @@
                     :answer="current_answer"
                     @update-answer="handleUpdateAnswer"
                     />
+                    <RespondentViewQuestionTypesAnswerTypeLikertScale
+                    v-if="question.question_type === 'likert-scale'"
+                    :question="question"
+                    :answer="answer"
+                    :question_index="current_question_index"
+                    @update-answer="handleUpdateAnswer"
+                    />
                 </div>
 
                 <div class="q-pa-md row items-start q-gutter-md">
@@ -122,7 +129,7 @@ const questions = survey_store.questions;
 // Here, we use the list of questions in the survey store to display questions according to the order
 // specified when the survey was created. We use the numbers in the URL to navigate between questions
 // while maintaining the order of the questions in the survey store. 
-var current_question_index = parseInt(route.params._question, 10); // use url questions id as an index to load each question 
+var current_question_index = parseInt(route.params.question, 10); // use url questions id as an index to load each question 
 let current_question_url = questions[current_question_index - 1].url;  // gets the id for the questions
 let current_mapview_id = questions[current_question_index - 1].mapview;  // gets the value for the map view
 let question = questions[current_question_index - 1];
@@ -149,17 +156,17 @@ let resetClicked = false
 // to navigate from one question to the previous/next
 const prevQuestion = async () => {
     // if this is not the first question:
-    let question_to_navigate = (parseInt(route.params._question, 10) - 1)
+    let question_to_navigate = (parseInt(route.params.question, 10) - 1)
     if (question_to_navigate != 0) {
-        return navigateTo('/survey/' + route.params._id + '/' + question_to_navigate)
+        return navigateTo('/survey/' + route.params.id + '/' + question_to_navigate)
     } else {
-        return navigateTo('/survey/' + route.params._id)
+        return navigateTo('/survey/' + route.params.id)
     }
 }
 
 const nextQuestion = async () => {
     // if this is not the last question:
-    return navigateTo('/survey/' + route.params._id + '/' + (parseInt(route.params._question, 10) + 1))
+    return navigateTo('/survey/' + route.params.id + '/' + (parseInt(route.params.question, 10) + 1))
 }
 
 
