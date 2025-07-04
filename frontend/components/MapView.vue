@@ -50,7 +50,7 @@ import { forEach } from 'ramda'
 // Store
 
 import { useAnswerMapViewStore } from "~/stores/answerMapview";
-import { useStoreResponse } from "~/stores/response";
+import { useResponseStore } from "~/stores/response";
 import { useQuestionDesignStore } from "~/stores/questionDesign";
 import { useGlobalStore } from '~/stores/global';
 import { parse } from "postcss";
@@ -62,7 +62,7 @@ const map_views_endpoint = '/map-views/'
 const questionStore = useQuestionDesignStore()
 
 const answerMapViewStore = useAnswerMapViewStore()
-const responseStore = useStoreResponse()
+const responseStore = useResponseStore()
 answerMapViewStore.$reset()
 
 const props = defineProps({
@@ -86,7 +86,7 @@ function extractMapviewId(mapUrl) {
 }
 
 const route = useRoute();
-var question_id = route.params._question; // use url questions id as an index to load each question 
+var question_id = route.params.question; // use url questions id as an index to load each question 
 let answer_index = question_id -1;  // gets the id for the questions
 
 var questionMapView;
@@ -363,7 +363,7 @@ const onMapWWControlReady = () => {
 };
 
 
-const current_question_id = route.params._question
+const current_question_id = route.params.question
 const suveryStore = useSurveyStore()
 const current_question_url = suveryStore.questions[current_question_id-1].url
 

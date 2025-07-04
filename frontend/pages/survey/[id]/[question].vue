@@ -58,6 +58,20 @@
                     :answer="current_answer"
                     @update-answer="handleUpdateAnswer"
                     />
+                    <RespondentViewQuestionTypesAnswerTypeUploadImage
+                    v-if="question.question_type === 'image-upload'"
+                    :question="question"
+                    :question_index="current_question_index"
+                    :answer="current_answer"
+                    @update-answer="handleUpdateAnswer"
+                    />
+                    <RespondentViewQuestionTypesAnswerTypeLikertScale
+                    v-if="question.question_type === 'likert-scale'"
+                    :question="question"
+                    :answer="answer"
+                    :question_index="current_question_index"
+                    @update-answer="handleUpdateAnswer"
+                    />
                 </div>
 
                 <div class="q-pa-md row items-start q-gutter-md">
@@ -95,7 +109,7 @@
 import { ref, watch } from "vue"
 import { navigateTo } from "nuxt/app";
 import { useSurveyStore } from "~/stores/survey";
-import { useStoreResponse } from '~/stores/response';
+import { useResponseStore } from '~/stores/response';
 import { useMapViewStore } from "~/stores/mapview";
 import { useGlobalStore } from "~/stores/global";
 
@@ -103,7 +117,7 @@ import { useGlobalStore } from "~/stores/global";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LCircle, LControl } from "@vue-leaflet/vue-leaflet";
 
-const responseStore = useStoreResponse();
+const responseStore = useResponseStore();
 const mapViewStore = useMapViewStore();
 
 mapViewStore.$reset();
@@ -115,7 +129,7 @@ const questions = survey_store.questions;
 // Here, we use the list of questions in the survey store to display questions according to the order
 // specified when the survey was created. We use the numbers in the URL to navigate between questions
 // while maintaining the order of the questions in the survey store. 
-var current_question_index = parseInt(route.params._question, 10); // use url questions id as an index to load each question 
+var current_question_index = parseInt(route.params.question, 10); // use url questions id as an index to load each question 
 let current_question_url = questions[current_question_index - 1].url;  // gets the id for the questions
 let current_mapview_id = questions[current_question_index - 1].mapview;  // gets the value for the map view
 let question = questions[current_question_index - 1];
@@ -134,32 +148,25 @@ const handleUpdateAnswer = (updatedAnswer, questionIndex) =>{
     responseStore.updateAnswer(updatedAnswer);
     };
 
-// to set up the map
-// const center = ref([47.41322, -1.219482])
-// const circleSettings = ref(
-//   {circleColor: 'red', radius: 3000}
-// )
+
 const circles = ref([]) // this is what user will add
-// L.latLng(47.414, -1.22),
-// circleClickedAndRemoved is a boolean we use to keep track of whether a circle was just clicked
-// if that is the case, we will not call the addCircle function
 let circleClickedAndRemoved = false
 let resetClicked = false
 
 // to navigate from one question to the previous/next
 const prevQuestion = async () => {
     // if this is not the first question:
-    let question_to_navigate = (parseInt(route.params._question, 10) - 1)
+    let question_to_navigate = (parseInt(route.params.question, 10) - 1)
     if (question_to_navigate != 0) {
-        return navigateTo('/survey/' + route.params._id + '/' + question_to_navigate)
+        return navigateTo('/survey/' + route.params.id + '/' + question_to_navigate)
     } else {
-        return navigateTo('/survey/' + route.params._id)
+        return navigateTo('/survey/' + route.params.id)
     }
 }
 
 const nextQuestion = async () => {
     // if this is not the last question:
-    return navigateTo('/survey/' + route.params._id + '/' + (parseInt(route.params._question, 10) + 1))
+    return navigateTo('/survey/' + route.params.id + '/' + (parseInt(route.params.question, 10) + 1))
 }
 
 

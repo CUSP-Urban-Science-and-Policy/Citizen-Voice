@@ -1,8 +1,18 @@
 from django.contrib.gis import admin
 
-from .models import ( Answer, Question, Survey, Response, PointFeature, 
-                     PolygonFeature, LineFeature, MapView,
-                     LocationCollection, DashboardTopic, WorldBorder)
+from .models import (
+    Answer,
+    Question,
+    Survey,
+    Response,
+    PointFeature,
+    PolygonFeature,
+    LineFeature,
+    MapView,
+    LocationCollection,
+    DashboardTopic,
+    WorldBorder,
+)
 
 # Register the models in the admin site in order to view, create and edit them from the admin page
 admin.site.register(Answer)
