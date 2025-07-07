@@ -30,9 +30,9 @@
                                 @change="updateChecked(topic.id)"
                                 class="w-4 h-4 focus:rounded-lg focus:ring-blue-500 focus:ring-2 relative" />
                             <img v-if="topic?.name" :class="[
-                                'btn-w-[26px] h-[26px] rounded-full',
-                                images[topic.name.toLowerCase().split(' ').join('_')] && `icon-${topic.name.toLowerCase().split(' ').join('_')}`,
-                            ]" :src="images[topic.name.toLowerCase().split(' ').join('_')]" />
+                                'btn-w-[26px] h-[26px] rounded-full p-[1px]',
+                                images[topic.name.toLowerCase().split(' ').join('-')] && `icon-${topic.name.toLowerCase().split(' ').join('-')}`,
+                            ]" :src="images[topic.name.toLowerCase().split(' ').join('-')]" />
 
                             <label :for="`checkbox-${topic.id}`" class="cursor-pointer">
                                 {{ topic.name }}
