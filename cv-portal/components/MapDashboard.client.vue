@@ -60,18 +60,21 @@ const geoJsonOptions = {
 
             if (icon) {
                 const iconString = icon.toLowerCase().split(' ').join('-')
-                if (feature.geometry.type === 'Point' && icon) {
-                    const myIcon = feature.properties?.annotation ? L.divIcon({
-                        className: 'my-div-icon',
-                        html: `<div class="wrapper_icon-bubble icon-${iconString}"><img src="${images[iconString]}" class="leaflet-marker-icon icon-pin-bubble icon-${iconString} w-9 h-9" alt="Marker" tabindex="0" role="button"></div>`,
-                        tooltipAnchor: [0, -19],
-                        iconSize: [56, 36],
-                    }) : L.icon({
-                        iconUrl: images[iconString],
-                        iconSize: [38, 38],
-                        className: `icon-pin-circle icon-${iconString}`
-                    })
+                const myIcon = feature.properties?.annotation ? L.divIcon({
+                    className: 'my-div-icon',
+                    html: `<div class="wrapper_icon-bubble icon-${iconString}"><img src="${images[iconString]}" class="leaflet-marker-icon icon-pin-bubble icon-${iconString} w-9 h-9 p-[1px]" alt="Marker" tabindex="0" role="button"></div>`,
+                    tooltipAnchor: [0, -40],
+                    iconSize: [56, 36],
+                    iconAnchor: [28, 44]
+                }) : L.icon({
+                    iconUrl: images[iconString],
+                    iconSize: [38, 38],
+                    tooltipAnchor: [0, -19],
+                    className: `icon-pin-circle icon-${iconString}`
+                })
 
+
+                if (feature.geometry.type === 'Point' && icon) {
                     options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
                     layer.setIcon(myIcon);
                     layer.bindTooltip(toolTipContent, options);
@@ -87,9 +90,8 @@ const geoJsonOptions = {
                     });
 
                     layer.on('add', () => {
-                        const defaultIcon = new L.Icon.Default();
-                        const centerMarker = L.marker(layer.getCenter(), { icon: defaultIcon });
-                        centerMarker.bindTooltip(toolTipContent, { ...options, offset: [-15, -10] });
+                        const centerMarker = L.marker(layer.getCenter(), { icon: myIcon });
+                        centerMarker.bindTooltip(toolTipContent, { ...options });
                         centerMarker.addTo(mapRef.value.leafletObject);
                     })
                 }
