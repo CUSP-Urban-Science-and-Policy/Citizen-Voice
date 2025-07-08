@@ -12,3 +12,4 @@ This guide provides comprehensive instructions to install the Citizen Mapping to
 introduction.md
 installation.md
 creating_surveys.md
+ethical_guidelines.md
