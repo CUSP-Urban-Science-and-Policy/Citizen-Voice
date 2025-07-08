@@ -1,0 +1,9 @@
+
+/* text font and size */
+body{
+    font-family:Georgia, serif;
+    font-size: 0.850em; /* Adjust this value to decrease text size proportionally */
+    line-height: 20px;
+    margin:0px;
+    padding:5px;
+}
