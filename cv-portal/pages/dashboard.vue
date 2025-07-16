@@ -2,7 +2,7 @@
     <div>
         <HeaderCVPortal />
         <main class="pt-0 relative block">
-            <div class="z-10">
+            <div class="z-10 h-[calc(100vh-72px)]">
                 <MapDashboard :zoom="options.zoom" :center="options.center" :filteredFeatures="filteredFeatures"
                     :features="features" />
             </div>
