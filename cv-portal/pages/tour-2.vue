@@ -17,7 +17,6 @@
                 class="text-center justify-start text-white text-xl font-semibold font-['Chillax'] leading-tight tracking-wide ">
                 End tour</div>
         </a>
-
     </main>
 </template>
 

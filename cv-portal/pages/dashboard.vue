@@ -1,7 +1,7 @@
 <template>
-    <v-app>
+    <div>
         <HeaderCVPortal />
-        <v-main class="pt-0 relative block">
+        <main class="pt-0 relative block">
             <div class="z-10">
                 <MapDashboard :zoom="options.zoom" :center="options.center" :filteredFeatures="filteredFeatures"
                     :features="features" />
@@ -41,15 +41,14 @@
                     </ul>
                 </div>
             </div>
-
-        </v-main>
+        </main>
         <FooterCVPortal />
-    </v-app>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import { filename } from 'pathe/utils'
-import { isEmpty, pathOr, is, last, pipe, andThen, find, propOr, propEq } from 'ramda';
+import { isEmpty, pathOr, is, last, pipe, andThen, find, propEq } from 'ramda';
 import type {
     components,
 } from '#nuxt-api-party/cmsApiV1'
@@ -59,12 +58,12 @@ import type {
 
 const glob = import.meta.glob('@/assets/icons/*.png', { eager: true })
 const images = Object.fromEntries(
-    Object.entries(glob).map(([key, value]) => [filename(key), (value as any).default])
+    // @ts-ignore
+    Object.entries(glob).map(([key, value]) => [filename(key), value.default])
 )
 
 type Answer = components['schemas']['Answer']
 type Topic = componentsCms['schemas']['Topic']
-type Question = componentsCms['schemas']['Question']
 
 type TopicExtended = {
     checked?: boolean;

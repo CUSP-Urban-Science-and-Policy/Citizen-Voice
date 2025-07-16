@@ -24,3 +24,7 @@
         </div>
     </div>
 </template>
+
+<script setup>
+// optional logic
+</script>

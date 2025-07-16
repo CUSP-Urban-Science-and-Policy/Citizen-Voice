@@ -20,6 +20,6 @@
     </div>
 </template>
 
-<script>
-
+<script setup>
+// optional logic
 </script>
