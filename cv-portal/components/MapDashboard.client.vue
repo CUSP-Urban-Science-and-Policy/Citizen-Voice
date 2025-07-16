@@ -54,9 +54,9 @@ const geoJsonOptions = {
                 direction: "top",
                 opacity: 1,
             }
-            const toolTipContent = `<strong>Question</strong>: ${feature.properties.question} ${feature.properties?.annotation ? '<br/> <strong>Answer</strong> ' + feature.properties?.annotation : ''}`
+            const toolTipContent = `<strong>Question</strong>: ${feature.properties.question.text} ${feature.properties?.annotation ? '<br/> <strong>Answer</strong> ' + feature.properties?.annotation : ''}`
 
-            const icon = feature.properties?.topic?.name
+            const icon = feature.properties.question?.topics[0]
 
             if (icon) {
                 const iconString = icon.toLowerCase().split(' ').join('-')

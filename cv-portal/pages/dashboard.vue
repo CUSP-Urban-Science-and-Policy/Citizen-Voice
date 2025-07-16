@@ -48,7 +48,6 @@
 
 <script lang="ts" setup>
 import { filename } from 'pathe/utils'
-import { isEmpty, pathOr, is, last, pipe, andThen, find, propEq } from 'ramda';
 import type {
     components,
 } from '#nuxt-api-party/cmsApiV1'
@@ -71,8 +70,9 @@ type TopicExtended = {
 
 interface Feature {
     properties: {
-        question: string,
-        topic: TopicExtended
+        question: {
+            topics: string[]
+        }
     }
 }
 
@@ -89,45 +89,6 @@ definePageMeta({
     layout: false
 })
 
-async function asyncMapFetch<T>(dataArray: T[], urlKey: string | string[], appendBool: boolean = false) {
-    // Map over the array and create an array of promises
-    const fetchPromises = dataArray.map(async (item: T) => {
-        const newKeyName = is(String, urlKey) ? urlKey : last(urlKey)
-        // @ts-expect-error we don't know the key yet
-        const url = pathOr(item[urlKey], urlKey, item);
-
-        if (!url) {
-            // If no URL found, return empty array
-            return item;
-        }
-
-        try {
-            const response = await fetch(url);
-
-            // Check if response is OK (status 200-299)
-            if (!response.ok) {
-                return item;
-            }
-
-            const data = await response.json();
-
-            if (appendBool) {
-                return data ? { ...item, [`${newKeyName}Data`]: data } : { ...item };
-            }
-
-            // Return fetched data or empty array if no data
-            return data
-        } catch (error) {
-            // On fetch or parsing error, return empty array
-            console.log('Error fetch: ', error)
-            return [];
-        }
-    });
-
-    // Wait for all fetches to complete
-    return Promise.all(fetchPromises);
-}
-
 onMounted(async () => {
     // Fetch topics
     try {
@@ -142,47 +103,27 @@ onMounted(async () => {
     }
     // Fetch answers
     try {
-        const answersData: Answer[] = await $cmsApiV3('/voice/v3/answers/', {
-            // @ts-expect-error some how typscript does not recognize the 'query' parameter
-            query: {
-                survey: 3
-            },
-        })
+        const answersData = await $cmsApiV1('/civilian/v1/answers/')
 
-        const updatedAnswersData = await pipe(
-            async data => await asyncMapFetch<Answer>(data, 'question', true),
-            andThen(async data => await asyncMapFetch<Answer>(data, 'mapview', true)),
-            andThen(async data => await asyncMapFetch<Answer>(data, ['mapviewData', 'location'], true)),
-        )(answersData);
-
-        if (!isEmpty(answersData)) {
-            const featuresSerialized = updatedAnswersData
+        if (answersData?.results) {
+            const featuresSerialized = answersData.results
                 .map((answer) => {
-                    const feature = pathOr([], ['locationData', 'geojson'], answer)
+                    const feature = answer.mapview?.location?.geojson
 
-                    // Get topic id
-                    const relatedTopic = pathOr<string | null>(null, ['questionData', 'topics', 0], answer)
-                    const relatedTopicId = is(String, relatedTopic)
-                        ? Number(relatedTopic.split("/").slice(-2, -1)[0])
-                        : null;
-                    // get Topic Object
-                    const relatedTopicProperties = relatedTopicId ? find(propEq(relatedTopicId, 'id'))(topics.value) : null
-
-                    if (!isEmpty(feature) && is(Object, feature)) {
+                    if (feature && typeof feature === 'object') {
                         // Add a new property to each feature's properties using map
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const updatedFeatures = (feature as any).features.map((feature: { properties: any }) => ({
                             ...feature,
                             properties: {
                                 ...feature.properties,
-                                question: answer?.questionData?.text,
-                                topic: relatedTopicProperties
+                                question: answer.question
                             }
                         }));
 
                         return updatedFeatures
                     } else {
-                        console.log(
+                        console.error(
                             'Invalid feature data for answer:',
                             answer
                         )
@@ -200,7 +141,7 @@ onMounted(async () => {
 })
 
 const activeTopics = computed(
-    () => topics.value.filter(item => item.checked).map(item => item.id)
+    () => topics.value.filter(item => item.checked).map(item => item.name)
 )
 
 const updateChecked = (id: number) => {
@@ -210,9 +151,8 @@ const updateChecked = (id: number) => {
     }
 
     filteredFeatures.value = features.value.filter(item => {
-        if (!item.properties?.topic) return true // Let's return this for now or else they won't be visisble
-
-        return activeTopics.value.includes(item.properties.topic.id)
+        if (!item.properties?.question?.topics[0]) return true // Let's return this for now or else they won't be visisble
+        return activeTopics.value.includes(item.properties.question.topics[0])
     })
 }
 
