@@ -40,7 +40,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "setme-in-production")
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
 # Choice of database engine will be retrieved from .env file
-DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
+DATABASE_ENGINE = os.environ.get("DJANGO_DB_ENGINE")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
