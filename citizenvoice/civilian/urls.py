@@ -12,16 +12,15 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 
 # Dashboard viewsets
 dashboard_router = routers.DefaultRouter()
-dashboard_router.register(r"answers", views.AnswerGeoJsonViewSet, basename="answers")
-dashboard_router.register(r"topics", views.TopicViewSet, basename="topics")
+dashboard_router.register(r'answers', views.AnswerGeoJsonViewSet,
+                basename='answers')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path("", include(dashboard_router.urls)),
+    path('', include(dashboard_router.urls)),
     # path('csrf/', views.get_csrf_token, name='get_csrf_token'),
-    path("schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
-    ),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
+

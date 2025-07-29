@@ -22,28 +22,17 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
-from allauth.socialaccount.models import SocialToken, SocialApp, SocialAccount
 
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
 def home(request):
-
-    if request.user.is_authenticated:
-
-        sc = SocialAccount.objects.get(user=request.user)
-        google_app = SocialApp.objects.filter(provider='google').first()
-        print(f"google app {google_app}")
-        social_token = SocialToken.objects.filter(app=google_app, account=sc ).order_by('expires_at').first()
-        print(social_token.token)
-
     return render(request, 'home.html')
 
 urlpatterns = [
     path('home', home),
 
-    path('api/auth/', include('authentication.urls')),
     path('api/admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('_allauth/', include('allauth.headless.urls')), # url endpoins are defined in settings.py

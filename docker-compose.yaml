@@ -12,6 +12,7 @@ services:
       start_period: 30s
     volumes:
       - postgis_data:/var/lib/postgresql/data
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     environment:
       - POSTGRES_PASSWORD=/run/secrets/postgres_password
       - POSTGRES_USER=${DB_USER}
@@ -81,7 +82,7 @@ services:
     environment:
       - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://djangoapi:8000/voice/v3
       - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://djangoapi:8000/api/auth
-    # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
+      # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
     expose: # Expose ports without publishing them to the host machine
       - "3000"
     volumes:

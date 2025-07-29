@@ -5,31 +5,20 @@ from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response as rf_response
 from django.middleware import csrf
-from .serializers import (
-    PointFeatureSerializer,
-    LineFeatureSerializer,
-    PolygonFeatureSerializer,
-    DashboardAnswerSerializer,
-    DashboardTopicSerializer,
-)
+from .serializers import  PointFeatureSerializer, \
+    LineFeatureSerializer, PolygonFeatureSerializer, \
+    DashboardAnswerSerializer, DashboardTopicSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from voice.models import (
-    Answer,
-    PointFeature,
-    PolygonFeature,
-    LineFeature,
-    DashboardTopic,
-)
+from voice.models import Answer, PointFeature, \
+    PolygonFeature, LineFeature, DashboardTopic
 
-
-@api_view(["GET"])
+@api_view(['GET'])
 def get_csrf_token(request):
     token = csrf.get_token(request)
-    return rf_response({"csrf_token": token})
+    return rf_response({'csrf_token': token})
 
-
-# TODO: consider if using viewset is a good option for this. Viewsets are a fast way to create a CRUD API,
+# TODO: consider if using viewset is a good option for this. Viewsets are a fast way to create a CRUD API, 
 # but they obfuscate the code; we might want to have more control over the API.
 # REF: https://www.django-rest-framework.org/api-guide/viewsets/
 
@@ -37,31 +26,8 @@ def get_csrf_token(request):
 # Custom Pagination for this API
 class AnswersPagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = "page_size"
+    page_size_query_param = 'page_size'
     max_page_size = 10000
-
-
-class TopicViewSet(viewsets.ModelViewSet):
-    """
-    A ViewSet that returns the topics associated to a question
-    """
-
-    serializer_class = DashboardTopicSerializer
-
-    def get_queryset(self):
-        queryset = DashboardTopic.objects.all()
-
-        # Filter by survey Id
-        survey_id = self.request.query_params.get("survey", None)
-        if survey_id is not None:
-            print(f"Filtering topics by survey_id: {survey_id}")
-            try:
-                survey_id = int(survey_id)
-                queryset = queryset.filter(question__survey_id=survey_id)
-            except ValueError:
-                queryset = queryset.none()
-
-        return queryset
 
 
 class PointFeatureViewSet(viewsets.ModelViewSet):
@@ -80,7 +46,7 @@ class PointFeatureViewSet(viewsets.ModelViewSet):
         """
 
         queryset = PointFeature.objects.all()
-        return queryset
+        return queryset    
 
 
 class PolygonFeatureViewSet(viewsets.ModelViewSet):
@@ -100,7 +66,7 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
 
         queryset = PolygonFeature.objects.all()
         return queryset
-
+    
     @staticmethod
     def GetLocationsByQuestion(question):
         """
@@ -109,12 +75,13 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             question (int): Question ID to be used for finding related PointFeatures.
 
-        Return:
+        Return: 
             queryset: containing the PointFeature instances related to this Question
         """
 
         queryset = PointFeature.objects.filter(question=question)
         return queryset
+
 
     @staticmethod
     def GetLocationsByAnswer(answer):
@@ -124,7 +91,7 @@ class PolygonFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             answer (int): Answer ID to be used for finding related PolygonFeatures.
 
-        Return:
+        Return: 
             queryset: containing the PolygonFeature instances related to this Answer
         """
 
@@ -158,7 +125,7 @@ class LineFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             question (int): Question ID to be used for finding related LineStringLocations.
 
-        Return:
+        Return: 
             queryset: containing the LineStringLocation instances related to this Question
         """
 
@@ -173,7 +140,7 @@ class LineFeatureViewSet(viewsets.ModelViewSet):
         Parameters:
             answer (int): Answer ID to be used for finding related LineStringLocations.
 
-        Return:
+        Return: 
             queryset: containing the LineStringLocation instances related to this Answer
         """
 
@@ -185,9 +152,9 @@ class DashboardTopicViewSet(viewsets.ModelViewSet):
     """
     A ViewSet that returns the topics associated to a question
     """
-
+    
     serializer_class = DashboardTopicSerializer
-
+    
     def get_queryset(self):
         queryset = DashboardTopic.objects.all()
         return queryset
@@ -197,7 +164,6 @@ class AnswerGeoJsonViewSet(viewsets.ReadOnlyModelViewSet):
     """
     A ViewSet that returns GeoJSON data for the answers.
     """
-
     # Figure out the permissions for the answers, do designers to to see them?
     # permission_classes = [IsAuthenticatedAndSelfOrMakeReadOnly]
     serializer_class = DashboardAnswerSerializer
@@ -213,27 +179,24 @@ class AnswerGeoJsonViewSet(viewsets.ReadOnlyModelViewSet):
             survey (int): Survey ID to be used for finding related Answers
 
         Returns:
-            queryset:
+            queryset: 
         """
 
         # FORWARD FOERIGN KEY: use select_related
         # BACKWARD FOREIGN KEY: use prefetch_related
 
-        queryset = (
-            Answer.objects.select_related("mapview__location")
-            .exclude(mapview=None)
-            .order_by("id")
-        )
+        queryset = Answer.objects.select_related('mapview__location').exclude(mapview=None).order_by('id')
 
         # Filter by question Id
-        question_id = self.request.query_params.get("question", None)
+        question_id = self.request.query_params.get('question', None)
         if question_id is not None:
             queryset = queryset.filter(question_id=question_id)
 
         # Filter by survey Id
-        survey_id = self.request.query_params.get("survey", None)
+        survey_id = self.request.query_params.get('survey', None)
         if survey_id is not None:
             queryset = queryset.filter(question__survey_id=survey_id)
 
         # serializer = DashboardAnswerSerializer(queryset, many=True)
         return queryset
+

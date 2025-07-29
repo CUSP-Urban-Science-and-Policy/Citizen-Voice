@@ -16,9 +16,6 @@ __pycache__
 db.sqlite3
 media
 
-# NuxtJS
-**/.nuxt/
-
 # SECRETS
 Secrets
 secrets
