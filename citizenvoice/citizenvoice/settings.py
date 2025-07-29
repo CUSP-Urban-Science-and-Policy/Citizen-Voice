@@ -16,11 +16,11 @@ from datetime import timedelta
 
 # import mimetypes
 # mimetypes.add_type("text/css", ".css", True)
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 
 # Uncomment to use local .env file wihtout Docker
-load_dotenv("../.env", override=True)  #
+# load_dotenv("../.env", override=True)  #
 
 if os.name == "nt":
     OSGEO4W = r"C:\OSGeo4W"
@@ -170,7 +170,7 @@ else:
         DATABASES = {
             "default": {
                 "ENGINE": "django.contrib.gis.db.backends.postgis",
-                "NAME": os.environ.get("DB_USER"),
+                "NAME": os.environ.get("DATABASE"),
                 "USER": os.environ.get("DB_USER"),
                 "PASSWORD": os.environ.get("POSTGRES_PWD"),
                 "HOST": os.environ.get("POSTGRES_HOST"),
@@ -336,17 +336,17 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS512",
 }
 
-# Account signup fields
-ACCOUNT_SIGNUP_FIELDS = {
-    "username": {"required": True},
-    "email": {"required": True},
-    "password1": {"required": True},
-    "password2": {"required": True},
-}
+# # Account signup fields
+# ACCOUNT_SIGNUP_FIELDS = {
+#     "username": {"required": True},
+#     "email": {"required": True},
+#     "password1": {"required": True},
+#     "password2": {"required": True},
+# }
 
-# Add these missing Allauth settings:
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
-ACCOUNT_EMAIL_VERIFICATION = "none"
+# # Add these missing Allauth settings:
+# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+# ACCOUNT_EMAIL_VERIFICATION = "none"
 
 
 # TODO: integrate this changes into the app and see if the authentication works. The instructions on the blog are outdated.
