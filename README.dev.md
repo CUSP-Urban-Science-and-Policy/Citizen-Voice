@@ -1,3 +1,16 @@
+# github
+
+Goto https://github.com/settings/applications/new for creating a new OAuth application on GitHub.
+For now:
+
+homepage url : https://127.0.0.1:8000/
+callback url : http://localhost/accounts/github/login/callback
+
+# google
+Here a webpage how to set up oauth for google: https://plainenglish.io/blog/proper-way-of-using-google-authentication-with-django-and-django-allauth
+
+
+
 # Developer documentation
 
 If you're looking for user documentation, go [here](README.md).
@@ -227,3 +240,7 @@ python manage.py test
 4. Run the unit tests with `python manage.py test`
 5. Go through the steps outlined above for [generating a new package from the command line](#), and verify that the generated package works as it should.
 
+### GitHub
+
+1. Make sure that the GitHub-Zenodo integration is enabled for https://github.com/NLeSC/python-template
+1. Go to https://github.com/NLeSC/python-template/releases and click `Draft a new release`
