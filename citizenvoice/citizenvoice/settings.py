@@ -12,190 +12,208 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from datetime import timedelta
+
+# import mimetypes
+# mimetypes.add_type("text/css", ".css", True)
+# from dotenv import load_dotenv
+
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../local.env", override=True) #
+# load_dotenv("../.env", override=True)  #
 
-if os.name == 'nt':
-    
+if os.name == "nt":
     OSGEO4W = r"C:\OSGeo4W"
     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
-    os.environ['OSGEO4W_ROOT'] = OSGEO4W
-    os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
-    os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
-    os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
+    os.environ["OSGEO4W_ROOT"] = OSGEO4W
+    os.environ["GDAL_DATA"] = OSGEO4W + r"\share\gdal"
+    os.environ["PROJ_LIB"] = OSGEO4W + r"\share\proj"
+    os.environ["PATH"] = OSGEO4W + r"\bin;" + os.environ["PATH"]
 
 # Default settings survey
 DEFAULT_SURVEY_PUBLISHING_DURATION = 7
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'setme-in-production')
+SECRET_KEY = os.environ.get("SECRET_KEY", "setme-in-production")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
 # Choice of database engine will be retrieved from .env file
-DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
+DATABASE_ENGINE = os.environ.get("DJANGO_DB_ENGINE")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 # note: add your custom apps after django apps
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.gis',
-    'django.contrib.sites',
-    'voice',
-    'civilian',
-    'rest_framework',
-    'rest_framework_gis',
-    'rest_framework.permissions',
-    'users.apps.UsersConfig',
-    'survey_design.apps.SurveyDesignConfig',
-    'respondent.apps.RespondentConfig',
-    'corsheaders',
-    'bulk_update_or_create',
-    'django_extensions',
-    'drf_spectacular',
-
-    'allauth',
-    'allauth.account',
-    'allauth.headless',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.google',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.gis",
+    "django.contrib.sites",
+    "voice",
+    "civilian",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
+    "rest_framework_gis",
+    "rest_framework.permissions",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "users.apps.UsersConfig",
+    "survey_design.apps.SurveyDesignConfig",
+    "respondent.apps.RespondentConfig",
+    "corsheaders",
+    "bulk_update_or_create",
+    "django_extensions",
+    "drf_spectacular",
+    "allauth",
+    "allauth.account",
+    "allauth.headless",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.github",
+    "allauth.socialaccount.providers.google",
+    "authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware", # serves static files
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     # CORS
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    "http://localhost:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 
-ROOT_URLCONF = 'citizenvoice.urls'
+ROOT_URLCONF = "citizenvoice.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'citizenvoice.wsgi.application'
+WSGI_APPLICATION = "citizenvoice.wsgi.application"
 
 # Configure CORS allowed ports
 CSRF_TRUSTED_ORIGINS = [
     "http://frontend:3000",
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 # CORS_ORIGIN_ALLOW_ALL = True # Set to False in production
 CORS_ORIGIN_WHITELIST = (
     "http://frontend:3000",
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-)
-CORS_ALLOWED_ORIGINS = [
-    "http://frontend:3000", # allows docker frontend requests
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://localhost",
-]
+)
+
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://frontend:3000",  # allows docker frontend requests
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost",
+    ]
+
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 # The code below is necessary to distinguish a deployment for CI with
 # GitHub Actions (IF part) and any other deployment  (the ELSE part)
-if os.environ.get('GITHUB_WORKFLOW'):
+if os.environ.get("GITHUB_WORKFLOW"):
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'github_actions',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': 'localhost',
-            'PORT': '5432'
+        "default": {
+            "ENGINE": "django.contrib.gis.db.backends.postgis",
+            "NAME": "github_actions",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "localhost",
+            "PORT": "5432",
         }
     }
 else:
     if DATABASE_ENGINE == "postgis":
-        dbase = os.environ.get('POSTGRES_DBASE')
+        dbase = os.environ.get("DATABASE")
         DATABASES = {
-            'default': {
-                'ENGINE': 'django.contrib.gis.db.backends.postgis',
-                'NAME': os.environ.get('POSTGRES_DBASE'),
-                'USER': os.environ.get('POSTGRES_USER'),
-                'PASSWORD': os.environ.get('POSTGRES_PWD'),
-                'HOST': os.environ.get('POSTGRES_HOST'),
-                'PORT': os.environ.get('POSTGRES_PORT'),
-                'TEST': {
-                    'NAME': os.environ.get('TEST_DBASE'),
+            "default": {
+                "ENGINE": "django.contrib.gis.db.backends.postgis",
+                "NAME": os.environ.get("DATABASE"),
+                "USER": os.environ.get("DB_USER"),
+                "PASSWORD": os.environ.get("POSTGRES_PWD"),
+                "HOST": os.environ.get("POSTGRES_HOST"),
+                "PORT": os.environ.get("DB_PORT"),
+                "TEST": {
+                    "NAME": os.environ.get("TEST_DBASE"),
                 },
             }
         }
     elif DATABASE_ENGINE == "spatialite":
         DATABASES = {
-            'default': {
-                'ENGINE': "django.contrib.gis.db.backends.spatialite",
-                'NAME': BASE_DIR / "db.sqlite3"
+            "default": {
+                "ENGINE": "django.contrib.gis.db.backends.spatialite",
+                "NAME": BASE_DIR / "db.sqlite3",
             }
         }
     else:
         print("No settings is available for selected database engine!")
 
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -204,56 +222,77 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # STATICFILES_DIRS = ['static_vue']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-if os.name == 'nt':
+if os.name == "nt":
     GDAL_LIBRARY_VERSION = os.getenv("GDAL_LIBRARY_VERSION", "gdal305.dll")
-    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin' + "\\" + GDAL_LIBRARY_VERSION
+    GDAL_LIBRARY_PATH = r"C:\OSGeo4W\bin" + "\\" + GDAL_LIBRARY_VERSION
 
-LOGIN_URL = 'survey-design-index'
+LOGIN_URL = "survey-design-index"
 
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
-    'github': {
-        'client_id': os.environ.get('GITHUB_CLIENT_ID'),
-        'client_secret': os.environ.get('GITHUB_CLIENT_SECRET'),
-        'key': '',
+    "github": {
+        "client_id": os.environ.get("GITHUB_CLIENT_ID"),
+        "client_secret": os.environ.get("GITHUB_CLIENT_SECRET"),
+        "key": "",
     },
-    'google': {
-    }
+    "google": {
+        "APP": {
+            "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+            "secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
+            "key": "",
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "offline",
+        },
+        "VERIFY_EMAIL": True,
+    },
 }
 
+SOCIALACCOUNT_STORE_TOKENS = True
 
 REST_FRAMEWORK = {
-    #'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',  # ✅ Forces JSON output
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication"
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",  # ✅ Forces JSON output
     ),
+}
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
 }
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-HEADLESS_FRONTEND_URLS ={
+HEADLESS_FRONTEND_URLS = {
     "account_reset_password": "account/password/reset",
     "account_signup": "accounts/signup",
 }
@@ -269,7 +308,10 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Documentation of API endpoints in CitizenVoice",
     "VERSION": "3.1.1",
     "SCHEMA_PATH_PREFIX": None,
-    "EXTERNAL_DOCS": {"description": "User Authentication (allauth)", "url": "/_allauth/openapi.html"},
+    "EXTERNAL_DOCS": {
+        "description": "User Authentication (allauth)",
+        "url": "/_allauth/openapi.html",
+    },
 }
 
 STORAGES = {
@@ -279,5 +321,32 @@ STORAGES = {
     },
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / 'emails'
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "emails"
+
+signing_key = os.environ.get("JWT_SIGNING_KEY")
+# print(signing_key)
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
+    "SIGNING_KEY": signing_key,
+    "ALGORITHM": "HS512",
+}
+
+# # Account signup fields
+# ACCOUNT_SIGNUP_FIELDS = {
+#     "username": {"required": True},
+#     "email": {"required": True},
+#     "password1": {"required": True},
+#     "password2": {"required": True},
+# }
+
+# # Add these missing Allauth settings:
+# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+# ACCOUNT_EMAIL_VERIFICATION = "none"
+
+
+# TODO: integrate this changes into the app and see if the authentication works. The instructions on the blog are outdated.
