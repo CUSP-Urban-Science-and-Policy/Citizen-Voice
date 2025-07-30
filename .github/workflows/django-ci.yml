@@ -54,7 +54,7 @@ jobs:
           export C_INCLUDE_PATH=/usr/include/gdal
           pip install GDAL==3.3.2
       - name: Install requirements
-        run: pip install -r requirements.txt
+        run: pip install -r citizenvoice/requirements.txt
       - name: Apply Database Migrations
         run: python citizenvoice/manage.py migrate
       - name: Run Tests
