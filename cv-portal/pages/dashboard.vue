@@ -92,7 +92,14 @@ definePageMeta({
 onMounted(async () => {
     // Fetch topics
     try {
-        const topicsData = await $cmsApiV3('/voice/v3/topics/')
+        const topicsData = await $cmsApiV3('/civilian/v1/topics/',
+            {
+                // @ts-expect-error some how typscript does not recognize the 'query' parameter
+                query: {
+                    survey: 3
+                },
+            }
+        )
         if (topicsData) {
             topics.value = topicsData.map((topic: TopicExtended) => ({ ...topic, checked: true }))
         } else {
