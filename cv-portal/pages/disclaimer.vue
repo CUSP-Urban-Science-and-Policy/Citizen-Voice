@@ -8,9 +8,9 @@
                     <div
                         class="w-[466px] text-black text-xl font-semibold font-['Chillax'] leading-tight tracking-wide">
                         Code of conduct</div>
-                    <a href="/tour-1" class=" flex-col justify-start items-start inline-flex ">
+                    <NuxtLink to="/tour-1" class=" flex-col justify-start items-start inline-flex ">
                         <img src="~/assets/icons/close.svg" class="w-5 h-5" alt="">
-                    </a>
+                    </NuxtLink>
                 </div>
                 <div class="w-[491px]">
                     <div

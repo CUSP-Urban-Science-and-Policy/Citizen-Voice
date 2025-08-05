@@ -1,8 +1,8 @@
 <template>
     <div class="w-full h-[72px] px-8 lg:px-16 py-[15px] bg-white justify-between items-center inline-flex">
-        <a href="/">
-            <img class="w-fit max-h-[42px] max-w-full h-auto" src="~/assets/img/logos/logo-black.png" />
-        </a>
+        <NuxtLink to="/">
+            <img class="w-fit max-h-[42px] max-w-full h-auto" src="~/assets/img/logos/logo-black.png">
+        </NuxtLink>
         <h1
             class="text-black text-[32px] text-center w-full font-semibold font-['Chillax'] leading-loose tracking-wide">
             Community Voices Portal
