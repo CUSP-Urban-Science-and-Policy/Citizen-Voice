@@ -8,26 +8,27 @@ import { useMapViewStore } from './mapview';
 
 // const answer = useAnswerStore();
 
-export const useStoreResponse = defineStore('response', {
-    
-    state: () => 
-        // required data for the response store
-        // responseId // if null it means that the respondent 
-        // respondent
-       { 
-        return { 
+export const useResponseStore = defineStore('response', {
+
+    state: () =>
+    // required data for the response store
+    // responseId // if null it means that the respondent 
+    // respondent
+    {
+        return {
             responseData: {},
-            answers: 
-            [ 
-                // expects an array of objects with the following structure
-                // {
-                // question_url: string
-                // text: string
-                // mapview: {url: uri or null, location: uri or null} ß
-                // }
-            ],
-        
-        } },
+            answers:
+                [
+                    // expects an array of objects with the following structure
+                    // {
+                    // question_url: string
+                    // text: string
+                    // mapview: {url: uri or null, location: uri or null} ß
+                    // }
+                ],
+
+        }
+    },
     getters: {
         responseId() {
             return this.responseData.response_id
@@ -38,7 +39,7 @@ export const useStoreResponse = defineStore('response', {
         // when using ARROW functions, state should be passed as an argument to be able to 
         // access the state of the store using 'this'
         // getAnswersToCurrentSurvey: (state) => this.answersToCurrentSurvey
-        
+
     },
     actions: {
         updateAnswer(answer) {
@@ -59,7 +60,7 @@ export const useStoreResponse = defineStore('response', {
             else {
                 this.answers.push(answer);
             }
-    
+
         },
         updateAnswerMapView(answer_mapview) {
             // answer_mapview  must be an object with the following structure
@@ -76,15 +77,16 @@ export const useStoreResponse = defineStore('response', {
             }
             else {
                 const answer = {
-                    question_url: answer_mapview.question_url, 
-                    text: '', mapview: answer_mapview.mapview}
+                    question_url: answer_mapview.question_url,
+                    text: '', mapview: answer_mapview.mapview
+                }
 
                 // console.log('answer in update answer map view //> ', answer);
                 this.answers.push(answer);
             }
-            
+
         },
-        async createResponse({ survey_url, respondent_url=null  }) {
+        async createResponse({ survey_url, respondent_url = null }) {
             /**
          * Creates a respondent in the backend and initializes the localstorage with:
          * respondent, iterview-uuid, and message
@@ -95,7 +97,7 @@ export const useStoreResponse = defineStore('response', {
          * 
          * @question what happens if a respondent does multiple surveys, do we need to link all the surveys?
          */
-            
+
             // console.log('surveyId //> ', surveyId);
             const user = useUserStore()
             const csrftoken = user.getCookie('csrftoken');
@@ -105,7 +107,7 @@ export const useStoreResponse = defineStore('response', {
             // update schema in client
             // modify this to use the new api endpoint
             const config = setRequestConfig({
-                method: 'POST', 
+                method: 'POST',
                 body: {
                     survey: survey_url,
                     respondent: respondent_url  // this is required by the api
@@ -121,7 +123,7 @@ export const useStoreResponse = defineStore('response', {
 
             if (Object.keys(this.responseData).length === 0) {
 
-                const { data: response, pending, error} = await useAsyncData(() => $cmsApi('/responses/', config));
+                const { data: response, pending, error } = await useAsyncData(() => $cmsApi('/responses/', config));
 
                 const responseData = await response.value;
 
@@ -134,7 +136,7 @@ export const useStoreResponse = defineStore('response', {
             }
         },
 
-        getRespondentId(){
+        getRespondentId() {
             if (localStorage?.getItem('respondent-id') !== null) {
                 return localStorage.getItem('respondent-id')
             }
@@ -147,8 +149,8 @@ export const useStoreResponse = defineStore('response', {
             this.currentQuestion = questionNumber
         },
         async getSurvey({ id }) {
-            
-            const { data: survey } = await useAsyncData(() => $cmsApi('/surveys/' + id)); 
+
+            const { data: survey } = await useAsyncData(() => $cmsApi('/surveys/' + id));
 
             if (survey) {
                 // console.log('survey.value.id in get Survey//> ', survey.value.id);
@@ -157,7 +159,7 @@ export const useStoreResponse = defineStore('response', {
 
             return survey
         },
-        
+
         clearAnswers() {
             // Clear all the answers
             this.answers = []
@@ -169,13 +171,13 @@ export const useStoreResponse = defineStore('response', {
             const token = user.getAuthToken;
 
             const config = {
-                headers : {
+                headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrftoken,
                 },
                 method: 'POST',
                 // pas the data for the new Response object as the request body
-                
+
                 // TODO: have the repondent set to the logged in user 
 
                 body: {
@@ -190,7 +192,7 @@ export const useStoreResponse = defineStore('response', {
             };
 
             // console.log('config //>', config);
-            const {data: response, error: err} = await useAsyncData('submitAnswer', () => $cmsApi('/answers/', config));
+            const { data: response, error: err } = await useAsyncData('submitAnswer', () => $cmsApi('/answers/', config));
 
             if (response) {
                 console.log('response submitted //> ', response);
@@ -205,21 +207,21 @@ export const useStoreResponse = defineStore('response', {
         // TODO: CONTINUE HERE
         // implement the submit-response endpoint in the backend
 
-            // if (token) {
-            //     config.headers['Authorization'] = `Token ${token}`
+        // if (token) {
+        //     config.headers['Authorization'] = `Token ${token}`
 
-            // }
+        // }
 
-            // const {data: _response}  = await useAsyncData( () => $cmsApi('/api/responses/', config));
+        // const {data: _response}  = await useAsyncData( () => $cmsApi('/api/responses/', config));
 
-            // console.log('response in response store//> ', _response.value.interview_uuid);
+        // console.log('response in response store//> ', _response.value.interview_uuid);
 
-            // // return _response
-            // this.setResponse(_response.value.interview_uuid)
-            // return true
-            // // console.log('id //> ', id);
-            // // console.log(survey)
+        // // return _response
+        // this.setResponse(_response.value.interview_uuid)
+        // return true
+        // // console.log('id //> ', id);
+        // // console.log(survey)
 
-        
+
     }
 })

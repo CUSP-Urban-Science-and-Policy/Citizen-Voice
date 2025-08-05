@@ -30,18 +30,18 @@
 <script setup>
 import { ref } from "vue"
 import { navigateTo } from "nuxt/app";
-import { useStoreResponse } from '~/stores/response'
+import { useResponseStore } from '~/stores/response'
 import { useSurveyStore } from '~/stores/survey'
 import { useUserStore } from '~/stores/user'
-const storeResponse = useStoreResponse()
+const storeResponse = useResponseStore()
 const storeUser = useUserStore()
 const survey_url = "/api/surveys/"
 const create_response_url = "/api/responses/"
 // const origin_url = "http://localhost:3000"
 const data = ref([])
 const route = useRoute()
-// console.log('route id', route.params._id)
-const survey = await storeResponse.getSurvey({ id: route.params._id })
+// console.log('route id', route.params.id)
+const survey = await storeResponse.getSurvey({ id: route.params.id })
 // console.log('survey.value. in survey index //', survey.value.id)
 const storeSurvey = useSurveyStore()
 
@@ -52,7 +52,7 @@ storeResponse.clearAnswers()
 
 const createResponse = async () => {
     // Make a POST request to your Django API endpoint to create a new Response object
-    // await storeResponse.createResponse({ id: route.params._id })
+    // await storeResponse.createResponse({ id: route.params.id })
     let respondent = null;
     if (storeUser.isAuthenticated) {
       respondent = 'http://localhost:8000/api/v2/' + user.value.userData.id 
@@ -65,7 +65,7 @@ const createResponse = async () => {
 
       // console.log('response id //', responseId)
         // Navigate to the /survey/${survey.id}/1 page after the response is created
-        return navigateTo('/survey/' + route.params._id )
+        return navigateTo('/survey/' + route.params.id )
     }
 
 };
@@ -77,7 +77,7 @@ const getQuestions = async () => {
     // Navigate to the /survey/${survey.id}/1 page after the response is created
     // if (questions) {
     //     // Navigate to the /survey/${survey.id}/1 page after the response is created
-    //     return navigateTo('/survey/' + route.params._id + '/' + survey.value.id)
+    //     return navigateTo('/survey/' + route.params.id + '/' + survey.value.id)
     // }
     return questions
 };
