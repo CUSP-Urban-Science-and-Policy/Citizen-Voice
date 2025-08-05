@@ -3,7 +3,7 @@ services:
 
   postgis_db:
     image: postgis/postgis:16-3.4-alpine
-    container_name: postgis-db
+    container_name: database
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DATABASE}"]
       interval: 10s
@@ -27,7 +27,7 @@ services:
     networks:
       - civo_network
 
-  djangoapi:
+  api:
     build: 
       context: ./citizenvoice
     command: >
@@ -74,20 +74,39 @@ services:
           target: ./citizenvoice
 
 
-  frontend:
+  maptool:
     build: 
       context: ./frontend
-    container_name: frontend
+    container_name: mapping-tool
     environment:
-      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://djangoapi:8000/voice/v3
-      - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://djangoapi:8000/api/auth
+      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/voice/v3
+      - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://api:8000/api/auth
     # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
     expose: # Expose ports without publishing them to the host machine
       - "3000"
     volumes:
       - ./frontend:/frontend
     depends_on:
-      djangoapi:
+      api:
+        condition: service_healthy  
+    restart: always
+    networks:
+      - civo_network
+
+  dashboard:
+    build: 
+      context: ./cv-portal
+    container_name: dashboard
+    environment:
+      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/voice/v3
+      - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://api:8000/api/auth
+    # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
+    expose: # Expose ports without publishing them to the host machine
+      - "4000"
+    volumes:
+      - ./cv-portal:/cv-portal
+    depends_on:
+      api:
         condition: service_healthy  
     restart: always
     networks:
@@ -95,15 +114,17 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx-proxy
+    container_name: nginx
     ports:
       - "80:80"  # Expose Nginx on port 80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Read-only mounting of config
     depends_on:
-      frontend:
+      maptool:
         condition: service_started
-      djangoapi:
+      dashboard:
+        condition: service_started
+      api:
         condition: service_healthy
     networks:
       - civo_network
