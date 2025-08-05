@@ -6,7 +6,7 @@ WORKDIR /var/www/dockerize-nuxt/nuxt-app
 
 COPY package*.json ./
 
-RUN yarn install --fronzen-lockfile
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
