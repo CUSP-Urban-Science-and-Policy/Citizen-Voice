@@ -1,0 +1,107 @@
+@font-face {
+    font-family: 'Chillax';
+    src:
+        url('../fonts/Chillax-Regular.woff2') format('woff2'),
+        url('../fonts/Chillax-Regular.woff') format('woff'),
+        url('../fonts/Chillax-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Chillax';
+    src:
+        url('../fonts/Chillax-Medium.woff2') format('woff2'),
+        url('../fonts/Chillax-Medium.woff') format('woff'),
+        url('../fonts/Chillax-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Chillax';
+    src:
+        url('../fonts/Chillax-Semibold.woff2') format('woff2'),
+        url('../fonts/Chillax-Semibold.woff') format('woff'),
+        url('../fonts/Chillax-Semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-display: swap;
+    font-style: normal;
+}
+
+:root {
+    --noise-pollution: #FF82E2;
+    --favorite-place: #578DFC;
+    --least-favorite-place: #FF4C50;
+    --presence-of-wildlife: #83D873;
+    --closest-green-area: #36B17A;
+    --lack-of-green: #FFC64C;
+    --air-pollution: #8366DA;
+    --water-on-the-ground: #81DFD4;
+    --feeling-of-unsafety: #C5C5B9;
+    --trash-in-the-streets: #937549;
+    --need-for-improvement: #000000;
+    --hottest-place: #FF8442;
+}
+
+.icon-noise-pollution {
+    background-color: var(--noise-pollution);
+    border-color: var(--noise-pollution);
+}
+
+.icon-favorite-place {
+    background-color: var(--favorite-place);
+    border-color: var(--favorite-place);
+}
+
+.icon-least-favorite-place {
+    background-color: var(--least-favorite-place);
+    border-color: var(--least-favorite-place);
+}
+
+.icon-presence-of-wildlife {
+    background-color: var(--presence-of-wildlife);
+    border-color: var(--presence-of-wildlife);
+}
+
+.icon-closest-green-area {
+    background-color: var(--closest-green-area);
+    border-color: var(--closest-green-area);
+}
+
+.icon-lack-of-green {
+    background-color: var(--lack-of-green);
+    border-color: var(--lack-of-green);
+}
+
+.icon-air-pollution {
+    background-color: var(--air-pollution);
+    border-color: var(--air-pollution);
+}
+
+.icon-water-on-the-ground {
+    background-color: var(--water-on-the-ground);
+    border-color: var(--water-on-the-ground);
+}
+
+.icon-feeling-of-unsafety {
+    background-color: var(--feeling-of-unsafety);
+    border-color: var(--feeling-of-unsafety);
+}
+
+.icon-trash-in-the-streets {
+    background-color: var(--trash-in-the-streets);
+    border-color: var(--trash-in-the-streets);
+}
+
+.icon-need-for-improvement {
+    background-color: var(--need-for-improvement);
+    border-color: var(--need-for-improvement);
+}
+
+.icon-hottest-place {
+    background-color: var(--hottest-place);
+    border-color: var(--hottest-place);
+}
