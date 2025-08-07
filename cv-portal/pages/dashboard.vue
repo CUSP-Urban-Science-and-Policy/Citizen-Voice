@@ -95,7 +95,7 @@ definePageMeta({
 onMounted(async () => {
     // Fetch topics
     try {
-        const topicsData = await $cmsApiV1('/topics',
+        const topicsData = await $cmsApiV1('/topics/',
             {
                 // @ts-expect-error some how typscript does not recognize the 'query' parameter
                 query: {
