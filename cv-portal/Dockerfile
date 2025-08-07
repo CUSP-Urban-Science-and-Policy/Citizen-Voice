@@ -10,6 +10,12 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
+# Accept build arguments for environment variables
+ARG NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://localhost:8000/civilian/v1/
+
+# Set environment variables for build
+ENV NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=${NUXT_API_PARTY_ENDPOINTS_CMS_API_URL}
+
 RUN yarn run build
 
 FROM node:22.12.0-alpine3.21 AS production
