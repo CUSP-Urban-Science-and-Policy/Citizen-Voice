@@ -11,12 +11,12 @@
         <img class="w-full h-auto absolute top-0 bottom-0 left-0 m-auto right-0" src="~/assets/img/tour-image-2.png"
             alt="">
 
-        <a href="/dashboard"
+        <NuxtLink to="/dashboard"
             class="px-4 py-2 absolute bg-black rounded-3xl inline-flex justify-center items-center left-[50%] right-[50%] bottom-8 m-auto translate-x-[-50%] w-max cursor-pointer">
             <div
                 class="text-center justify-start text-white text-xl font-semibold font-['Chillax'] leading-tight tracking-wide ">
                 End tour</div>
-        </a>
+        </NuxtLink>
     </main>
 </template>
 

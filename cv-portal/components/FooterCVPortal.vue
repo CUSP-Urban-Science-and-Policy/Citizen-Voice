@@ -4,16 +4,18 @@
         <img class="max-h-[42px] max-w-full h-auto" src="~/assets/img/logos/logo-black.png" />
         <div class="flex-col justify-start items-center gap-2 inline-flex overflow-hidden">
             <div class="justify-center items-end gap-[30px] inline-flex overflow-hidden">
-                <a href="#"
+                <NuxtLink 
+                    to="/dashboard"
                     class="text-center text-black text-base font-medium font-['Chillax'] leading-none tracking-wide">
                     Map
-                </a>
+                </NuxtLink>
             </div>
             <div class="justify-center items-end gap-[30px] inline-flex overflow-hidden">
-                <a href="#"
+                <NuxtLink
+                to="/tour-1"
                     class="text-center text-black text-base font-medium font-['Chillax'] leading-none tracking-wide">
                     Info
-                </a>
+                </NuxtLink>
             </div>
         </div>
         <img class="w-auto h-[70px]" src="~/assets/img/logos/tudelft.png" />
@@ -21,5 +23,7 @@
 </template>
 
 <script setup>
+import { NuxtLink } from '#components';
+
 // optional logic
 </script>

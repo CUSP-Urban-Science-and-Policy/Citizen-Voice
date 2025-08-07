@@ -51,9 +51,9 @@ import { filename } from 'pathe/utils'
 import type {
     components,
 } from '#nuxt-api-party/cmsApiV1'
-import type {
-    components as componentsCms,
-} from '#nuxt-api-party/cmsApiV3'
+// import type {
+//     components as componentsCms,
+// } from '#nuxt-api-party/cmsApiV3'
 
 const glob = import.meta.glob('@/assets/icons/*.png', { eager: true })
 const images = Object.fromEntries(
@@ -61,8 +61,8 @@ const images = Object.fromEntries(
     Object.entries(glob).map(([key, value]) => [filename(key), value.default])
 )
 
-type Answer = components['schemas']['Answer']
-type Topic = componentsCms['schemas']['Topic']
+// type Answer = components['schemas']['Answer']
+type Topic = components['schemas']['Topic']
 
 type TopicExtended = {
     checked?: boolean;
@@ -89,10 +89,13 @@ definePageMeta({
     layout: false
 })
 
+
+// TODO: continue here. Error 503. Try starting with full erro message on docker
+
 onMounted(async () => {
     // Fetch topics
     try {
-        const topicsData = await $cmsApiV3('/civilian/v1/topics/',
+        const topicsData = await $cmsApiV1('/topics/',
             {
                 // @ts-expect-error some how typscript does not recognize the 'query' parameter
                 query: {
@@ -110,7 +113,7 @@ onMounted(async () => {
     }
     // Fetch answers
     try {
-        const answersData = await $cmsApiV1('/civilian/v1/answers/')
+        const answersData = await $cmsApiV1('/answers')
 
         if (answersData?.results) {
             const featuresSerialized = answersData.results
