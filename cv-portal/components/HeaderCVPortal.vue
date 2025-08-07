@@ -9,8 +9,10 @@
         </h1>
         <div class="justify-center items-end gap-5 flex">
             <div class="justify-center items-end gap-[30px] flex overflow-hidden">
-                <span
-                    class="text-center text-black text-base font-semibold font-['Chillax'] leading-none tracking-wide">Map</span>
+                <NuxtLink
+                    to="/dashboard"
+                    class="text-center text-black text-base font-semibold font-['Chillax'] leading-none tracking-wide">Map
+                </NuxtLink>
             </div>
             <div class="relative -bottom-1" data-svg-wrapper>
                 <svg width="2" height="26" viewBox="0 0 2 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -18,8 +20,10 @@
                 </svg>
             </div>
             <div class="justify-center items-end gap-[30px] flex overflow-hidden">
-                <span
-                    class="text-center text-black text-base font-medium font-['Chillax'] leading-none tracking-wide">Info</span>
+                <NuxtLink
+                    to="/tour-1"
+                    class="text-center text-black text-base font-medium font-['Chillax'] leading-none tracking-wide">Info
+                </NuxtLink>
             </div>
         </div>
     </div>
