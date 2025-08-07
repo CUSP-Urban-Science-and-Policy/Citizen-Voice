@@ -96,9 +96,11 @@ services:
   dashboard:
     build: 
       context: ./cv-portal
+      args:
+        - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/civilian/v1/
     container_name: dashboard
     environment:
-      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/civilian/v1
+      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/civilian/v1/
     # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
     expose: # Expose ports without publishing them to the host machine
       - "4000"
