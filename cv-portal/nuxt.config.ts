@@ -35,15 +35,18 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-        public: {},
-        // API party configuration
-        apiParty: {
-            endpoints: {
-                cmsApiV1: {
-                    url: process.env.NUXT_API_PARTY_ENDPOINTS_CMS_API_URL || 'http://localhost:8000/civilian/v1',
-                    schema: `${process.env.NUXT_API_PARTY_ENDPOINTS_CMS_API_URL || 'http://localhost:8000/civilian/v1'}/schema`,
-                },
-            }
+        public: {
+            apiPartyEndpointsCmsApiUrl: process.env.NUXT_API_PARTY_ENDPOINTS_CMS_API_URL || 'http://localhost:8000/civilian/v1/'
+        }
+    },
+
+    // API party configuration
+    apiParty: {
+        endpoints: {
+            cmsApiV1: {
+                url: process.env.NUXT_API_PARTY_ENDPOINTS_CMS_API_URL || 'http://localhost:8000/civilian/v1/',
+                schema: `${process.env.NUXT_API_PARTY_ENDPOINTS_CMS_API_URL || 'http://localhost:8000/civilian/v1/'}/schema/`,
+            },
         }
     },
 })
