@@ -4,7 +4,8 @@
         <img class="max-h-[42px] max-w-full h-auto" src="~/assets/img/logos/logo-black.png" />
         <div class="flex-col justify-start items-center gap-2 inline-flex overflow-hidden">
             <div class="justify-center items-end gap-[30px] inline-flex overflow-hidden">
-                <NuxtLink to="/dashboard"
+                <NuxtLink 
+                    to="/dashboard"
                     class="text-center text-black text-base font-medium font-['Chillax'] leading-none tracking-wide">
                     Map
                 </NuxtLink>

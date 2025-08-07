@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     ],
 
     app: {
-        baseURL: '/dashboard/',
+        baseURL: '/cv-portal/',
         head: {
             title: " Civilian Dashboard",
             link: [

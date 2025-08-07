@@ -93,10 +93,10 @@ services:
     networks:
       - civo_network
 
-  dashboard:
+  cvportal:
     build: 
       context: ./cv-portal
-    container_name: dashboard
+    container_name: cvportal
     environment:
       - NUXT_API_PARTY_ENDPOINTS_CMS_API_V1_URL=http://api:8000/civilian/v1/
     # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
@@ -121,7 +121,7 @@ services:
     depends_on:
       surveytool:
         condition: service_started
-      dashboard:
+      cvportal:
         condition: service_started
       api:
         condition: service_healthy

@@ -97,7 +97,7 @@
                 </p>
                 <div class="relative max-w-2xl w-full flex justify-between">
                     <ButtonOval class="mt-4" label="I want to see the dashboard" href="/disclaimer" />
-                    <ButtonOval class="mt-4" label="I want answer the survey" href="#" />
+                    <ButtonOval class="mt-4" label="I want answer the survey" href="http://localhost/citizen-map" />
                 </div>
 
             </div>
