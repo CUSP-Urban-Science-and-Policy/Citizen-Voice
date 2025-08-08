@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  {% load account %}
+
+  {% if request.user.is_authenticated%}
+  <div class="flex m-auto border w-[90%] justify-center  bg-blue-200 h-20 rounded rounded-lg">
+
+    <div class="w-[90%] mt-6">
+      <h1 class="ml-3"> Welcome, {% user_display user %}!</h1>
+    </div>
+    <div class=" my-6 hover:text-blue-600">
+      <a href="{% url 'account_logout' %}" class="">Sign Out</a>
+    </div>
+  </div>
+
+  {%else%}
+  <div class="flex m-auto border w-[90%] justify-center  bg-blue-200 h-20 rounded rounded-lg">
+    <a class="ml-auto mt-6 mr-3" href="{% url 'account_login' %}">Sign in</a>
+  </div>
+
+  {%endif%}
+
+
+  <div class="m-auto w-[50%] m-auto border  rounded-lg">
+    <h1 class="text-center bg-gray-100 h-[52px] font-bold text-3xl">Sign In</h1>
+
+
+    <h2 class="text-center my-3">Citizen Voice wants to do authentication with a third party!
+    </h2>
+    <form method="post">
+        <div class="justify-center mx-3">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-200 my-3 rounded-lg w-[100%] p-2">Continue</button>
+        </div>
+    </form>
+</div>
+</body>
+
+</html>
+
+

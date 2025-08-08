@@ -1,11 +1,13 @@
-[![Django CI](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice/actions/workflows/django-ci.yml/badge.svg)](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice/actions/workflows/django-ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![TUDelft DCC](https://img.shields.io/badge/tu_delft-DCC-black?style=flat&label=TU%20Delft&labelColor=%23000000%20&color=%2300A6D6&link=https%3A%2F%2Fdcc.tudelft.nl%2F)
+[![Docs](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice/actions/workflows/docs.yml/badge.svg)](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice/actions/workflows/docs.yml)
+
 # CitizenVoice
 An inclusive, web-based software platform for collaborative data collection that facilitates citizen participation.
 
 ## Documentation
 
-The application is under development, but relevant documentation will be available in our [documentation page.](https://citizenvoice.readthedocs.io)
+The application is under development, but relevant documentation will be available in our [documentation page.](https://cusp-urban-science-and-policy.github.io/Citizen-Voice/index.html)
 
 ## Contributions
 

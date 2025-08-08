@@ -2,13 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
-from apiapp.views import SurveyViewSet, QuestionViewSet
+from voice.views import SurveyViewSet, QuestionViewSet
 from django.contrib.auth.models import User
 # from .models import Question, Survey
 from django.template.loader import render_to_string
 from django.utils.timezone import now
-from apiapp.serializers import SurveySerializer
-from apiapp.models import Survey
+from voice.serializers import SurveySerializer
+from voice.models import Survey
 
 from .forms import SurveyCreationForm
 

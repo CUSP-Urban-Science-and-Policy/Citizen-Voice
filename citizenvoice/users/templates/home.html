@@ -1,0 +1,35 @@
+{% load socialaccount %}
+<h1>CWS All Auth Tutorial</h1>
+</h1>
+<p>Based on:</p>
+
+{{ request.user.username}}<br/>
+{{ request.user.email}}<br/>
+<a href="https://youtu.be/RyB_wdEZhOw">code with stein</a>
+
+<hr>
+{% if request.user.is_authenticated %}
+<h2>CONGRATS :)</h2>
+<h3>You Are Logged in!</h3>
+<h4> WELCOME TO DASHBOARD!</h4>
+    button for log out
+    <a href="{% url 'account_logout' %}"> Log Out</a>
+{% else %}
+<h2>SORRY :/</h2>
+<h3>You Are Logged Out!</h3>
+    <p>Link to log in:
+    <p>By Django Admin Dashboard [w/ username/password or github credentials]:</p>
+    <p>using url -> .../accounts/login/</p>
+
+    <a href="{% url 'account_login' %}"> LogIn</a>
+    <hr>
+    <p>Or via Github:</p>
+    <p>using url ->.../accounts/github/login/</p>
+    <a href="{% provider_login_url 'github' %}"> LogIn via Github</a>
+
+
+    <a href="{% provider_login_url 'google' %}">
+            Sign in with google <i class="fa-brands fa-google text-[#e0400b]"></i>
+    </a>
+
+{% endif %}

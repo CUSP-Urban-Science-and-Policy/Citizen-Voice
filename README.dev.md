@@ -2,21 +2,21 @@
 
 If you're looking for user documentation, go [here](README.md).
 
+## Docker Compose
 
-## API Docker container
-
-The api can be reproduced using docker compose as follows:
+The app can be run using docker compose.
 
 1. Clone the repository, the latest version is in the `devel` branch.
-2. Add a `.env` file to the root of the repository with the following varialbles. Values can be adjusted.
+2. Add a `.env` file to the root of the repository with the following variables.
 
 ```shell
-DATABASE=civo
-JDANGO_DB_ENGINE=postgis
 DB_USER=citizen
+DATABASE=civo
+DJANGO_DB_ENGINE=postgis
 DB_PORT=5432
-DJANGO_DEBUG=1  
-DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+DJANGO_ALLOWED_HOSTS= localhost 127.0.0.0 [::1] api
+DJANGO_DEBUG=1 # 0 for production
+
 ```
 
 3. Create a directory in the root of the repository called `secrets/`, and create the secrets for the Django token and the database password as follows:
@@ -31,36 +31,57 @@ DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
 <postgres-superuser-password>
 ```
 
-4. Build and run using docker compose. The database will be populated with sample data.
+4. Build and run using docker compose. The webserver will run on port 80 at `localhost`. The database will be populated with sample data.
 
 ```shell
-docker compose -f docker-compose.yaml build
-
-docker compose -f docker-compose.yaml up
+docker compose --env-file .env up --build
 ```
 
-5. Go to the API root: http://localhost:8000/api/v2/
+5. Go to the Survey API root: http://localhost
+
+### Voice API
+
+The Voice API contains functinality to create surveys and retrieve answers. Responses are formatted as JSON.
+This API is available at http://localhost/voice/v3
+
+Voice API Root:
+
+```json
+{
+    "answers":"http://localhost/voice/v3/answers/",
+    "questions":"http://localhost/voice/v3/questions/",
+    "surveys":"http://localhost/voice/v3/surveys/",
+    "responses":"http://localhost/voice/v3/responses/",
+    "users":"http://localhost/voice/v3/users/",
+    "locations":"http://localhost/voice/v3/locations/",
+    "polygonfeatures":"http://localhost/voice/v3/polygonfeatures/",
+    "linefeatures":"http://localhost/voice/v3/linefeatures/",
+    "map-views":"http://localhost/voice/v3/map-views/",
+    "pointfeatures":"http://localhost/voice/v3/pointfeatures/",
+    "topics":"http://localhost/voice/v3/topics/"
+}
+```
 
 **Open API**
-- A schema of the API can be downloaded from: http://localhost:8000/api/v2/schema
-- Auto generated documentation is available at: http://localhost:8000/api/v2/schema/redoc
+- A schema of the API can be downloaded from: http://localhost/voice/v3/schema
+- Auto generated documentation is available at: http://localhost/voice/v3/schema/redoc
 
 ### Civilian API
 
-A cutome API for the dasboard can be accessed at: http://localhost:8000/civilian/v1/
+An API for the dasboard can be accessed at: http://localhost/civilian/v1/
 With the corresponding schemas and documentation at:
-- Schema: http://localhost:8000/civilian/v1/schema
-- Documentation: http://localhost:8000/civilian/v1/schema/redoc
+- Schema: http://localhost/civilian/v1/schema
+- Documentation: http://localhost/civilian/v1/schema/redoc
 
-The 'answers' endpoint provides the list of answers for questions that contain spatial geometries. 
-One can navigate long list of answers by using the `page` parameter. The `topics` keyword in `question` contains the name of the categories for the legend in the dashboard. The `geojson` keyword in `mapview` contains valid GeoJson for all the geometries related to an answer. Notice, that the *property* `annotation` of each geometry contains a text, which if not a empty string,  shall be display as a pop-up on geometries in the dashboard. 
+The 'answers' endpoint provides the list of answers for questions that contain spatial geometries.
+One can navigate long list of answers by using the `page` parameter. The `topics` keyword in `question` contains the name of the categories for the legend in the dashboard. The `geojson` keyword in `mapview` contains valid GeoJson for all the geometries related to an answer. Notice, that the *property* `annotation` of each geometry contains a text, which if not a empty string,  shall be display as a pop-up on geometries in the dashboard.
 
 Coordinates of the geometries are the WSG84 reference system.
 
 Answers can be filtered by survey, question or both as follows:
-- By survey: `http://localhost:8000/civilian/v1/answers/?survey=3`
-- By question: `http://localhost:8000/civilian/v1/answers/?question=6`
-- By survey and question: `http://localhost:8000/civilian/v1/answers/?survey=3&question=6`
+- By survey: `http://localhost/civilian/v1/answers/?survey=3`
+- By question: `http://localhost/civilian/v1/answers/?question=6`
+- By survey and question: `http://localhost/civilian/v1/answers/?survey=3&question=6`
 
 Response example:
 
@@ -155,18 +176,31 @@ pip install -r requirements.txt
 
 ## Running the Django App
 
-1. Create a `.env` file with a secret key for the django project, and the database configuration, such as:
-    
+1. Create a `local.env` file with a secret key for the django project, and the database configuration, such as:
+
     ```shell
-    # .env file in ./citizenvoice/
-    SECRET_KEY = 'django-insecure-<a hexadecimal string>'
-    POSTGRES_USER = '<username>'
-    POSTGRES_DBASE = '<database-name>'
-    POSTGRES_PWD = '<password>'
-    POSTGRES_HOST = '<server-name/IP>'
-    POSTGRES_PORT = '<port-number>'
+    # local.env file root directory
+
+    POSTGRES_DBASE=citizen
+    JDANGO_DB_ENGINE=postgis
+    DATABASE_ENGINE=postgis
+    POSTGRES_USER=citizen
+    DB_PORT=5432
+    DJANGO_DEBUG=1  # run in debug mode
+    DJANGO_ALLOWED_HOSTS="localhost 127.0.0.1 [::1]"
+    DB_HOST=localhost # Comment for docker
+    SECRET_KEY=django-insecure-#(7^@z1!1
+    POSTGRES_PWD='admin@voice'
+    TEST_DBASE=''
     ```
-2. Run the development server from the project directory. Saved changes will be authomatically reloaded:
+
+2. Uncomment the line to load `local.env` in `citizenvoice/citizenvoice/settings.py`:
+
+```python
+# load_dotenv("../local.env", override=True)
+```
+
+3. Run the development server from `citizenvoice/` directory. Saved changes will be automatically reloaded:
 
     ```shell
     python manage.py runserver
@@ -184,6 +218,8 @@ python manage.py test
 
 ## Making a release
 
+<Instructions to make a release.>
+
 ### Preparation
 
 1. Make sure the `CHANGELOG.md` has been updated
@@ -192,7 +228,3 @@ python manage.py test
 4. Run the unit tests with `python manage.py test`
 5. Go through the steps outlined above for [generating a new package from the command line](#), and verify that the generated package works as it should.
 
-### GitHub
-
-1. Make sure that the GitHub-Zenodo integration is enabled for https://github.com/NLeSC/python-template
-1. Go to https://github.com/NLeSC/python-template/releases and click `Draft a new release`
