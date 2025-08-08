@@ -59,3 +59,8 @@ html_static_path = ['_static']
 
 # Add '.md' as a source suffix
 source_suffix = ['.rst', '.md']
+
+# For changing the font and other aesthetics, add to the css-style.css
+html_css_files = [
+    'css/custom.css',
+]
