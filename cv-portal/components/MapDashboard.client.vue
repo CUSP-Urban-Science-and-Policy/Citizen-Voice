@@ -12,7 +12,7 @@
                 :url="currentTileProvider.url" 
                 :attribution="currentTileProvider.attribution"
                 layer-type="base"
-                max-zoom="20"
+                :max-zoom="currentTileProvider.maxZoom"
                 :name="currentTileProvider.name" />
             <l-control-zoom position="bottomright" />
             <l-geo-json v-if="geoJsonReady" :geojson="geoJson" :options="geoJsonOptions" />
@@ -26,7 +26,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4l6 3 5.447-2.724A1 1 0 0121 5.618v8.764a1 1 0 01-.553.894L15 18l-6-3z" />
                 </svg>
-                {{ currentTileProvider.name }}
+                {{ currentTileProvider.switcher }}
             </button>
         </div>
     </div>
@@ -73,14 +73,18 @@ const geoJson = shallowRef(null)
 // Map tile providers configuration
 const tileProviders = {
     cartodb: {
-        name: 'Light Map',
+        name: 'CartoDB Light',
+        switcher: 'Colour Map',
         url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 18
     },
     openstreetmap: {
-        name: 'Colour Map',
+        name: 'OpenStreetMap',
+        switcher: 'Light Map',
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
     }
 }
 
@@ -138,7 +142,7 @@ const geoJsonOptions = {
                     iconAnchor: [28, 44]
                 }) : L.icon({
                     iconUrl: images[iconString],
-                    iconSize: [38, 38],
+                    iconSize: [35, 35],
                     tooltipAnchor: [0, -19],
                     className: `icon-pin-circle icon-${iconString}`
                 })
