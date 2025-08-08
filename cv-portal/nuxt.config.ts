@@ -40,9 +40,9 @@ export default defineNuxtConfig({
         apiParty: {
             endpoints: {
                 cmsApiV1: { // Becomes `$cmsApi()` and useCmsApiData()
-                    url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3',
+                    url: process.env.API_PARTY_CMS_URL || 'http://localhost:8000/civilian/v1',
                     // token: '',
-                    schema: `${process.env.API_PARTY_CMS_URL || 'http://localhost:8000/voice/v3'}/schema`,
+                    schema: `${process.env.API_PARTY_CMS_URL || 'http://localhost:8000/civilian/v1'}/schema`,
                     // allowedUrls: [ ],
                 }
             }
