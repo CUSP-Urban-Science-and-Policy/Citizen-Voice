@@ -76,7 +76,7 @@ services:
 
   surveytool:
     build: 
-      context: ./frontend
+      context: ./survey-gui
     container_name: surveytool
     environment:
       - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/voice/v3
