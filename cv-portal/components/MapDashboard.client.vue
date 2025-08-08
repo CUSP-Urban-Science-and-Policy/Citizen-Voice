@@ -1,16 +1,40 @@
 <template>
-    <div class="-z-0 h-[calc(100vh-72px)]" style="width: auto">
-        <l-map class="z-0" ref="mapRef" v-model:zoom="zoomModel" :center="center" :useGlobalLeaflet="false"
-            :key="updatekey" :options="{ zoomControl: false }">
-            <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
-                name="OpenStreetMap"></l-tile-layer>
-            <l-control-zoom position="bottomright"></l-control-zoom>
-            <l-geo-json v-if="geoJsonReady" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
+    <div class="-z-0 h-[calc(100vh-72px)] relative" style="width: auto">
+        <l-map 
+            ref="mapRef" 
+            :key="updatekey" 
+            v-model:zoom="zoomModel" 
+            class="z-0" 
+            :center="center" 
+            :use-global-leaflet="false"
+            :options="{ zoomControl: false }">
+            <l-tile-layer 
+                :url="currentTileProvider.url" 
+                :attribution="currentTileProvider.attribution"
+                layer-type="base"
+                max-zoom="20"
+                :name="currentTileProvider.name" />
+            <l-control-zoom position="bottomright" />
+            <l-geo-json v-if="geoJsonReady" :geojson="geoJson" :options="geoJsonOptions" />
         </l-map>
+        
+        <!-- Map provider switch button -->
+        <div class="absolute top-4 right-4 z-10">
+            <button
+                class="bg-white hover:bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 flex items-center gap-2"
+                @click="toggleMapProvider">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4l6 3 5.447-2.724A1 1 0 0121 5.618v8.764a1 1 0 01-.553.894L15 18l-6-3z" />
+                </svg>
+                {{ currentTileProvider.name }}
+            </button>
+        </div>
     </div>
 </template>
 
+
 <script setup>
+
 import { filename } from 'pathe/utils'
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
@@ -45,6 +69,52 @@ const zoomLevel = ref(props.zoom);
 const updatekey = ref(1);
 const geoJsonReady = ref(false)
 const geoJson = shallowRef(null)
+
+// Map tile providers configuration
+const tileProviders = {
+    cartodb: {
+        name: 'Light Map',
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    },
+    openstreetmap: {
+        name: 'Colour Map',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }
+}
+
+// Current tile provider (default to CartoDB Light)
+const currentProviderKey = ref('cartodb')
+const currentTileProvider = computed(() => tileProviders[currentProviderKey.value])
+
+// Function to toggle between map providers
+const toggleMapProvider = () => {
+    if (mapRef.value && mapRef.value.leafletObject) {
+        // Get current map state
+        const map = mapRef.value.leafletObject
+        const currentCenter = map.getCenter()
+        const currentZoom = map.getZoom()
+        
+        // Store current state
+        const tempCenter = [currentCenter.lat, currentCenter.lng]
+        const tempZoom = currentZoom
+        
+        // Switch provider
+        currentProviderKey.value = currentProviderKey.value === 'cartodb' ? 'openstreetmap' : 'cartodb'
+        
+        // Wait for next tick to ensure the new tile layer is rendered
+        nextTick(() => {
+            if (mapRef.value && mapRef.value.leafletObject) {
+                // Restore the map position
+                mapRef.value.leafletObject.setView(tempCenter, tempZoom)
+            }
+        })
+    } else {
+        // Fallback for when map is not ready
+        currentProviderKey.value = currentProviderKey.value === 'cartodb' ? 'openstreetmap' : 'cartodb'
+    }
+}
 
 const geoJsonOptions = {
     onEachFeature: (feature, layer) => {
