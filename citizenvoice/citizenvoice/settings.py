@@ -16,11 +16,12 @@ from datetime import timedelta
 
 # import mimetypes
 # mimetypes.add_type("text/css", ".css", True)
-# from dotenv import load_dotenv
 
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../.env", override=True)  #
+from dotenv import load_dotenv
+
+load_dotenv("../.env", override=True)  #
 
 if os.name == "nt":
     OSGEO4W = r"C:\OSGeo4W"
