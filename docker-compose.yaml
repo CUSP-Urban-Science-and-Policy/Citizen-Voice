@@ -9,7 +9,7 @@ services:
       interval: 10s
       timeout: 30s
       retries: 5
-      start_period: 30s
+      start_period: 5s
     volumes:
       - postgis_data:/var/lib/postgresql/data
     environment:
@@ -32,7 +32,7 @@ services:
       context: ./citizenvoice
     command: >
       sh -c "python manage.py migrate &&
-      python manage.py loaddata civilian-db.json &&
+      python manage.py loaddata civilian-db-old.json &&
       python manage.py runserver 0.0.0.0:8000"
     container_name: django-api
     environment:
@@ -76,7 +76,7 @@ services:
 
   surveytool:
     build: 
-      context: ./survey-gui
+      context: ./maptool
     container_name: surveytool
     environment:
       - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/voice/v3
