@@ -1,3 +1,0 @@
-# Frontend
-## Maping tool
-## Dashboard
