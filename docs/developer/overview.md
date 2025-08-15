@@ -1,8 +1,11 @@
-# Application Overview
+# System Overview
 
-The Citizen Voice ecosystem is designed to facilitate community engagement through various tools and platforms. It consists of several componets that work together to allow users to create, answer, and visualize questionnaires.
+The Citizen Voice ecosystem is designed to facilitate community engagement through various tools and platforms. It consists of several applications that work together to allow users to create, answer, and visualize questionnaires.
 
-## Components
+------
+## Applications
+
+The system includes the following applications:
 
 ### Citizen Mapping
 
@@ -35,17 +38,7 @@ The [codebase](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice) i
 │   ├── plugins
 │   ├── pages
 │   ├── package.json
-│   ├── openapi
-│   ├── nuxt.config.js
-│   ├── node_modules
-│   ├── middleware
-│   ├── layouts
-│   ├── constants
-│   ├── components
-│   ├── assets
-│   ├── app.vue
-│   ├── README.md
-│   └── Dockerfile
+│   ...
 ├── cv-portal
 │   ├── yarn.lock
 │   ├── tsconfig.json
@@ -54,15 +47,7 @@ The [codebase](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice) i
 │   ├── public
 │   ├── pages
 │   ├── package.json
-│   ├── nuxt.config.ts
-│   ├── node_modules
-│   ├── layouts
-│   ├── eslint.config.mjs
-│   ├── components
-│   ├── assets
-│   ├── app.vue
-│   ├── README.md
-│   └── Dockerfile
+│   ...
 ├── citizenvoice
 │   ├── voice
 │   ├── users
@@ -70,14 +55,7 @@ The [codebase](https://github.com/CUSP-Urban-Science-and-Policy/Citizen-Voice) i
 │   ├── survey_design
 │   ├── respondent
 │   ├── requirements.txt
-│   ├── openapi.yml
-│   ├── media
-│   ├── manage.py
-│   ├── civilian-db.json
-│   ├── civilian
-│   ├── citizenvoice
-│   ├── authentication
-│   └── Dockerfile
+│   ...
 ├── WAIVER
 ├── README.md
 ├── README.dev.md
