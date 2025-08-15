@@ -2,7 +2,9 @@
 
 ```{toctree}
 
-setup_dev_env
+quickstart-dev
+overview
 apis
-frontend
+citizen-mapping
+community-dashboard
 development_workflow
