@@ -120,10 +120,61 @@ const toggleMapProvider = () => {
     }
 }
 
+// Transform GeoJSON to include center point features for lines/polygons
+const transformGeoJsonWithCenters = (features) => {
+    if (!features || !Array.isArray(features)) return features;
+    
+    const transformedFeatures = [];
+    
+    features.forEach(feature => {
+        // Always add the original feature
+        transformedFeatures.push(feature);
+        
+        // For non-Point geometries, create a virtual center point feature
+        if (feature.geometry && feature.geometry.type !== 'Point') {
+            let centerCoords = null;
+            
+            // Calculate center based on geometry type
+            if (feature.geometry.type === 'LineString') {
+                const coords = feature.geometry.coordinates;
+                const midIndex = Math.floor(coords.length / 2);
+                centerCoords = coords[midIndex];
+            } else if (feature.geometry.type === 'Polygon') {
+                const coords = feature.geometry.coordinates[0]; // Outer ring
+                // Simple centroid calculation
+                let sumLat = 0, sumLng = 0;
+                coords.forEach(coord => {
+                    sumLng += coord[0];
+                    sumLat += coord[1];
+                });
+                centerCoords = [sumLng / coords.length, sumLat / coords.length];
+            }
+            
+            if (centerCoords) {
+                // Create virtual point feature for the center
+                const centerFeature = {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: centerCoords
+                    },
+                    properties: {
+                        ...feature.properties,
+                        isVirtualCenter: true, // Mark this as a virtual center point
+                        originalGeometryType: feature.geometry.type
+                    }
+                };
+                transformedFeatures.push(centerFeature);
+            }
+        }
+    });
+    
+    return transformedFeatures;
+}
+
 const geoJsonOptions = {
     onEachFeature: (feature, layer) => {
         if (feature?.properties?.question) {
-
             const options = {
                 direction: "top",
                 opacity: 1,
@@ -147,32 +198,29 @@ const geoJsonOptions = {
                     className: `icon-pin-circle icon-${iconString}`
                 })
 
-
+                // Handle Points (both original and virtual center points)
                 if (feature.geometry.type === 'Point' && icon) {
                     options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
                     layer.setIcon(myIcon);
                     layer.bindTooltip(toolTipContent, options);
                 }
 
-                // Add an pin icon to the center of any non Point types
-                if (feature.geometry.type !== 'Point') {
+                // Handle non-Point geometries (lines, polygons) - only style, no marker
+                if (feature.geometry.type !== 'Point' && !feature.properties.isVirtualCenter) {
                     layer.setStyle({
                         color: `var(--${iconString})`,
                         weight: 5,
                         fillColor: `var(--${iconString})`,
                         fillOpacity: 0.4
                     });
-
-                    layer.on('add', () => {
-                        const centerMarker = L.marker(layer.getCenter(), { icon: myIcon });
-                        centerMarker.bindTooltip(toolTipContent, { ...options });
-                        centerMarker.addTo(mapRef.value.leafletObject);
-                    })
+                    // No tooltip for the geometry itself since the virtual center point will have it
                 }
             } else {
-                // Some how this speech bubble is not centered so we are centering it with this
-                options.offset = [-15, -10]
-                layer.bindTooltip(toolTipContent, options);
+                // Handle features without icons
+                if (feature.geometry.type === 'Point') {
+                    options.offset = [-15, -10]
+                    layer.bindTooltip(toolTipContent, options);
+                }
             }
         }
     }
@@ -195,7 +243,7 @@ watch(
     (newGeojson) => {
         if (isEmpty(props.features)) return
         geoJsonReady.value = true
-        geoJson.value = props.features
+        geoJson.value = transformGeoJsonWithCenters(props.features)
     }
 )
 
@@ -204,7 +252,7 @@ watch(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (newGeojson) => {
         if (isEmpty(props.filteredFeatures)) return
-        geoJson.value = props.filteredFeatures
+        geoJson.value = transformGeoJsonWithCenters(props.filteredFeatures)
     }
 )
 
