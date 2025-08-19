@@ -19,9 +19,9 @@ from datetime import timedelta
 
 
 # Uncomment to use local .env file wihtout Docker
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv("../.env", override=True)  #
+# load_dotenv("../.env", override=True)  #
 
 if os.name == "nt":
     OSGEO4W = r"C:\OSGeo4W"
