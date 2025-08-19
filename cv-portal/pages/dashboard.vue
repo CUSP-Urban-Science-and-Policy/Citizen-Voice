@@ -3,8 +3,11 @@
         <HeaderCVPortal />
         <main class="pt-0 relative block">
             <div class="z-10 h-[calc(100vh-72px)]">
-                <MapDashboard :zoom="options.zoom" :center="options.center" :filteredFeatures="filteredFeatures"
-                    :features="features" />
+                <MapDashboard 
+                :zoom="options.zoom" 
+                :center="options.center" 
+                :filteredFeatures="filteredFeatures"
+                :features="features" />
             </div>
             <div class="absolute z-20 top-[42px] left-[42px]">
                 <div
@@ -29,7 +32,8 @@
                             <input :id="`checkbox-${topic.id}`" type="checkbox" :checked="topic.checked"
                                 @change="updateChecked(topic.id)"
                                 class="w-4 h-4 focus:rounded-lg focus:ring-blue-500 focus:ring-2 relative" />
-                            <img v-if="topic?.name" :class="[
+                            <img v-if="topic?.name" 
+                            :class="[
                                 'btn-w-[26px] h-[26px] rounded-full p-[1px]',
                                 images[topic.name.toLowerCase().split(' ').join('-')] && `icon-${topic.name.toLowerCase().split(' ').join('-')}`,
                             ]" :src="images[topic.name.toLowerCase().split(' ').join('-')]" />
