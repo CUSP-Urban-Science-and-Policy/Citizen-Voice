@@ -1,6 +1,7 @@
 # APIs
-## Overview
-## API1: VOICE
+
+
+## Voice API
 - automatically generated document: VOICE
-## API2: CIVILIAN
+## CIVILIAN API
 - automatically generated document: CIVILAN
