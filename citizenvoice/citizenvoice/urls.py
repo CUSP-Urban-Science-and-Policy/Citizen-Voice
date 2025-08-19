@@ -13,40 +13,61 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+
 # from django.contrib.auth import views as auth_view
 from django.shortcuts import render
 from django.http import JsonResponse
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
+from allauth.socialaccount.models import SocialToken, SocialApp, SocialAccount
 
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
+
 def home(request):
-    return render(request, 'home.html')
+    if request.user.is_authenticated:
+        sc = SocialAccount.objects.get(user=request.user)
+        google_app = SocialApp.objects.filter(provider="google").first()
+        print(f"google app {google_app}")
+        social_token = (
+            SocialToken.objects.filter(app=google_app, account=sc)
+            .order_by("expires_at")
+            .first()
+        )
+        print(social_token.token)
+
+    return render(request, "home.html")
+
 
 urlpatterns = [
-    path('home', home),
-
-    path('api/admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
-    path('_allauth/', include('allauth.headless.urls')), # url endpoins are defined in settings.py
-
+    path("home", home),
+    path("api/auth/", include("authentication.urls")),
+    path("api/admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
+    path(
+        "_allauth/", include("allauth.headless.urls")
+    ),  # url endpoins are defined in settings.py
     # path('', include('survey_design.urls')), # enables the survey_design (depricated) app
-    path('respondent/', include('respondent.urls')),
-    path('voice/v3/', include('voice.urls')),
-    path('designer/', include('survey_design.urls')),
-    path('civilian/v1/', include('civilian.urls')),
+    path("respondent/", include("respondent.urls")),
+    path("voice/v3/", include("voice.urls")),
+    path("designer/", include("survey_design.urls")),
+    path("civilian/v1/", include("civilian.urls")),
     # path('login/', auth_view.LoginView.as_view(template_name='users/login.html'), name='login'),
     # path('logout/', auth_view.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path('voice/v3/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('voice/v3/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('health/', health_check, name="health_check"),
+    path("voice/v3/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "voice/v3/schema/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
+    ),
+    path("health/", health_check, name="health_check"),
 ]
 
 # TODO: continue here: Registering users work but the redirect page is not available. API returns success

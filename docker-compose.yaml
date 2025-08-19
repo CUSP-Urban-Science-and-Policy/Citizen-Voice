@@ -3,13 +3,13 @@ services:
 
   postgis_db:
     image: postgis/postgis:16-3.4-alpine
-    container_name: postgis-db
+    container_name: database
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DATABASE}"]
       interval: 10s
       timeout: 30s
       retries: 5
-      start_period: 30s
+      start_period: 5s
     volumes:
       - postgis_data:/var/lib/postgresql/data
       - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
@@ -28,7 +28,7 @@ services:
     networks:
       - civo_network
 
-  djangoapi:
+  api:
     build: 
       context: ./citizenvoice
     command: >
@@ -75,20 +75,38 @@ services:
           target: ./citizenvoice
 
 
-  frontend:
+  maptool:
     build: 
-      context: ./frontend
-    container_name: frontend
+      context: ./maptool
+    container_name: maptool
     environment:
-      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://djangoapi:8000/voice/v3
-      - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://djangoapi:8000/api/auth
-      # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
+      - NUXT_API_PARTY_ENDPOINTS_CMS_API_URL=http://api:8000/voice/v3
+      - NUXT_API_PARTY_ENDPOINTS_AUTH_API_URL=http://api:8000/api/auth
+    # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
     expose: # Expose ports without publishing them to the host machine
       - "3000"
     volumes:
-      - ./frontend:/frontend
+      - ./maptool:/maptool
     depends_on:
-      djangoapi:
+      api:
+        condition: service_healthy  
+    restart: always
+    networks:
+      - civo_network
+
+  cvportal:
+    build: 
+      context: ./cv-portal
+    container_name: cvportal
+    environment:
+      - NUXT_API_PARTY_ENDPOINTS_CMS_API_V1_URL=http://api:8000/civilian/v1/
+    # - NODE_OPTIONS="--max-old-space-size=5120" # increases RAM for Node
+    expose: # Expose ports without publishing them to the host machine
+      - "4000"
+    volumes:
+      - ./cv-portal:/cv-portal
+    depends_on:
+      api:
         condition: service_healthy  
     restart: always
     networks:
@@ -96,15 +114,17 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx-proxy
+    container_name: nginx
     ports:
       - "80:80"  # Expose Nginx on port 80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Read-only mounting of config
     depends_on:
-      frontend:
+      maptool:
         condition: service_started
-      djangoapi:
+      cvportal:
+        condition: service_started
+      api:
         condition: service_healthy
     networks:
       - civo_network

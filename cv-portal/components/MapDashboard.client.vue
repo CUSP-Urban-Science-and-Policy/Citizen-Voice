@@ -1,0 +1,361 @@
+<template>
+    <div class="-z-0 h-[calc(100vh-72px)] relative" style="width: auto">
+        <l-map 
+            ref="mapRef" 
+            :key="updatekey" 
+            v-model:zoom="zoomModel" 
+            class="z-0" 
+            :center="center" 
+            :use-global-leaflet="false"
+            :options="{ zoomControl: false }">
+            <l-tile-layer 
+                :url="currentTileProvider.url" 
+                :attribution="currentTileProvider.attribution"
+                layer-type="base"
+                :max-zoom="currentTileProvider.maxZoom"
+                :name="currentTileProvider.name" />
+            <l-control-zoom position="bottomright" />
+            <l-geo-json v-if="geoJsonReady" :geojson="geoJson" :options="geoJsonOptions" />
+        </l-map>
+        
+        <!-- Map provider switch button -->
+        <div class="absolute top-4 right-4 z-10">
+            <button
+                class="bg-white hover:bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 flex items-center gap-2"
+                @click="toggleMapProvider">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4l6 3 5.447-2.724A1 1 0 0121 5.618v8.764a1 1 0 01-.553.894L15 18l-6-3z" />
+                </svg>
+                {{ currentTileProvider.switcher }}
+            </button>
+        </div>
+    </div>
+</template>
+
+
+<script setup>
+
+import { filename } from 'pathe/utils'
+import "leaflet/dist/leaflet.css";
+import L from 'leaflet';
+import { isEmpty } from 'ramda'
+
+const glob = import.meta.glob('@/assets/icons/*.png', { eager: true })
+const images = Object.fromEntries(
+    Object.entries(glob).map(([key, value]) => [filename(key), value.default])
+)
+
+const props = defineProps({
+    zoom: {
+        default: 8,
+        type: Number,
+    },
+    center: {
+        default: () => [52.045, 5.1],
+        type: Array,
+    },
+    features: {
+        type: Array,
+        default: null
+    },
+    filteredFeatures: {
+        type: Array,
+        default: null
+    },
+});
+
+const mapRef = ref(null);
+const zoomLevel = ref(props.zoom);
+const updatekey = ref(1);
+const geoJsonReady = ref(false)
+const geoJson = shallowRef(null)
+const transformCache = ref(new Map()) // Cache for transformation results
+
+// Map tile providers configuration
+const tileProviders = {
+    cartodb: {
+        name: 'CartoDB Light',
+        switcher: 'Colour Map',
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 18
+    },
+    openstreetmap: {
+        name: 'OpenStreetMap',
+        switcher: 'Light Map',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    }
+}
+
+// Current tile provider (default to CartoDB Light)
+const currentProviderKey = ref('cartodb')
+const currentTileProvider = computed(() => tileProviders[currentProviderKey.value])
+
+// Function to toggle between map providers
+const toggleMapProvider = () => {
+    if (mapRef.value && mapRef.value.leafletObject) {
+        // Get current map state
+        const map = mapRef.value.leafletObject
+        const currentCenter = map.getCenter()
+        const currentZoom = map.getZoom()
+        
+        // Store current state
+        const tempCenter = [currentCenter.lat, currentCenter.lng]
+        const tempZoom = currentZoom
+        
+        // Switch provider
+        currentProviderKey.value = currentProviderKey.value === 'cartodb' ? 'openstreetmap' : 'cartodb'
+        
+        // Wait for next tick to ensure the new tile layer is rendered
+        nextTick(() => {
+            if (mapRef.value && mapRef.value.leafletObject) {
+                // Restore the map position
+                mapRef.value.leafletObject.setView(tempCenter, tempZoom)
+            }
+        })
+    } else {
+        // Fallback for when map is not ready
+        currentProviderKey.value = currentProviderKey.value === 'cartodb' ? 'openstreetmap' : 'cartodb'
+    }
+}
+
+// Transform GeoJSON to include center point features for lines/polygons
+const transformGeoJsonWithCenters = (features) => {
+    if (!features || !Array.isArray(features)) return features;
+    
+    // Create cache key based on feature IDs or geometry coordinates
+    const cacheKey = features.map(f => {
+        if (f.id) return f.id;
+        // If no ID, use a hash of the geometry for caching
+        return JSON.stringify(f.geometry);
+    }).join('|');
+    
+    // Check if we have a cached result
+    if (transformCache.value.has(cacheKey)) {
+        return transformCache.value.get(cacheKey);
+    }
+    
+    const transformedFeatures = [];
+    
+    features.forEach(feature => {
+        // Always add the original feature
+        transformedFeatures.push(feature);
+        
+        // For non-Point geometries, create a virtual center point feature
+        if (feature.geometry && feature.geometry.type !== 'Point') {
+            let centerCoords = null;
+            
+            // Calculate center based on geometry type
+            if (feature.geometry.type === 'LineString') {
+                const coords = feature.geometry.coordinates;
+                const midIndex = Math.floor(coords.length / 2);
+                centerCoords = coords[midIndex];
+            } else if (feature.geometry.type === 'Polygon') {
+                const coords = feature.geometry.coordinates[0]; // Outer ring
+                
+                // Optimized centroid calculation for large datasets
+                if (coords.length > 100) {
+                    // For large polygons, sample every 10th point for performance
+                    const sampleStep = Math.max(1, Math.floor(coords.length / 10));
+                    let sumLat = 0, sumLng = 0, sampleCount = 0;
+                    
+                    for (let i = 0; i < coords.length; i += sampleStep) {
+                        sumLng += coords[i][0];
+                        sumLat += coords[i][1];
+                        sampleCount++;
+                    }
+                    centerCoords = [sumLng / sampleCount, sumLat / sampleCount];
+                } else {
+                    // Simple centroid for smaller polygons
+                    let sumLat = 0, sumLng = 0;
+                    coords.forEach(coord => {
+                        sumLng += coord[0];
+                        sumLat += coord[1];
+                    });
+                    centerCoords = [sumLng / coords.length, sumLat / coords.length];
+                }
+            } else if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'MultiLineString') {
+                // Handle complex geometries by using the first part's center
+                const firstGeometry = feature.geometry.coordinates[0];
+                if (feature.geometry.type === 'MultiPolygon') {
+                    const coords = firstGeometry[0]; // First polygon's outer ring
+                    let sumLat = 0, sumLng = 0;
+                    coords.forEach(coord => {
+                        sumLng += coord[0];
+                        sumLat += coord[1];
+                    });
+                    centerCoords = [sumLng / coords.length, sumLat / coords.length];
+                } else if (feature.geometry.type === 'MultiLineString') {
+                    const coords = firstGeometry;
+                    const midIndex = Math.floor(coords.length / 2);
+                    centerCoords = coords[midIndex];
+                }
+            }
+            
+            if (centerCoords) {
+                // Create virtual point feature for the center
+                const centerFeature = {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: centerCoords
+                    },
+                    properties: {
+                        ...feature.properties,
+                        isVirtualCenter: true, // Mark this as a virtual center point
+                        originalGeometryType: feature.geometry.type
+                    }
+                };
+                transformedFeatures.push(centerFeature);
+            }
+        }
+    });
+    
+    // Cache the result before returning
+    transformCache.value.set(cacheKey, transformedFeatures);
+    
+    // Limit cache size to prevent memory issues
+    if (transformCache.value.size > 1000) {
+        // Remove oldest entries when cache gets too large
+        const firstKey = transformCache.value.keys().next().value;
+        transformCache.value.delete(firstKey);
+    }
+    
+    return transformedFeatures;
+}
+
+const geoJsonOptions = {
+    onEachFeature: (feature, layer) => {
+        if (feature?.properties?.question) {
+            const options = {
+                direction: "top",
+                opacity: 1,
+            }
+            const toolTipContent = `<strong>Question</strong>: ${feature.properties.question.text} ${feature.properties?.annotation ? '<br/> <strong>Answer</strong> ' + feature.properties?.annotation : ''}`
+
+            const icon = feature.properties.question?.topics[0]
+
+            if (icon) {
+                const iconString = icon.toLowerCase().split(' ').join('-')
+                const myIcon = feature.properties?.annotation ? L.divIcon({
+                    className: 'my-div-icon',
+                    html: `<div class="wrapper_icon-bubble icon-${iconString}"><img src="${images[iconString]}" class="leaflet-marker-icon icon-pin-bubble icon-${iconString} w-9 h-9 p-[1px]" alt="Marker" tabindex="0" role="button"></div>`,
+                    tooltipAnchor: [0, -40],
+                    iconSize: [56, 36],
+                    iconAnchor: [28, 44]
+                }) : L.icon({
+                    iconUrl: images[iconString],
+                    iconSize: [35, 35],
+                    tooltipAnchor: [0, -19],
+                    className: `icon-pin-circle icon-${iconString}`
+                })
+
+                // Handle Points (both original and virtual center points)
+                if (feature.geometry.type === 'Point' && icon) {
+                    options.offset = feature.properties?.annotation ? [0, 0] : [0, -16]
+                    layer.setIcon(myIcon);
+                    layer.bindTooltip(toolTipContent, options);
+                }
+
+                // Handle non-Point geometries (lines, polygons) - only style, no marker
+                if (feature.geometry.type !== 'Point' && !feature.properties.isVirtualCenter) {
+                    layer.setStyle({
+                        color: `var(--${iconString})`,
+                        weight: 5,
+                        fillColor: `var(--${iconString})`,
+                        fillOpacity: 0.4
+                    });
+                    // No tooltip for the geometry itself since the virtual center point will have it
+                }
+            } else {
+                // Handle features without icons
+                if (feature.geometry.type === 'Point') {
+                    options.offset = [-15, -10]
+                    layer.bindTooltip(toolTipContent, options);
+                }
+            }
+        }
+    }
+};
+
+// This makes sure the map will be rerenderd or else the changes will not be visible
+const zoomModel = computed({
+    get() {
+        return zoomLevel.value;
+    },
+    set(newValue) {
+        zoomLevel.value = newValue;
+    },
+});
+
+// Watch for GeoJSON changes
+watch(
+    () => props.features,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (newGeojson) => {
+        if (isEmpty(props.features)) return
+        geoJsonReady.value = true
+        geoJson.value = transformGeoJsonWithCenters(props.features)
+    }
+)
+
+watch(
+    () => props.filteredFeatures,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (newGeojson) => {
+        if (isEmpty(props.filteredFeatures)) return
+        geoJson.value = transformGeoJsonWithCenters(props.filteredFeatures)
+    }
+)
+
+</script>
+
+<style>
+.icon-pin-circle {
+    border-radius: 50%;
+}
+
+.icon-pin-bubble {
+    /* fill: url('@/assets/icons/pin-bubble.svg') lightgray 6.02px -1.609px / 75.95% 80.902% no-repeat, #36B17A; */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    position: relative;
+    width: 30px;
+
+
+    padding-left: 10px !important;
+    border-radius: 6px;
+    /* width: 48.999px !important; */
+    flex-shrink: 0;
+    padding-right: 10px !important;
+    min-width: fit-content;
+}
+
+.wrapper_icon-bubble {
+    width: fit-content;
+    height: auto;
+    background: transparent;
+}
+
+.wrapper_icon-bubble:after {
+    content: "";
+    border: 14px solid transparent;
+    position: absolute;
+    border-top-color: inherit;
+    border-bottom: 0;
+    bottom: -12px;
+    border-radius: 8px;
+    transform: translateX(calc(50%));
+}
+
+.leaflet-tooltip {
+    width: 270px;
+    white-space: normal;
+}
+
+/* .leaflet-marker-icon:has(.wrapper_icon-bubble) {
+    width: auto !important;
+    height: auto !important;
+} */
+</style>

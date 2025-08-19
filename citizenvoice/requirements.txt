@@ -40,3 +40,6 @@ setuptools==68.2.2
 uritemplate==4.1.1
 #urllib3==2.1.0
 wheel==0.42.0
+whitenoise==6.9.0
+zipp==3.21.0
+Pillow==11.2.1
