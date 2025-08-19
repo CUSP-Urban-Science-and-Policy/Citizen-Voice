@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+
 
 # Uncomment to use local .env file wihtout Docker
-# load_dotenv("../local.env", override=True) #
+from dotenv import load_dotenv
+
+load_dotenv("../.env", override=True)  #
 
 if os.name == "nt":
     OSGEO4W = r"C:\OSGeo4W"
@@ -35,7 +37,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "setme-in-production")
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
 # Choice of database engine will be retrieved from .env file
-DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
+DATABASE_ENGINE = os.environ.get("DJANGO_DB_ENGINE")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
