@@ -69,6 +69,7 @@ const zoomLevel = ref(props.zoom);
 const updatekey = ref(1);
 const geoJsonReady = ref(false)
 const geoJson = shallowRef(null)
+const transformCache = ref(new Map()) // Cache for transformation results
 
 // Map tile providers configuration
 const tileProviders = {
@@ -124,6 +125,18 @@ const toggleMapProvider = () => {
 const transformGeoJsonWithCenters = (features) => {
     if (!features || !Array.isArray(features)) return features;
     
+    // Create cache key based on feature IDs or geometry coordinates
+    const cacheKey = features.map(f => {
+        if (f.id) return f.id;
+        // If no ID, use a hash of the geometry for caching
+        return JSON.stringify(f.geometry);
+    }).join('|');
+    
+    // Check if we have a cached result
+    if (transformCache.value.has(cacheKey)) {
+        return transformCache.value.get(cacheKey);
+    }
+    
     const transformedFeatures = [];
     
     features.forEach(feature => {
@@ -141,13 +154,44 @@ const transformGeoJsonWithCenters = (features) => {
                 centerCoords = coords[midIndex];
             } else if (feature.geometry.type === 'Polygon') {
                 const coords = feature.geometry.coordinates[0]; // Outer ring
-                // Simple centroid calculation
-                let sumLat = 0, sumLng = 0;
-                coords.forEach(coord => {
-                    sumLng += coord[0];
-                    sumLat += coord[1];
-                });
-                centerCoords = [sumLng / coords.length, sumLat / coords.length];
+                
+                // Optimized centroid calculation for large datasets
+                if (coords.length > 100) {
+                    // For large polygons, sample every 10th point for performance
+                    const sampleStep = Math.max(1, Math.floor(coords.length / 10));
+                    let sumLat = 0, sumLng = 0, sampleCount = 0;
+                    
+                    for (let i = 0; i < coords.length; i += sampleStep) {
+                        sumLng += coords[i][0];
+                        sumLat += coords[i][1];
+                        sampleCount++;
+                    }
+                    centerCoords = [sumLng / sampleCount, sumLat / sampleCount];
+                } else {
+                    // Simple centroid for smaller polygons
+                    let sumLat = 0, sumLng = 0;
+                    coords.forEach(coord => {
+                        sumLng += coord[0];
+                        sumLat += coord[1];
+                    });
+                    centerCoords = [sumLng / coords.length, sumLat / coords.length];
+                }
+            } else if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'MultiLineString') {
+                // Handle complex geometries by using the first part's center
+                const firstGeometry = feature.geometry.coordinates[0];
+                if (feature.geometry.type === 'MultiPolygon') {
+                    const coords = firstGeometry[0]; // First polygon's outer ring
+                    let sumLat = 0, sumLng = 0;
+                    coords.forEach(coord => {
+                        sumLng += coord[0];
+                        sumLat += coord[1];
+                    });
+                    centerCoords = [sumLng / coords.length, sumLat / coords.length];
+                } else if (feature.geometry.type === 'MultiLineString') {
+                    const coords = firstGeometry;
+                    const midIndex = Math.floor(coords.length / 2);
+                    centerCoords = coords[midIndex];
+                }
             }
             
             if (centerCoords) {
@@ -168,6 +212,16 @@ const transformGeoJsonWithCenters = (features) => {
             }
         }
     });
+    
+    // Cache the result before returning
+    transformCache.value.set(cacheKey, transformedFeatures);
+    
+    // Limit cache size to prevent memory issues
+    if (transformCache.value.size > 1000) {
+        // Remove oldest entries when cache gets too large
+        const firstKey = transformCache.value.keys().next().value;
+        transformCache.value.delete(firstKey);
+    }
     
     return transformedFeatures;
 }
