@@ -54,8 +54,12 @@ INSTALLED_APPS = [
     "voice",
     "civilian",
     "rest_framework",
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     "rest_framework_gis",
     "rest_framework.permissions",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "users.apps.UsersConfig",
     "survey_design.apps.SurveyDesignConfig",
     "respondent.apps.RespondentConfig",
@@ -69,6 +73,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.google",
+    "authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [
