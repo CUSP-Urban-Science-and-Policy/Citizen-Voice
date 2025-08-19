@@ -12,6 +12,7 @@ services:
       start_period: 5s
     volumes:
       - postgis_data:/var/lib/postgresql/data
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     environment:
       - POSTGRES_PASSWORD=/run/secrets/postgres_password
       - POSTGRES_USER=${DB_USER}

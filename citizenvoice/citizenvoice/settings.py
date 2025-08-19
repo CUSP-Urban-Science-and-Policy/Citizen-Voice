@@ -12,16 +12,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
-from datetime import timedelta
-
-# import mimetypes
-# mimetypes.add_type("text/css", ".css", True)
-
+from dotenv import load_dotenv
 
 # Uncomment to use local .env file wihtout Docker
-# from dotenv import load_dotenv
-
-# load_dotenv("../.env", override=True)  #
+# load_dotenv("../local.env", override=True) #
 
 if os.name == "nt":
     OSGEO4W = r"C:\OSGeo4W"
@@ -41,7 +35,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "setme-in-production")
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=0))
 
 # Choice of database engine will be retrieved from .env file
-DATABASE_ENGINE = os.environ.get("DJANGO_DB_ENGINE")
+DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
@@ -58,12 +52,8 @@ INSTALLED_APPS = [
     "voice",
     "civilian",
     "rest_framework",
-    "rest_framework.authtoken",
-    "rest_framework_simplejwt",
     "rest_framework_gis",
     "rest_framework.permissions",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "users.apps.UsersConfig",
     "survey_design.apps.SurveyDesignConfig",
     "respondent.apps.RespondentConfig",
@@ -77,15 +67,14 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.google",
-    "authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files
     # CORS
     "corsheaders.middleware.CorsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -116,7 +105,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "django.template.context_processors.request",
             ],
         },
     },
@@ -137,20 +125,12 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 )
-
-
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
-    CORS_ALLOWED_ORIGINS = [
-        "http://frontend:3000",  # allows docker frontend requests
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost",
-    ]
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+CORS_ALLOWED_ORIGINS = [
+    "http://frontend:3000",  # allows docker frontend requests
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost",
+]
 
 # The code below is necessary to distinguish a deployment for CI with
 # GitHub Actions (IF part) and any other deployment  (the ELSE part)
@@ -167,15 +147,15 @@ if os.environ.get("GITHUB_WORKFLOW"):
     }
 else:
     if DATABASE_ENGINE == "postgis":
-        dbase = os.environ.get("DATABASE")
+        dbase = os.environ.get("POSTGRES_DBASE")
         DATABASES = {
             "default": {
                 "ENGINE": "django.contrib.gis.db.backends.postgis",
-                "NAME": os.environ.get("DATABASE"),
-                "USER": os.environ.get("DB_USER"),
+                "NAME": os.environ.get("POSTGRES_DBASE"),
+                "USER": os.environ.get("POSTGRES_USER"),
                 "PASSWORD": os.environ.get("POSTGRES_PWD"),
                 "HOST": os.environ.get("POSTGRES_HOST"),
-                "PORT": os.environ.get("DB_PORT"),
+                "PORT": os.environ.get("POSTGRES_PORT"),
                 "TEST": {
                     "NAME": os.environ.get("TEST_DBASE"),
                 },
@@ -190,7 +170,6 @@ else:
         }
     else:
         print("No settings is available for selected database engine!")
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -223,6 +202,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATICFILES_DIRS = ['static_vue']
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -244,38 +231,16 @@ SOCIALACCOUNT_PROVIDERS = {
         "client_secret": os.environ.get("GITHUB_CLIENT_SECRET"),
         "key": "",
     },
-    "google": {
-        "APP": {
-            "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
-            "secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
-            "key": "",
-        },
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {
-            "access_type": "offline",
-        },
-        "VERIFY_EMAIL": True,
-    },
+    "google": {},
 }
 
-SOCIALACCOUNT_STORE_TOKENS = True
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication"
-    ],
+    #'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",  # ✅ Forces JSON output
     ),
-}
-
-REST_AUTH = {
-    "USE_JWT": True,
-    "JWT_AUTH_HTTPONLY": False,
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -335,30 +300,3 @@ STORAGES = {
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "emails"
-
-signing_key = os.environ.get("JWT_SIGNING_KEY")
-# print(signing_key)
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": True,
-    "SIGNING_KEY": signing_key,
-    "ALGORITHM": "HS512",
-}
-
-# # Account signup fields
-# ACCOUNT_SIGNUP_FIELDS = {
-#     "username": {"required": True},
-#     "email": {"required": True},
-#     "password1": {"required": True},
-#     "password2": {"required": True},
-# }
-
-# # Add these missing Allauth settings:
-# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
-# ACCOUNT_EMAIL_VERIFICATION = "none"
-
-
-# TODO: integrate this changes into the app and see if the authentication works. The instructions on the blog are outdated.
